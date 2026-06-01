@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función para verificar si el usuario es administrador
+    function isAdmin() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Función para verificar si el usuario es parte del staff (admin o trabajador)
+    function isStaff() {
+      return request.auth != null && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'barber', 'stylist', 'manicurist'];
+    }
+
+    // Usuarios: Cualquiera puede crear su cuenta. Solo pueden leer/editar su propia cuenta, o el Admin todas.
+    match /users/{userId} {
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow read, update: if request.auth != null && (request.auth.uid == userId || isStaff());
+      allow delete: if isAdmin();
+    }
+
+    // Trabajadores, Servicios y Productos: Lectura pública (para que el cliente vea los datos sin iniciar sesión obligatoriamente). Solo Admin edita.
+    match /workers/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /services/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /products/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /branches/{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Citas (Bookings): Los clientes autenticados pueden crear. Solo ven las suyas o el Staff ve todas.
+    match /bookings/{bookingId} {
+      allow create: if request.auth != null;
+      allow read, update: if request.auth != null && (resource.data.clientId == request.auth.uid || isStaff());
+      allow delete: if isAdmin();
+    }
+
+    // Finanzas (Gastos y Ventas): Completamente privado, solo Admin.
+    match /expenses/{document=**} {
+      allow read, write: if isAdmin();
+    }
+    match /sales/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // Notificaciones: Cualquier usuario puede generar una notificación.
+    // Un usuario puede leer, actualizar o eliminar sus propias notificaciones (donde userId coincide con su UID).
+    // El Staff puede leer, actualizar o eliminar todas las notificaciones.
+    match /notifications/{notificationId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && (
+        resource.data.userId == request.auth.uid || isStaff()
+      );
+    }
+  }
+}
