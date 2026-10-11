@@ -7,6 +7,7 @@ import ImageUploadField from './ImageUploadField';
 import ReportsModule from './ReportsModule';
 import CommissionsModule from './CommissionsModule';
 import ClosuresModule from './ClosuresModule';
+import PromotionsModule from './PromotionsModule';
 import QRModule from './QRModule';
 
 const STATUS_CONFIG = {
@@ -348,9 +349,8 @@ function AdminDashboard() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative z-10 flex flex-col items-center space-y-6">
-          <div className="flex items-center text-white text-3xl font-black tracking-tight mb-2">
-            <img src="/logo.png" alt="Barber Kalvin" className="h-11 w-11 rounded-full object-cover inline-block mr-2.5 border border-white/10" />
-            <span>Barber <span className="text-red-500">Kalvin</span></span>
+          <div className="flex items-center text-white text-3xl font-black tracking-tighter mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            <span>BARBER <span className="text-red-500">KALVIN</span></span>
           </div>
 
           <div className="relative w-16 h-16">
@@ -689,14 +689,15 @@ function AdminDashboard() {
   };
 
   const TABS = [
-    { key: 'stats',       label: 'Estadisticas' },
+    { key: 'stats',       label: 'Estadísticas' },
     { key: 'bookings',    label: 'Citas' },
-    { key: 'workers',     label: 'Trabajadores' },
+    { key: 'workers',     label: 'Barberos' },
     { key: 'services',    label: 'Servicios' },
+    { key: 'promotions',  label: '🔥 Promociones' },
     { key: 'inventory',   label: 'Inventario y Finanzas' },
     { key: 'reports',     label: 'Reportes' },
     { key: 'commissions', label: 'Comisiones' },
-    { key: 'closures',    label: 'Cierres de Sede' },
+    { key: 'closures',    label: '🛑 Estado Operativo' },
     { key: 'users',       label: 'Usuarios' },
     { key: 'qr',          label: '📲 Código QR' },
   ];
@@ -1488,7 +1489,10 @@ function AdminDashboard() {
         {/* ── COMISIONES ────────────────────────────────── */}
         {tab === 'commissions' && <CommissionsModule />}
 
-        {/* ── CIERRES ───────────────────────────────────── */}
+        {/* ── PROMOCIONES ────────────────────────────────── */}
+        {tab === 'promotions' && <PromotionsModule setConfirmDialog={setConfirmDialog} />}
+
+        {/* ── ESTADO OPERATIVO / CIERRES ─────────────────── */}
         {tab === 'closures' && <ClosuresModule setConfirmDialog={setConfirmDialog} />}
 
         {/* ── CÓDIGO QR ──────────────────────────────────── */}

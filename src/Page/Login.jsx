@@ -77,14 +77,16 @@ function Login() {
         <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-red-600/5 rounded-full blur-[80px]" />
         <div className="relative z-10 text-center space-y-6">
           <div className="flex flex-col items-center justify-center">
-            <img src="/logo.png" alt="Barber Kalvin" className="h-28 w-28 rounded-full object-cover border-2 border-white/10 shadow-2xl mb-4" />
-            <div className="text-white text-4xl font-black tracking-tight">
-              Barber <span className="text-red-500">Kalvin</span>
+            <div className="text-white text-4xl lg:text-5xl font-black tracking-tighter" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              BARBER <span className="text-red-500">KALVIN</span>
             </div>
+            <p className="text-red-500 font-bold uppercase tracking-[0.25em] text-xs mt-2">
+              Estilo · Precisión · Confianza
+            </p>
           </div>
           <div className="w-16 h-1 bg-red-600 rounded-full mx-auto" />
           <p className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto">
-            Estilo, pasión y precisión milimétrica en cada detalle de tu barbería.
+            Estilo clásico y precisión milimétrica en cada detalle de tu barbería.
           </p>
           <div className="grid grid-cols-2 gap-4 mt-8">
             {[
@@ -106,9 +108,9 @@ function Login() {
       <div className="flex-1 flex items-center justify-center p-6 lg:p-16">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
-            <Link to="/" className="inline-flex flex-col items-center">
-              <img src="/logo.png" alt="Barber Kalvin" className="h-20 w-20 rounded-full object-cover border-2 border-white/10 shadow-xl mb-2" />
-              <span className="text-white text-2xl font-black">Barber <span className="text-red-500">Kalvin</span></span>
+            <Link to="/" className="inline-flex flex-col items-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              <span className="text-white text-3xl font-black tracking-tight">BARBER <span className="text-red-500">KALVIN</span></span>
+              <span className="text-red-500 text-[10px] uppercase font-bold tracking-[0.25em] mt-1">Barbería Profesional</span>
             </Link>
           </div>
 

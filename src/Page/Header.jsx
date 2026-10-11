@@ -137,10 +137,9 @@ function Header({ onBookingClick }) {
       className="w-full bg-black/95 backdrop-blur-md border-b border-white/10 px-4 md:px-8 py-4 flex items-center justify-between fixed top-0 left-0 right-0 z-[100] h-[76px]"
       style={{ fontFamily: "'Poppins', sans-serif" }}
     >
-      {/* Logo */}
-      <Link to="/" className="flex items-center text-white text-xl font-black tracking-tight hover:opacity-90 transition-opacity z-[110]">
-        <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 rounded-full object-cover mr-2.5 border border-white/10 shadow-md" />
-        <span>Barber <span className="text-red-500">Kalvin</span></span>
+      {/* Logo Tipográfico BARBER KALVIN */}
+      <Link to="/" className="flex items-center text-white text-xl sm:text-2xl font-black tracking-tighter hover:opacity-90 transition-opacity z-[110]" style={{ fontFamily: "'Poppins', sans-serif" }}>
+        <span>BARBER <span className="text-red-500">KALVIN</span></span>
       </Link>
 
       {/* Desktop Navigation */}
@@ -228,11 +227,10 @@ function Header({ onBookingClick }) {
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <div className="flex justify-between items-start relative z-10">
               <div>
-                <h2 className="flex items-center text-white text-2xl font-black tracking-tight">
-                  <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 rounded-full object-cover mr-2.5 border border-white/10 shadow-md" />
-                  <span>Barber <span className="text-red-500">Kalvin</span></span>
+                <h2 className="flex items-center text-white text-2xl font-black tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  <span>BARBER <span className="text-red-500">KALVIN</span></span>
                 </h2>
-                <p className="text-neutral-400 text-[10px] uppercase tracking-[0.3em] font-black mt-1">Estilo · Pasión · Precisión</p>
+                <p className="text-neutral-400 text-[10px] uppercase tracking-[0.3em] font-black mt-1">Estilo · Precisión · Confianza</p>
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="text-neutral-500 hover:text-white transition-colors p-2 -mr-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

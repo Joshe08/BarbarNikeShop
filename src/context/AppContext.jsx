@@ -52,6 +52,14 @@ export function AppProvider({ children }) {
   const [expenses, setExpenses] = useState([]);
   const [branches, setBranches] = useState(BRANCHES);
   const [closures, setClosures] = useState([]);
+  const [operationalStatus, setOperationalStatus] = useState({
+    isOpen: true,
+    reason: '',
+    reopenDate: null,
+    updatedAt: null,
+    history: []
+  });
+  const [promotions, setPromotions] = useState([]);
   const [appLoading, setAppLoading] = useState(true);
 
   // Seed initial data into Firestore if collections are empty or needs migration
@@ -239,6 +247,30 @@ export function AppProvider({ children }) {
       console.error('Closures snapshot error:', error);
     });
 
+    // Listener: Estado operativo general de la barbería
+    const unsubOperational = onSnapshot(doc(db, 'settings', 'operationalStatus'), (snap) => {
+      if (snap.exists()) {
+        setOperationalStatus(snap.data());
+      } else {
+        setOperationalStatus({
+          isOpen: true,
+          reason: '',
+          reopenDate: null,
+          updatedAt: null,
+          history: []
+        });
+      }
+    }, (error) => {
+      console.error('Operational status snapshot error:', error);
+    });
+
+    // Listener: Promociones por día
+    const unsubPromotions = onSnapshot(collection(db, 'promotions'), (snap) => {
+      setPromotions(snap.docs.map(d => ({ ...d.data(), id: d.id })));
+    }, (error) => {
+      console.error('Promotions snapshot error:', error);
+    });
+
     return () => {
       clearTimeout(timer);
       unsubWorkers();
@@ -249,6 +281,8 @@ export function AppProvider({ children }) {
       unsubExpenses();
       unsubBranches();
       unsubClosures();
+      unsubOperational();
+      unsubPromotions();
     };
   }, [user]);
 
@@ -500,6 +534,102 @@ export function AppProvider({ children }) {
     }
   };
 
+  // --- Operational Status (Estado Operativo de la Barbería) ---
+  const updateOperationalStatus = async (statusData) => {
+    const updated = {
+      isOpen: statusData.isOpen ?? true,
+      reason: statusData.reason || '',
+      reopenDate: statusData.reopenDate || null,
+      updatedAt: new Date().toISOString(),
+      history: [
+        ...(operationalStatus.history || []).slice(-19), // Mantener últimos 20 cambios
+        {
+          isOpen: statusData.isOpen ?? true,
+          reason: statusData.reason || '',
+          reopenDate: statusData.reopenDate || null,
+          changedAt: new Date().toISOString(),
+          changedBy: user?.name || user?.email || 'Administrador'
+        }
+      ]
+    };
+    await setDoc(doc(db, 'settings', 'operationalStatus'), updated);
+  };
+
+  // --- Promociones CRUD ---
+  const addPromotion = async (promoData) => {
+    const docRef = await addDoc(collection(db, 'promotions'), {
+      ...promoData,
+      createdAt: new Date().toISOString(),
+      active: promoData.active ?? true
+    });
+    return docRef.id;
+  };
+
+  const updatePromotion = async (id, promoData) => {
+    await updateDoc(doc(db, 'promotions', id), {
+      ...promoData,
+      updatedAt: new Date().toISOString()
+    });
+  };
+
+  const deletePromotion = async (id) => {
+    await deleteDoc(doc(db, 'promotions', id));
+  };
+
+  // Helper para calcular precio con descuento si aplica promoción
+  const getServicePromoInfo = (service, targetDateStr = null) => {
+    if (!service || !promotions || promotions.length === 0) {
+      return { hasPromo: false, promoPrice: service?.price || 0, promo: null };
+    }
+
+    // Determinar día de la semana para la fecha solicitada (0=domingo, 1=lunes, ..., 6=sábado)
+    let checkDate;
+    if (targetDateStr) {
+      const parts = targetDateStr.split('-').map(Number);
+      checkDate = new Date(parts[0], parts[1] - 1, parts[2]);
+    } else {
+      checkDate = new Date();
+    }
+    const dayOfWeek = checkDate.getDay(); // 0 a 6
+    const dateYMD = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-${String(checkDate.getDate()).padStart(2, '0')}`;
+
+    // Buscar una promoción activa que aplique al servicio y al día
+    const activePromo = promotions.find(p => {
+      if (!p.active) return false;
+      // Verificar rango de fechas si fue especificado
+      if (p.startDate && dateYMD < p.startDate) return false;
+      if (p.endDate && dateYMD > p.endDate) return false;
+      // Verificar día de la semana
+      if (Array.isArray(p.daysOfWeek) && p.daysOfWeek.length > 0) {
+        if (!p.daysOfWeek.includes(dayOfWeek)) return false;
+      }
+      // Verificar si incluye este servicio específico (o todos si vacío)
+      if (Array.isArray(p.serviceIds) && p.serviceIds.length > 0) {
+        if (!p.serviceIds.includes(service.id)) return false;
+      }
+      return true;
+    });
+
+    if (!activePromo) {
+      return { hasPromo: false, promoPrice: service.price, promo: null };
+    }
+
+    let calculatedPrice = service.price;
+    if (activePromo.discountType === 'percentage') {
+      const pct = Number(activePromo.discountValue) || 0;
+      calculatedPrice = Math.max(0, Math.round(service.price * (1 - pct / 100)));
+    } else if (activePromo.discountType === 'fixed') {
+      calculatedPrice = Number(activePromo.discountValue) || service.price;
+    }
+
+    return {
+      hasPromo: calculatedPrice < service.price,
+      promoPrice: calculatedPrice,
+      originalPrice: service.price,
+      promo: activePromo
+    };
+  };
+
   // Computed groups
   const barbers = workers.filter(w => w.role === 'barber');
   const menServices = services.filter(s => s.category === 'men' || !s.category);
@@ -518,6 +648,8 @@ export function AppProvider({ children }) {
       updateUserRole, updateUserStatus, deleteUserDoc,
       addBranch, updateBranch, deleteBranch,
       closures, addClosure, deleteClosure,
+      operationalStatus, updateOperationalStatus,
+      promotions, addPromotion, updatePromotion, deletePromotion, getServicePromoInfo,
       revertSale,
       resetDashboardData
     }}>

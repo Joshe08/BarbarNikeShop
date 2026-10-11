@@ -82,13 +82,13 @@ function ResetPassword() {
 
       <div className="w-full max-w-md relative z-10">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex flex-col items-center">
-            <img src="/logo.png" alt="Barber Kalvin" className="h-20 w-20 rounded-full object-cover border-2 border-white/10 shadow-xl mb-2" />
-            <span className="text-white text-2xl font-black tracking-tight">
-              Barber <span className="text-red-500">Kalvin</span>
+          <Link to="/" className="inline-flex flex-col items-center" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            <span className="text-white text-3xl font-black tracking-tight">
+              BARBER <span className="text-red-500">KALVIN</span>
             </span>
+            <span className="text-red-500 text-[10px] uppercase font-bold tracking-[0.25em] mt-1">Barbería Profesional</span>
           </Link>
-          <p className="text-neutral-500 text-sm mt-1 font-medium">Restablecer Contraseña</p>
+          <p className="text-neutral-500 text-sm mt-2 font-medium">Restablecer Contraseña</p>
         </div>
 
         <div className="bg-neutral-900/80 backdrop-blur-xl border border-white/8 rounded-[2.5rem] p-8 shadow-2xl">

@@ -6,6 +6,9 @@ import { formatCOP } from '../utils/format';
 
 
 function ServiceCard({ service, onSelect }) {
+  const { getServicePromoInfo } = useApp();
+  const promoInfo = getServicePromoInfo ? getServicePromoInfo(service) : { hasPromo: false, promoPrice: service.price };
+
   return (
     <button
       onClick={() => onSelect(service)}
@@ -23,11 +26,32 @@ function ServiceCard({ service, onSelect }) {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/20 to-transparent" />
-        <div className="absolute top-4 right-4">
-          <span className="bg-red-600 text-white text-xs font-black px-3 py-1 rounded-full">
-            {formatCOP(service.price)}
-          </span>
+        
+        {/* Badges de precio */}
+        <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+          {promoInfo.hasPromo ? (
+            <>
+              <span className="bg-red-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-lg shadow-red-600/40 animate-pulse">
+                {formatCOP(promoInfo.promoPrice)}
+              </span>
+              <span className="bg-black/70 backdrop-blur-sm text-neutral-400 text-[10px] font-bold px-2 py-0.5 rounded-full line-through border border-white/10">
+                {formatCOP(service.price)}
+              </span>
+            </>
+          ) : (
+            <span className="bg-red-600 text-white text-xs font-black px-3 py-1 rounded-full">
+              {formatCOP(service.price)}
+            </span>
+          )}
         </div>
+
+        {promoInfo.hasPromo && (
+          <div className="absolute top-4 left-4">
+            <span className="bg-yellow-500 text-black text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full shadow-lg">
+              🔥 Promo Hoy
+            </span>
+          </div>
+        )}
       </div>
       <div className="p-5 space-y-2">
         <p className="text-white font-black text-lg group-hover:text-red-600 transition-colors">{service.name}</p>

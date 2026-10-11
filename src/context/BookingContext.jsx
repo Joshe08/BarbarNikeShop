@@ -134,6 +134,20 @@ export function BookingProvider({ children }) {
   // Crear reserva usando transacción de Firestore para evitar conflictos simultáneos
   const addBooking = async (bookingData) => {
     try {
+      // 0. Verificar si la barbería está cerrada temporalmente
+      const operationalSnap = await getDoc(doc(db, 'settings', 'operationalStatus'));
+      if (operationalSnap.exists()) {
+        const opStatus = operationalSnap.data();
+        if (opStatus.isOpen === false) {
+          const reopenNotice = opStatus.reopenDate ? ` Reabriremos el ${opStatus.reopenDate}.` : '';
+          const reasonNotice = opStatus.reason ? ` Motivo: ${opStatus.reason}.` : '';
+          return {
+            success: false,
+            message: `En este momento la barbería se encuentra cerrada temporalmente.${reasonNotice}${reopenNotice} No se permiten nuevas reservas.`
+          };
+        }
+      }
+
       // Verificar límite diario de citas por cliente
       const dailyQuery = query(
         collection(db, 'bookings'),

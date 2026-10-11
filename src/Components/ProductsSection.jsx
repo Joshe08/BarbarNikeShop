@@ -8,17 +8,6 @@ import { formatCOP } from '../utils/format';
 const STAFF_DISCOUNT = 0.20;
 const STAFF_ROLES = ['barber'];
 
-const FALLBACK_PRODUCTS = [
-  { id: 'fp-1', name: 'Cera Mate Premium', price: 35000, description: 'Control extremo con acabado mate. Fijacion fuerte todo el dia sin brillo.', category: 'capilar', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-2', name: 'Pomada Brillante', price: 32000, description: 'Acabado brillante con fijacion media. Ideal para looks clasicos y retro.', category: 'capilar', image: 'https://images.unsplash.com/photo-1621607512022-6aecc4fed814?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-3', name: 'Shampoo Profesional', price: 28000, description: 'Limpieza profunda con formula sin sulfatos. Hidrata y fortalece desde la raiz.', category: 'capilar', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-4', name: 'Perfume Barber Fresh', price: 85000, description: 'Fragancia masculina de larga duracion. Notas de madera, citrico y musgo.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-5', name: 'Maquina de Corte Pro', price: 280000, description: 'Motor de alta potencia con 5 alturas de corte. Bateria de larga duracion.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-6', name: 'Gorra Barber Kalvin Classic', price: 45000, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-7', name: 'Acondicionador Intensivo', price: 25000, description: 'Hidratacion profunda que deja el cabello suave y manejable. Sin parabenos.', category: 'capilar', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-8', name: 'Recortadora de Barba', price: 150000, description: 'Precision milimetrica para definir tu barba. Incluye 8 peines guia.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=70&fm=webp' },
-];
-
 const CATEGORIES = [
   { key: 'all',        label: 'Todos' },
   { key: 'capilar',   label: 'Capilar' },
@@ -179,7 +168,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
       `Hola! Acabo de completar el pedido en el sistema. Adjunto los detalles.`;
 
     const encodedText = encodeURIComponent(text);
-    const phone = '573045449644';
+    const phone = '573028676396';
     window.open(`https://wa.me/${phone}?text=${encodedText}`, '_blank');
     onClose();
   };
@@ -408,7 +397,7 @@ export default function ProductsSection() {
   };
 
   const isStaff = user && STAFF_ROLES.includes(user.role);
-  const sourceProducts = products && products.length > 0 ? products : FALLBACK_PRODUCTS;
+  const sourceProducts = products || [];
 
   const filteredProducts = sourceProducts.filter(p => {
     const matchCat = activeCategory === 'all' || p.category === activeCategory;
@@ -418,6 +407,7 @@ export default function ProductsSection() {
 
   const resetAutoSlide = useCallback(() => {
     if (autoSlideRef.current) clearInterval(autoSlideRef.current);
+    if (filteredProducts.length === 0) return;
     autoSlideRef.current = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % Math.max(1, filteredProducts.length));
     }, 4000);
@@ -453,42 +443,58 @@ export default function ProductsSection() {
           </p>
         </div>
 
-        {/* Barra de busqueda + filtros de categoria */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-8 max-w-2xl mx-auto">
-          {/* Input de busqueda */}
-          <div className="relative flex-1">
-            <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Buscar producto..."
-              className="w-full bg-neutral-900 border border-white/8 rounded-2xl pl-11 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-red-600/50 focus:outline-none transition-all"
-            />
-            {search && (
-              <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors cursor-pointer">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            )}
+        {/* Barra de busqueda + filtros de categoria (solo si hay productos en la tienda) */}
+        {sourceProducts.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-3 mb-8 max-w-2xl mx-auto">
+            {/* Input de busqueda */}
+            <div className="relative flex-1">
+              <svg className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Buscar producto..."
+                className="w-full bg-neutral-900 border border-white/8 rounded-2xl pl-11 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-red-600/50 focus:outline-none transition-all"
+              />
+              {search && (
+                <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors cursor-pointer">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+            {/* Selector de categoria */}
+            <select
+              value={activeCategory}
+              onChange={e => setActiveCategory(e.target.value)}
+              className="bg-neutral-900 border border-white/8 rounded-2xl px-4 py-3 text-sm text-white font-bold focus:border-red-600/50 focus:outline-none cursor-pointer transition-all sm:w-44"
+            >
+              {CATEGORIES.map(cat => (
+                <option key={cat.key} value={cat.key}>{cat.label}</option>
+              ))}
+            </select>
           </div>
-          {/* Selector de categoria */}
-          <select
-            value={activeCategory}
-            onChange={e => setActiveCategory(e.target.value)}
-            className="bg-neutral-900 border border-white/8 rounded-2xl px-4 py-3 text-sm text-white font-bold focus:border-red-600/50 focus:outline-none cursor-pointer transition-all sm:w-44"
-          >
-            {CATEGORIES.map(cat => (
-              <option key={cat.key} value={cat.key}>{cat.label}</option>
-            ))}
-          </select>
-        </div>
+        )}
 
         {/* Resultados */}
-        {filteredProducts.length === 0 ? (
+        {sourceProducts.length === 0 ? (
+          <div className="text-center py-20 px-6 bg-neutral-900/40 border border-white/5 rounded-[2.5rem] max-w-xl mx-auto space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-red-600/10 border border-red-600/20 text-red-600 flex items-center justify-center mx-auto shadow-inner">
+              <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-white font-black text-lg sm:text-xl">No hay productos disponibles por el momento</h3>
+              <p className="text-neutral-500 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed">
+                Estamos renovando nuestro stock exclusivo en barbería. Muy pronto tendremos nuevos artículos disponibles para ti.
+              </p>
+            </div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-16 text-neutral-600 space-y-2">
             <svg className="h-12 w-12 mx-auto text-neutral-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />

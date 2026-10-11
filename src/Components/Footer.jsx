@@ -1,8 +1,8 @@
 function Footer() {
+  const whatsappMsg = encodeURIComponent("Hola, Barber Kalvin. Quiero obtener información sobre sus servicios y horarios.");
   const socialLinks = [
-    { label: 'Instagram', url: 'https://instagram.com' },
-    { label: 'Facebook', url: 'https://facebook.com' },
-    { label: 'WhatsApp', url: 'https://wa.me/573045449644' }
+    { label: 'Instagram', url: 'https://www.instagram.com/barberkalvin/' },
+    { label: 'WhatsApp', url: `https://wa.me/573028676396?text=${whatsappMsg}` }
   ];
 
   const openingHours = [
@@ -19,20 +19,19 @@ function Footer() {
         {/* Info Column */}
         <div className="space-y-6 text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start text-white text-2xl sm:text-3xl font-black tracking-tight">
-            <img src="/logo.png" alt="Barber Kalvin" className="h-10 w-10 rounded-full object-cover inline-block mr-2.5 border border-white/10" />
-            <span>Barber <span className="text-red-500">Kalvin</span></span>
+            <span>BARBER <span className="text-red-500">KALVIN</span></span>
           </div>
           <p className="text-neutral-400 text-sm max-w-sm mx-auto md:mx-0 leading-relaxed font-medium">
-            Elevando el estandar de la barberia y el estilismo tradicional con un enfoque moderno, premium y exclusivo en cada detalle.
+            Elevando el estándar de la barbería y el estilismo clásico con un enfoque moderno, premium y exclusivo en cada detalle.
           </p>
-          <div className="flex justify-center md:justify-start gap-5">
+          <div className="flex justify-center md:justify-start gap-4">
             {socialLinks.map(social => (
               <a
                 key={social.label}
                 href={social.url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-neutral-500 hover:text-red-600 transition-colors text-xs font-bold uppercase tracking-widest bg-neutral-900 border border-white/5 px-4 py-2 rounded-xl"
+                className="text-neutral-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest bg-neutral-900 border border-white/10 hover:border-red-600/50 px-4 py-2.5 rounded-xl shadow-sm"
               >
                 {social.label}
               </a>
@@ -69,12 +68,12 @@ function Footer() {
                 Calle 6C #16-105 B/Pontevedra, Bogota, Colombia
               </p>
               <p>
-                <span className="text-white font-bold block uppercase tracking-wider mb-1">Telefono:</span>
-                +57 (304) 544-9644
+                <span className="text-white font-bold block uppercase tracking-wider mb-1">Telefono / WhatsApp:</span>
+                +57 302 8676396
               </p>
               <p>
                 <span className="text-white font-bold block uppercase tracking-wider mb-1">Email:</span>
-                contacto@Barber Kalvinshop.com
+                contacto@barberkalvin.com
               </p>
             </div>
           </div>

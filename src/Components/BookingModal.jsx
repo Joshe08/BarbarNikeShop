@@ -19,7 +19,7 @@ const SUBCATEGORY_LABELS = {
 function buildWhatsAppUrl(selection, user, notes, editBooking) {
   // Enviar directamente al WhatsApp del especialista si está registrado, sino a la administración
   const workerPhone = selection.worker?.phone || editBooking?.workerPhone;
-  const phone = workerPhone ? workerPhone.replace(/\D/g, '') : '573045449644';
+  const phone = workerPhone ? workerPhone.replace(/\D/g, '') : '573028676396';
   
   const serviceName = selection.service?.name || editBooking?.service || 'Servicio';
   const priceStr = selection.service?.price ? formatCOP(selection.service.price) : (editBooking?.price ? formatCOP(editBooking.price) : 'N/A');
@@ -449,16 +449,22 @@ function EmailVerificationStep({ accentBg, accentShadow, onBack }) {
 function BookingModal({ isOpen, onClose, preselectedService = null, editBooking = null }) {
   const { user, isAuthenticated } = useAuth();
   const { addBooking, updateBooking, getClientDailyBookingCount, MAX_BOOKINGS_PER_DAY } = useBookings();
-  const { barbers = [], menServices = [], branches = [], closures = [] } = useApp();
+  const { barbers = [], menServices = [], branches = [], closures = [], operationalStatus, getServicePromoInfo } = useApp();
 
-  const [category, setCategory] = useState(null); // 'men' | 'women'
-  const [step, setStep] = useState(0); // 0=branch, 1=cat, 2=worker, 3=service, 4=datetime, 5=confirm, 7=success
-  const [selection, setSelection] = useState({ branch: null, worker: null, service: null, date: '', time: '' });
+  const [category, setCategory] = useState('men');
+  const [step, setStep] = useState(2); // Inicia en 2 (Barbero) para barbería unificada
+  const [selection, setSelection] = useState({ 
+    branch: branches[0] || { id: 'branch-1', name: 'Barber Kalvin' }, 
+    worker: null, 
+    service: null, 
+    date: '', 
+    time: '' 
+  });
   const [notes, setNotes] = useState(''); // Observaciones
   const [bookingError, setBookingError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-
+  const defaultBranch = branches[0] || { id: 'branch-1', name: 'Barber Kalvin' };
 
   const { getSlots, isWorkerAvailableOnDate, loading: availLoading } = useAvailability(
     selection.worker,
@@ -468,19 +474,18 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
     true
   );
 
-  const isMen = category !== 'women';
-  const accent = isMen ? 'text-red-600' : 'text-violet-400';
-  const accentBg = isMen ? 'bg-red-600' : 'bg-gradient-to-r from-violet-700 to-indigo-700';
-  const accentShadow = isMen ? 'shadow-red-600/30' : 'shadow-violet-600/30';
+  const isMen = true;
+  const accent = 'text-red-600';
+  const accentBg = 'bg-red-600';
+  const accentShadow = 'shadow-red-600/30';
 
   const reset = () => {
-    setStep(0);
-    setCategory(null);
-    setSelection({ branch: null, worker: null, service: null, date: '', time: '' });
+    setStep(2);
+    setCategory('men');
+    setSelection({ branch: defaultBranch, worker: null, service: null, date: '', time: '' });
     setNotes('');
     setBookingError('');
     setSubmitting(false);
-
   };
 
   /* eslint-disable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
@@ -503,13 +508,13 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
       } else if (preselectedService) {
         setCategory('men');
         setSelection({
-          branch: null,
+          branch: defaultBranch,
           worker: null,
           service: preselectedService,
           date: '',
           time: ''
         });
-        setStep(0);
+        setStep(2);
       } else {
         reset();
       }
@@ -518,10 +523,6 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
   /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   if (!isOpen) return null;
   const availableWorkers = (barbers || []).filter(w => {
-    // Restriccion de sede
-    if (selection.branch && w.branchId !== selection.branch.id) {
-      return false;
-    }
     // Restricción: un trabajador no puede agendarse consigo mismo
     if (user) {
       const isSelfId = w.id === user.uid || w.id === user.id || w.uid === user.uid;
@@ -595,6 +596,13 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
   const handleFinalSubmitDirectly = async () => {
     setSubmitting(true);
     setBookingError('');
+
+    // Calcular precio real (aplica promoción si existe para la fecha seleccionada)
+    const promoInfo = (selection.service && getServicePromoInfo)
+      ? getServicePromoInfo(selection.service, selection.date)
+      : { hasPromo: false, promoPrice: selection.service?.price || 0, promo: null };
+
+    const finalServicePrice = promoInfo.hasPromo ? promoInfo.promoPrice : (selection.service ? selection.service.price : 0);
     
     const bookingData = {
       clientId: user.uid,
@@ -603,12 +611,14 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
       clientEmail: user.email,
       clientImage: user.image || '',
       branchId: selection.branch?.id || 'branch-1',
-      branchName: selection.branch?.name || 'Sede Norte',
+      branchName: selection.branch?.name || 'Barber Kalvin',
       workerId: selection.worker?.id || '',
-      workerName: selection.worker?.name || 'Especialista no disponible',
-      workerRole: selection.worker?.role || 'staff',
+      workerName: selection.worker?.name || 'Barbero no disponible',
+      workerRole: selection.worker?.role || 'barber',
       service: selection.service?.name || '',
-      servicePrice: selection.service ? selection.service.price : 0,
+      servicePrice: finalServicePrice,
+      originalPrice: selection.service?.price || 0,
+      promoApplied: promoInfo.hasPromo ? (promoInfo.promo?.name || 'Promoción Especial') : null,
       serviceDuration: selection.service ? selection.service.duration : 30,
       category,
       date: selection.date,
@@ -639,7 +649,8 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
 
   const slots = selection.worker && selection.date && selection.service ? getSlots() : [];
   const workerAvailable = selection.worker && selection.date ? isWorkerAvailableOnDate() : true;
-  const isBranchClosed = !!(selection.branch && selection.date && closures.some(
+  const isOperationalClosed = operationalStatus && operationalStatus.isOpen === false;
+  const isBranchClosed = isOperationalClosed || !!(selection.branch && selection.date && closures.some(
     c => (c.branchId === 'all' || c.branchId === selection.branch.id) && c.date === selection.date
   ));
   const isDailyLimitReached = !!(!editBooking && user && selection.date && getClientDailyBookingCount(user.uid || user.id, selection.date) >= MAX_BOOKINGS_PER_DAY);
@@ -692,54 +703,43 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
 
         <div className="p-6 md:p-10 flex-1 overflow-y-auto">
 
-          {/* Progress bar (steps 0-5) */}
-          {step >= 0 && step <= 5 && (
-            <div className="mb-10">
+          {/* Banner de Barbería Cerrada Temporalmente */}
+          {operationalStatus && operationalStatus.isOpen === false && (
+            <div className="mb-6 p-4 rounded-2xl bg-red-600/10 border border-red-600/30 text-center space-y-1">
+              <span className="text-red-500 font-black text-xs uppercase tracking-widest block">
+                🛑 Barbería Cerrada Temporalmente
+              </span>
+              <p className="text-neutral-300 text-xs">
+                {operationalStatus.reason || 'Estamos realizando labores de mantenimiento.'}
+              </p>
+              {operationalStatus.reopenDate && (
+                <p className="text-red-400 text-[11px] font-bold">
+                  Reapertura programada: {operationalStatus.reopenDate}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Progress bar (steps 2-5: Barbero, Servicio, Horario, Confirmar) */}
+          {step >= 2 && step <= 5 && (
+            <div className="mb-8">
               <div className="flex justify-between mb-2">
-                {['Sede', 'Categoría', 'Especialista', 'Servicio', 'Horario', 'Confirmar'].map((label, i) => (
-                  <span key={label} className={`text-[9px] font-bold uppercase tracking-widest ${step === i ? accent : 'text-neutral-600'}`}>
-                    {label}
+                {[
+                  { stepNum: 2, label: 'Barbero' },
+                  { stepNum: 3, label: 'Servicio' },
+                  { stepNum: 4, label: 'Horario' },
+                  { stepNum: 5, label: 'Confirmar' }
+                ].map((item) => (
+                  <span key={item.label} className={`text-[9px] font-bold uppercase tracking-widest ${step === item.stepNum ? accent : 'text-neutral-600'}`}>
+                    {item.label}
                   </span>
                 ))}
               </div>
               <div className="h-1 bg-neutral-800 rounded-full overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-700 ${accentBg}`}
-                  style={{ width: `${(step / 5) * 100}%` }}
+                  style={{ width: `${((step - 2) / 3) * 100}%` }}
                 />
-              </div>
-            </div>
-          )}
-
-          {/* ─── STEP 0: Select Sede ───────────────────────── */}
-          {step === 0 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="text-center space-y-2 mb-8">
-                <h3 className="text-white font-black text-2xl">¿En qué <span className="text-red-600">sede</span> deseas tu cita?</h3>
-                <p className="text-neutral-500 text-sm">Selecciona una de nuestras sucursales</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {branches.map(b => (
-                  <button
-                    key={b.id}
-                    onClick={() => {
-                      setSelection(p => ({ ...p, branch: b }));
-                      setCategory('men');
-                      setStep(2);
-                    }}
-                    className="group p-8 rounded-[2rem] border border-white/5 bg-neutral-800/30 hover:border-red-600/50 hover:bg-red-600/5 transition-all cursor-pointer text-center space-y-4"
-                  >
-                    <div className="text-neutral-400 font-black text-xs uppercase tracking-widest group-hover:text-red-600">Sucursal</div>
-                    <div>
-                      <p className="text-white font-black text-xl group-hover:text-red-600 transition-colors">{b.name}</p>
-                      <p className="text-neutral-500 text-sm mt-1">{b.address}</p>
-                      {b.phone && <p className="text-neutral-600 text-xs mt-1">Tel: {b.phone}</p>}
-                    </div>
-                    <span className="inline-block bg-red-600/10 text-red-600 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
-                      Seleccionar
-                    </span>
-                  </button>
-                ))}
               </div>
             </div>
           )}
@@ -748,7 +748,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
           {step === 2 && (
             <div className="space-y-6 animate-slide-up">
               <h3 className="text-white font-black text-2xl text-center">
-                Elige tu <span className={accent}>{isMen ? 'Barbero' : 'Especialista'}</span>
+                Elige tu <span className={accent}>Barbero</span>
               </h3>
 
               {/* Aviso si el usuario autenticado es staff */}
@@ -757,13 +757,13 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                   <svg className="h-5 w-5 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-red-500 text-xs font-bold">No puedes agendar una cita contigo mismo. Selecciona otro especialista.</p>
+                  <p className="text-red-500 text-xs font-bold">No puedes agendar una cita contigo mismo. Selecciona otro barbero.</p>
                 </div>
               )}
 
               {availableWorkers.length === 0 ? (
                 <div className="bg-neutral-800/50 border border-white/5 rounded-3xl p-10 text-center">
-                  <p className="text-neutral-500 text-sm">No hay otros especialistas disponibles en esta categoría para esta sede.</p>
+                  <p className="text-neutral-500 text-sm">No hay barberos disponibles en este momento.</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -778,13 +778,6 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                   ))}
                 </div>
               )}
-              <button
-                onClick={() => setStep(0)}
-                className="text-neutral-500 hover:text-white text-sm font-bold transition-colors cursor-pointer flex items-center gap-2"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                Cambiar sede
-              </button>
             </div>
           )}
 
@@ -1008,8 +1001,27 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                     <span className="text-neutral-600 text-xs block">{selection.service?.duration} min</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block mb-1">Total</span>
-                    <span className={`font-black text-2xl ${accent}`}>{formatCOP(selection.service?.price)}</span>
+                    <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block mb-1">Total a pagar en sede</span>
+                    {(() => {
+                      const promo = (selection.service && getServicePromoInfo) 
+                        ? getServicePromoInfo(selection.service, selection.date) 
+                        : { hasPromo: false, promoPrice: selection.service?.price };
+                      return (
+                        <div>
+                          {promo.hasPromo ? (
+                            <div className="space-y-0.5">
+                              <span className={`font-black text-2xl ${accent}`}>{formatCOP(promo.promoPrice)}</span>
+                              <div className="flex items-center justify-end gap-1.5">
+                                <span className="text-xs text-neutral-500 line-through">{formatCOP(selection.service?.price)}</span>
+                                <span className="bg-yellow-500/20 text-yellow-400 text-[9px] font-bold px-1.5 py-0.5 rounded">Promo aplicada</span>
+                              </div>
+                            </div>
+                          ) : (
+                            <span className={`font-black text-2xl ${accent}`}>{formatCOP(selection.service?.price)}</span>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
