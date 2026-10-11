@@ -138,8 +138,9 @@ function Header({ onBookingClick }) {
       style={{ fontFamily: "'Poppins', sans-serif" }}
     >
       {/* Logo */}
-      <Link to="/" className="text-white text-xl font-black tracking-tight hover:opacity-80 transition-opacity z-[110]">
-        <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span>
+      <Link to="/" className="flex items-center text-white text-xl font-black tracking-tight hover:opacity-90 transition-opacity z-[110]">
+        <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 rounded-full object-cover mr-2.5 border border-white/10 shadow-md" />
+        <span>Barber <span className="text-red-500">Kalvin</span></span>
       </Link>
 
       {/* Desktop Navigation */}
@@ -227,8 +228,11 @@ function Header({ onBookingClick }) {
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <div className="flex justify-between items-start relative z-10">
               <div>
-                <h2 className="text-white text-3xl font-black tracking-tighter"><img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span></h2>
-                <p className="text-red-600/60 text-[10px] uppercase tracking-[0.3em] font-black mt-1">The Premium Experience</p>
+                <h2 className="flex items-center text-white text-2xl font-black tracking-tight">
+                  <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 rounded-full object-cover mr-2.5 border border-white/10 shadow-md" />
+                  <span>Barber <span className="text-red-500">Kalvin</span></span>
+                </h2>
+                <p className="text-neutral-400 text-[10px] uppercase tracking-[0.3em] font-black mt-1">Estilo · Pasión · Precisión</p>
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="text-neutral-500 hover:text-white transition-colors p-2 -mr-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

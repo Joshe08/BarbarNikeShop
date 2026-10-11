@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+@theme {
+  --color-red-500: #c5282f;
+  --color-red-600: #9e1c22;
+  --color-red-700: #7a1217;
+  --color-blue-600: #1d4ed8;
+}
+
 @layer base {
   html, body {
     scroll-behavior: smooth;
@@ -17,12 +24,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f97316;
+  background: #2563eb40;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ea580c;
+  background: #9e1c22;
 }
 
 /* Custom Animations */

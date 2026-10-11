@@ -18,8 +18,9 @@ function Footer() {
         
         {/* Info Column */}
         <div className="space-y-6 text-center md:text-left">
-          <div className="text-white text-2xl sm:text-3xl font-black tracking-tight">
-            <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span>
+          <div className="flex items-center justify-center md:justify-start text-white text-2xl sm:text-3xl font-black tracking-tight">
+            <img src="/logo.png" alt="Barber Kalvin" className="h-10 w-10 rounded-full object-cover inline-block mr-2.5 border border-white/10" />
+            <span>Barber <span className="text-red-500">Kalvin</span></span>
           </div>
           <p className="text-neutral-400 text-sm max-w-sm mx-auto md:mx-0 leading-relaxed font-medium">
             Elevando el estandar de la barberia y el estilismo tradicional con un enfoque moderno, premium y exclusivo en cada detalle.

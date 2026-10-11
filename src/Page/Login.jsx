@@ -76,22 +76,25 @@ function Login() {
         <div className="absolute top-1/4 -left-20 w-96 h-96 bg-red-600/10 rounded-full blur-[100px]" />
         <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-red-600/5 rounded-full blur-[80px]" />
         <div className="relative z-10 text-center space-y-6">
-          <div className="text-white text-5xl font-black tracking-tight">
-            <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span>
+          <div className="flex flex-col items-center justify-center">
+            <img src="/logo.png" alt="Barber Kalvin" className="h-28 w-28 rounded-full object-cover border-2 border-white/10 shadow-2xl mb-4" />
+            <div className="text-white text-4xl font-black tracking-tight">
+              Barber <span className="text-red-500">Kalvin</span>
+            </div>
           </div>
           <div className="w-16 h-1 bg-red-600 rounded-full mx-auto" />
-          <p className="text-neutral-400 text-lg leading-relaxed max-w-xs">
-            Gestión profesional de citas para la barbería y el salón de belleza más premium.
+          <p className="text-neutral-400 text-sm leading-relaxed max-w-xs mx-auto">
+            Estilo, pasión y precisión milimétrica en cada detalle de tu barbería.
           </p>
-          <div className="grid grid-cols-2 gap-4 mt-10">
+          <div className="grid grid-cols-2 gap-4 mt-8">
             {[
               { label: 'Barberos', value: '4+' },
-              { label: 'Servicios', value: '14+' },
+              { label: 'Servicios', value: '15+' },
               { label: 'Clientes', value: '500+' },
-              { label: 'Años', value: '5+' }
+              { label: 'Calidad', value: '100%' }
             ].map(s => (
               <div key={s.label} className="bg-white/5 border border-white/5 rounded-2xl p-4 text-center">
-                <p className="text-red-600 font-black text-2xl">{s.value}</p>
+                <p className="text-red-500 font-black text-2xl">{s.value}</p>
                 <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">{s.label}</p>
               </div>
             ))}
@@ -102,9 +105,10 @@ function Login() {
       {/* Right panel — form */}
       <div className="flex-1 flex items-center justify-center p-6 lg:p-16">
         <div className="w-full max-w-md">
-          <div className="lg:hidden text-center mb-10">
-            <Link to="/">
-              <span className="text-white text-3xl font-black"><img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span></span>
+          <div className="lg:hidden text-center mb-8">
+            <Link to="/" className="inline-flex flex-col items-center">
+              <img src="/logo.png" alt="Barber Kalvin" className="h-20 w-20 rounded-full object-cover border-2 border-white/10 shadow-xl mb-2" />
+              <span className="text-white text-2xl font-black">Barber <span className="text-red-500">Kalvin</span></span>
             </Link>
           </div>
 

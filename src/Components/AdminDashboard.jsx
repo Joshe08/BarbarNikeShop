@@ -348,8 +348,9 @@ function AdminDashboard() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative z-10 flex flex-col items-center space-y-6">
-          <div className="text-white text-3xl font-black tracking-tight mb-2">
-            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span>
+          <div className="flex items-center text-white text-3xl font-black tracking-tight mb-2">
+            <img src="/logo.png" alt="Barber Kalvin" className="h-11 w-11 rounded-full object-cover inline-block mr-2.5 border border-white/10" />
+            <span>Barber <span className="text-red-500">Kalvin</span></span>
           </div>
 
           <div className="relative w-16 h-16">

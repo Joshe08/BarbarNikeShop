@@ -31,27 +31,30 @@ function Home() {
         <Catalog onBookingClick={() => setIsBookingOpen(true)} onBookService={handleBookService} />
 
         {/* Sección de Video - Barber Kalvin */}
-        <section className="py-24 sm:py-32 px-4 sm:px-8 relative bg-black/50 border-t border-white/5">
-          <div className="max-w-5xl mx-auto text-center space-y-12">
-            <div className="space-y-4">
+        <section className="py-20 sm:py-28 px-4 sm:px-8 relative bg-neutral-950/80 border-t border-white/5">
+          <div className="max-w-4xl mx-auto text-center space-y-10">
+            <div className="space-y-3">
+              <span className="text-red-500 text-xs font-black uppercase tracking-[0.25em] bg-red-950/40 border border-red-800/30 px-4 py-1.5 rounded-full inline-block">
+                En Acción
+              </span>
               <h2 className="text-white text-3xl sm:text-5xl font-black tracking-tight">
-                La Experiencia <span className="text-red-600">Kalvin</span>
+                La Experiencia <span className="text-red-600">Barber Kalvin</span>
               </h2>
-              <p className="text-neutral-400 max-w-2xl mx-auto text-lg">
-                Conoce más sobre nuestro espacio, nuestra técnica y por qué somos la barbería líder en estilo y precisión.
+              <p className="text-neutral-400 max-w-xl mx-auto text-sm sm:text-base leading-relaxed">
+                Estilo, pasión y precisión milimétrica en cada corte. Conoce el arte y la técnica que nos definen.
               </p>
             </div>
-            <div className="aspect-video w-full max-w-4xl mx-auto bg-neutral-900 border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex items-center justify-center relative group cursor-pointer hover:border-red-600/30 transition-colors">
-              <div className="absolute inset-0 bg-red-600/5 group-hover:bg-red-600/10 transition-colors"></div>
-              {/* Aquí irá el video de Barber Kalvin */}
-              <div className="text-center space-y-4 z-10 p-4">
-                <div className="w-20 h-20 bg-red-600/20 text-red-600 rounded-full flex items-center justify-center mx-auto backdrop-blur-sm border border-red-600/30 group-hover:scale-110 transition-transform">
-                  <svg className="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
-                  </svg>
-                </div>
-                <p className="text-neutral-500 font-medium uppercase tracking-widest text-sm">Video Próximamente</p>
-              </div>
+
+            <div className="relative max-w-xl mx-auto rounded-[2.5rem] overflow-hidden border border-white/10 shadow-[0_20px_60px_rgba(0,0,0,0.9)] bg-neutral-900 group">
+              <video
+                src="/video/barber-kalvin.mp4"
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full max-h-[600px] object-contain bg-black mx-auto"
+              >
+                Tu navegador no soporta la reproducción de video.
+              </video>
             </div>
           </div>
         </section>

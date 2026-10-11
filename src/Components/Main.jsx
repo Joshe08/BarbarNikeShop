@@ -13,34 +13,41 @@ function Hero({ onBookingClick }) {
 
       {/* Lado Izquierdo: Nombre de la Barbería */}
       <div className="flex-1 space-y-6 md:space-y-8 text-center md:text-left z-10">
-        <div className="space-y-2">
-          <h2 className="text-red-600 font-black tracking-[0.4em] uppercase text-[10px] sm:text-xs" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            The Premium Experience
-          </h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-center md:justify-start gap-4 mb-3">
+            <img src="/logo.png" alt="Barber Kalvin" className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover border-2 border-white/15 shadow-2xl" />
+            <div className="text-left">
+              <span className="text-red-500 font-black tracking-[0.3em] uppercase text-xs block">
+                Barbería Profesional
+              </span>
+              <span className="text-neutral-400 text-[11px] tracking-widest uppercase font-bold">
+                Estilo · Pasión · Precisión
+              </span>
+            </div>
+          </div>
           <h1
-            className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter"
+            className="text-white text-5xl sm:text-6xl md:text-7xl font-black leading-[0.95] tracking-tight"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            <img src="/logo.png" alt="Logo" className="h-14 w-14 object-contain inline-block mr-3 align-middle" />BARBER<span className="text-red-600">KALVIN</span><br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-500">SHOP</span>
+            BARBER <span className="text-red-500">KALVIN</span>
           </h1>
         </div>
         
-        <p className="text-neutral-400 text-base sm:text-xl max-w-md mx-auto md:mx-0 leading-relaxed font-medium" style={{ fontFamily: "'Poppins', sans-serif" }}>
-          Donde el estilo se encuentra con la tradición. Ofrecemos los mejores cortes y servicios premium para el hombre moderno.
+        <p className="text-neutral-400 text-base sm:text-lg max-w-md mx-auto md:mx-0 leading-relaxed font-medium" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          Donde el estilo clásico se encuentra con la precisión moderna. Cortes, diseño de barba y tratamientos exclusivos para el caballero exigente.
         </p>
         
-        <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start">
+        <div className="pt-2 md:pt-4 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start">
           <button 
             onClick={onBookingClick}
-            className="bg-red-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-red-700 transition-all shadow-[0_20px_50px_rgba(249,115,22,0.3)] active:scale-95 cursor-pointer text-base uppercase tracking-widest"
+            className="bg-red-600 hover:bg-red-700 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black transition-all shadow-[0_15px_35px_rgba(158,28,34,0.35)] active:scale-95 cursor-pointer text-sm sm:text-base uppercase tracking-widest"
           >
             RESERVAR AHORA
           </button>
           <a 
             href="#catalogo"
             onClick={handleScrollToCatalog}
-            className="group border-2 border-white/10 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-white hover:text-black transition-all active:scale-95 flex items-center justify-center text-base uppercase tracking-widest gap-2"
+            className="group border-2 border-white/10 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-white hover:text-black transition-all active:scale-95 flex items-center justify-center text-sm sm:text-base uppercase tracking-widest gap-2"
           >
             CATÁLOGO
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">

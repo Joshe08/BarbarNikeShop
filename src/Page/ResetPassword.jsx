@@ -81,14 +81,14 @@ function ResetPassword() {
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <Link to="/" className="inline-block">
-            <span className="text-white text-3xl font-black tracking-tight">
-              <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span>
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex flex-col items-center">
+            <img src="/logo.png" alt="Barber Kalvin" className="h-20 w-20 rounded-full object-cover border-2 border-white/10 shadow-xl mb-2" />
+            <span className="text-white text-2xl font-black tracking-tight">
+              Barber <span className="text-red-500">Kalvin</span>
             </span>
           </Link>
-          <p className="text-neutral-500 text-sm mt-2 font-medium">Restablecer Contraseña</p>
+          <p className="text-neutral-500 text-sm mt-1 font-medium">Restablecer Contraseña</p>
         </div>
 
         <div className="bg-neutral-900/80 backdrop-blur-xl border border-white/8 rounded-[2.5rem] p-8 shadow-2xl">
