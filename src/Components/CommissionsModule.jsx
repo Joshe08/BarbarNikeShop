@@ -47,11 +47,9 @@ export default function CommissionsModule() {
   const totalCommissions = commissions.reduce((s, w) => s + w.commission, 0);
   const totalGenerated = commissions.reduce((s, w) => s + w.totalGenerated, 0);
 
-  const roleLabel = { barber: 'Barbero', stylist: 'Estilista', manicurist: 'Manicurista' };
+  const roleLabel = { barber: 'Barbero' };
   const roleColor = {
     barber: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-    stylist: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
-    manicurist: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
   };
 
   const openEdit = (worker) => {
@@ -107,7 +105,7 @@ export default function CommissionsModule() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-neutral-900 border border-white/5 rounded-3xl p-5">
           <p className="text-neutral-500 text-[10px] font-black uppercase tracking-widest">Ingresos totales</p>
-          <p className="text-orange-500 font-black text-2xl mt-1">{formatCOP(totalGenerated)}</p>
+          <p className="text-red-600 font-black text-2xl mt-1">{formatCOP(totalGenerated)}</p>
           <p className="text-neutral-600 text-xs mt-0.5">Citas completadas totales</p>
         </div>
         <div className="bg-neutral-900 border border-white/5 rounded-3xl p-5">
@@ -158,7 +156,7 @@ export default function CommissionsModule() {
                     </div>
                     <div>
                       <p className="text-neutral-500 text-[9px] font-black uppercase tracking-widest">Generado</p>
-                      <p className="text-orange-500 font-black text-sm">{formatCOP(worker.totalGenerated)}</p>
+                      <p className="text-red-600 font-black text-sm">{formatCOP(worker.totalGenerated)}</p>
                     </div>
                     <div>
                       <p className="text-neutral-500 text-[9px] font-black uppercase tracking-widest">%</p>
@@ -175,14 +173,14 @@ export default function CommissionsModule() {
                     <div className="flex-1">
                       <div className="w-full bg-neutral-700 rounded-full h-1.5">
                         <div
-                          className="bg-orange-500 h-1.5 rounded-full transition-all"
+                          className="bg-red-600 h-1.5 rounded-full transition-all"
                           style={{ width: `${worker.percentage}%` }}
                         />
                       </div>
                     </div>
                     <button
                       onClick={() => openEdit(worker)}
-                      className="text-neutral-500 hover:text-orange-500 transition-colors cursor-pointer flex-shrink-0"
+                      className="text-neutral-500 hover:text-red-600 transition-colors cursor-pointer flex-shrink-0"
                       title="Editar comisión"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -198,7 +196,7 @@ export default function CommissionsModule() {
                     {worker.bookings.slice(0, 4).map(b => (
                       <div key={b.id} className="bg-neutral-900/60 rounded-xl p-2 text-xs">
                         <p className="text-neutral-400 truncate">{b.service}</p>
-                        <p className="text-orange-400 font-bold">{formatCOP(b.servicePrice || 0)}</p>
+                        <p className="text-red-500 font-bold">{formatCOP(b.servicePrice || 0)}</p>
                         <p className="text-neutral-600">{b.date}</p>
                       </div>
                     ))}
@@ -251,13 +249,13 @@ export default function CommissionsModule() {
                   max="100"
                   value={newPercentage}
                   onChange={e => setNewPercentage(e.target.value)}
-                  className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 pr-10 text-white outline-none focus:border-orange-500 transition-all text-lg font-black"
+                  className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 pr-10 text-white outline-none focus:border-red-600 transition-all text-lg font-black"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 font-black">%</span>
               </div>
             <p className="text-neutral-600 text-xs mt-2">
               Con {newPercentage || 0}%, la comisión actual sería{' '}
-              <span className="text-orange-400 font-bold">
+              <span className="text-red-500 font-bold">
                 {formatCOP(((editingWorker?.totalGenerated || 0) * (Number(newPercentage) || 0)) / 100)}
               </span>
             </p>
@@ -272,7 +270,7 @@ export default function CommissionsModule() {
               <button
                 onClick={savePercentage}
                 disabled={savingPct}
-                className="flex-1 bg-orange-500 text-white py-3 rounded-2xl font-black text-sm cursor-pointer hover:bg-orange-600 transition-all disabled:opacity-40"
+                className="flex-1 bg-red-600 text-white py-3 rounded-2xl font-black text-sm cursor-pointer hover:bg-red-700 transition-all disabled:opacity-40"
               >
                 {savingPct ? 'Guardando...' : 'Guardar'}
               </button>

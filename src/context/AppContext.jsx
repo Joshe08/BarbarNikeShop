@@ -6,7 +6,7 @@ import {
   doc, getDocs, setDoc, getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { BARBERS, STYLISTS, MANICURISTS, SERVICES, WOMEN_SERVICES, BRANCHES } from '../data/mockData';
+import { BARBERS, SERVICES, BRANCHES } from '../data/mockData';
 import { useAuth } from './AuthContext';
 
 const AppContext = createContext(null);
@@ -44,8 +44,8 @@ const getServiceImageFallback = (id, data) => {
 
 export function AppProvider({ children }) {
   const { user } = useAuth();
-  const [workers, setWorkers] = useState([...BARBERS, ...STYLISTS, ...MANICURISTS]);
-  const [services, setServices] = useState([...SERVICES, ...WOMEN_SERVICES]);
+  const [workers, setWorkers] = useState([...BARBERS]);
+  const [services, setServices] = useState([...SERVICES]);
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
   const [sales, setSales] = useState([]);
@@ -72,13 +72,13 @@ export function AppProvider({ children }) {
         for (const sDoc of servicesSnap.docs) {
           await deleteDoc(sDoc.ref);
         }
-        const allServices = [...SERVICES, ...WOMEN_SERVICES];
+        const allServices = [...SERVICES];
         for (const service of allServices) {
           await setDoc(doc(db, 'services', service.id), service);
         }
 
         // Overwrite default workers to apply new schedule & branch
-        const allWorkers = [...BARBERS, ...STYLISTS, ...MANICURISTS];
+        const allWorkers = [...BARBERS];
         for (const worker of allWorkers) {
           await setDoc(doc(db, 'workers', worker.id), {
             ...worker,
@@ -99,7 +99,7 @@ export function AppProvider({ children }) {
         }
         const workersSnap = await getDocs(collection(db, 'workers'));
         if (workersSnap.empty) {
-          const allWorkers = [...BARBERS, ...STYLISTS, ...MANICURISTS];
+          const allWorkers = [...BARBERS];
           for (const worker of allWorkers) {
             await setDoc(doc(db, 'workers', worker.id), {
               ...worker,
@@ -109,7 +109,7 @@ export function AppProvider({ children }) {
         }
         const servicesSnap = await getDocs(collection(db, 'services'));
         if (servicesSnap.empty) {
-          const allServices = [...SERVICES, ...WOMEN_SERVICES];
+          const allServices = [...SERVICES];
           for (const service of allServices) {
             await setDoc(doc(db, 'services', service.id), service);
           }
@@ -139,7 +139,7 @@ export function AppProvider({ children }) {
       const loadedWorkers = snap.docs.map(d => {
         const data = d.data();
         let fallbackImg = 'https://images.unsplash.com/photo-1599351431247-f57930f489c3?w=400&h=400&fit=crop';
-        if (data.role === 'stylist' || data.role === 'manicurist' || data.category === 'women') {
+        if (data.category === 'women') {
           fallbackImg = 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop';
         }
         return {
@@ -153,12 +153,12 @@ export function AppProvider({ children }) {
       if (loadedWorkers.length > 0) {
         setWorkers(loadedWorkers);
       } else {
-        const allW = [...BARBERS, ...STYLISTS, ...MANICURISTS];
+        const allW = [...BARBERS];
         setWorkers(allW);
       }
     }, (error) => {
       console.error("Workers snapshot error:", error);
-      const allW = [...BARBERS, ...STYLISTS, ...MANICURISTS];
+      const allW = [...BARBERS];
       setWorkers(allW);
     });
 
@@ -178,13 +178,13 @@ export function AppProvider({ children }) {
       if (loadedServices.length > 0) {
         setServices(loadedServices);
       } else {
-        const allS = [...SERVICES, ...WOMEN_SERVICES];
+        const allS = [...SERVICES];
         setServices(allS);
       }
       setAppLoading(false);
     }, (error) => {
       console.error("Services snapshot error:", error);
-      const allS = [...SERVICES, ...WOMEN_SERVICES];
+      const allS = [...SERVICES];
       setServices(allS);
       setAppLoading(false);
     });
@@ -394,7 +394,7 @@ export function AppProvider({ children }) {
   const updateUserRole = async (uid, role) => {
     await updateDoc(doc(db, 'users', uid), { role });
     
-    const workerRoles = ['barber', 'stylist', 'manicurist'];
+    const workerRoles = ['barber'];
     if (workerRoles.includes(role)) {
       const workerSnap = await getDoc(doc(db, 'workers', uid));
       if (!workerSnap.exists()) {
@@ -410,7 +410,7 @@ export function AppProvider({ children }) {
           percentage: 50,
           branchId: 'branch-1',
           image: userData.image || 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=400&h=400&fit=crop&crop=face',
-          category: role === 'barber' ? 'men' : 'women',
+          category: 'men',
           active: userData.active !== undefined ? userData.active : true,
           schedule: {
             monday: { start: '09:30', end: '19:30' },
@@ -425,7 +425,7 @@ export function AppProvider({ children }) {
       } else {
         await updateDoc(doc(db, 'workers', uid), {
           role,
-          category: role === 'barber' ? 'men' : 'women'
+          category: 'men'
         });
       }
     } else {
@@ -502,15 +502,12 @@ export function AppProvider({ children }) {
 
   // Computed groups
   const barbers = workers.filter(w => w.role === 'barber');
-  const stylists = workers.filter(w => w.role === 'stylist');
-  const manicurists = workers.filter(w => w.role === 'manicurist');
   const menServices = services.filter(s => s.category === 'men' || !s.category);
-  const womenServices = services.filter(s => s.category === 'women');
 
   return (
     <AppContext.Provider value={{
       workers, services, users, products, sales, appLoading, branches,
-      barbers, stylists, manicurists, menServices, womenServices,
+      barbers, menServices,
       addWorker, updateWorker, deleteWorker,
       addService, updateService, deleteService,
       addProduct, updateProduct, deleteProduct,
@@ -534,3 +531,4 @@ export function useApp() {
   if (!context) throw new Error('useApp must be used within AppProvider');
   return context;
 }
+

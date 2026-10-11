@@ -8,20 +8,20 @@ function Hero({ onBookingClick }) {
   return (
     <section id="inicio" className="flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 py-16 md:py-24 gap-12 md:gap-16 max-w-7xl mx-auto min-h-[70vh] md:min-h-[85vh] relative">
       {/* Decorative Glows */}
-      <div className="absolute top-1/4 left-0 w-64 h-64 bg-orange-500/10 blur-[120px] rounded-full animate-pulse-glow"></div>
+      <div className="absolute top-1/4 left-0 w-64 h-64 bg-red-600/10 blur-[120px] rounded-full animate-pulse-glow"></div>
       <div className="absolute bottom-1/4 right-0 w-80 h-80 bg-white/5 blur-[150px] rounded-full animate-pulse-glow" style={{ animationDelay: '2s' }}></div>
 
       {/* Lado Izquierdo: Nombre de la Barbería */}
       <div className="flex-1 space-y-6 md:space-y-8 text-center md:text-left z-10">
         <div className="space-y-2">
-          <h2 className="text-orange-500 font-black tracking-[0.4em] uppercase text-[10px] sm:text-xs" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <h2 className="text-red-600 font-black tracking-[0.4em] uppercase text-[10px] sm:text-xs" style={{ fontFamily: "'Poppins', sans-serif" }}>
             The Premium Experience
           </h2>
           <h1
             className="text-white text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter"
             style={{ fontFamily: "'Poppins', sans-serif" }}
           >
-            BARBER<span className="text-orange-500">NIKE</span><br />
+            <img src="/logo.png" alt="Logo" className="h-14 w-14 object-contain inline-block mr-3 align-middle" />BARBER<span className="text-red-600">KALVIN</span><br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-neutral-500">SHOP</span>
           </h1>
         </div>
@@ -33,7 +33,7 @@ function Hero({ onBookingClick }) {
         <div className="pt-4 md:pt-6 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start">
           <button 
             onClick={onBookingClick}
-            className="bg-orange-500 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_20px_50px_rgba(249,115,22,0.3)] active:scale-95 cursor-pointer text-base uppercase tracking-widest"
+            className="bg-red-600 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-red-700 transition-all shadow-[0_20px_50px_rgba(249,115,22,0.3)] active:scale-95 cursor-pointer text-base uppercase tracking-widest"
           >
             RESERVAR AHORA
           </button>
@@ -52,9 +52,9 @@ function Hero({ onBookingClick }) {
  
       {/* Lado Derecho: Imagen */}
       <div className="flex-1 relative w-full max-w-lg md:max-w-xl animate-float">
-        <div className="absolute -inset-4 bg-orange-500/20 blur-[100px] rounded-full animate-pulse-glow"></div>
+        <div className="absolute -inset-4 bg-red-600/20 blur-[100px] rounded-full animate-pulse-glow"></div>
         <div className="relative group">
-          <div className="absolute -inset-1 bg-gradient-to-r from-orange-500 to-white/20 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+          <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-white/20 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
           <img
             src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&h=1000&fit=crop&fm=webp&q=70"
             alt="Barber Shop Interior"
@@ -65,7 +65,7 @@ function Hero({ onBookingClick }) {
             <p className="text-neutral-500 font-bold text-xs md:text-sm uppercase tracking-widest">Años de Arte</p>
           </div>
           
-          <div className="absolute top-10 -right-10 bg-orange-500 p-6 md:p-8 rounded-[2rem] shadow-[0_30px_60px_rgba(249,115,22,0.3)] z-20 hidden lg:block transform rotate-6 hover:rotate-0 transition-transform duration-500">
+          <div className="absolute top-10 -right-10 bg-red-600 p-6 md:p-8 rounded-[2rem] shadow-[0_30px_60px_rgba(249,115,22,0.3)] z-20 hidden lg:block transform rotate-6 hover:rotate-0 transition-transform duration-500">
             <p className="text-white font-black text-2xl md:text-4xl leading-none">5.0</p>
             <p className="text-white/80 font-bold text-xs md:text-sm uppercase tracking-widest">Rating VIP</p>
           </div>

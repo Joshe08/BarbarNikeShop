@@ -23,16 +23,16 @@ function BarberDashboard() {
         {/* Header */}
         <header className="flex justify-between items-center">
           <div>
-            <h1 className="text-white text-4xl font-black">Panel <span className="text-orange-500">Barbero</span></h1>
+            <h1 className="text-white text-4xl font-black">Panel <span className="text-red-600">Barbero</span></h1>
             <p className="text-neutral-500">Tu agenda para hoy, Alex</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <button onClick={markAllRead} className="bg-neutral-900 p-4 rounded-2xl text-white border border-white/5 hover:border-orange-500/30 transition-all relative cursor-pointer">
+              <button onClick={markAllRead} className="bg-neutral-900 p-4 rounded-2xl text-white border border-white/5 hover:border-red-600/30 transition-all relative cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                {unreadCount > 0 && <span className="absolute top-2 right-2 w-4 h-4 bg-orange-500 rounded-full border-2 border-neutral-950 flex items-center justify-center text-[10px] font-black">{unreadCount}</span>}
+                {unreadCount > 0 && <span className="absolute top-2 right-2 w-4 h-4 bg-red-600 rounded-full border-2 border-neutral-950 flex items-center justify-center text-[10px] font-black">{unreadCount}</span>}
               </button>
               <div className="absolute top-full right-0 mt-4 w-80 glass rounded-3xl p-4 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-300 z-50">
                 <p className="text-white font-bold mb-4">Notificaciones</p>
@@ -43,7 +43,7 @@ function BarberDashboard() {
                 </div>
               </div>
             </div>
-            <img src={BARBERS[0].image} className="w-14 h-14 rounded-2xl object-cover border-2 border-orange-500" />
+            <img src={BARBERS[0].image} className="w-14 h-14 rounded-2xl object-cover border-2 border-red-600" />
           </div>
         </header>
 
@@ -55,7 +55,7 @@ function BarberDashboard() {
           </div>
           <div className="glass p-5 rounded-2xl text-center">
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest">Ingresos</p>
-            <p className="text-orange-500 font-black text-3xl mt-1">${bookings.reduce((a, b) => a + (b.servicePrice || 0), 0)}</p>
+            <p className="text-red-600 font-black text-3xl mt-1">${bookings.reduce((a, b) => a + (b.servicePrice || 0), 0)}</p>
           </div>
           <div className="glass p-5 rounded-2xl text-center">
             <p className="text-neutral-500 text-xs font-bold uppercase tracking-widest">Pendientes</p>
@@ -66,7 +66,7 @@ function BarberDashboard() {
         {/* Appointments */}
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-2 h-8 bg-orange-500 rounded-full"></div>
+            <div className="w-2 h-8 bg-red-600 rounded-full"></div>
             <h2 className="text-white font-bold text-2xl">Proximas Citas</h2>
           </div>
           <div className="grid gap-4">
@@ -74,17 +74,17 @@ function BarberDashboard() {
               const svc = getServiceForBooking(booking);
               return (
                 <div key={booking.id} onClick={() => setSelectedBooking(selectedBooking?.id === booking.id ? null : booking)}
-                  className="glass rounded-3xl overflow-hidden hover:border-orange-500/20 transition-all duration-300 cursor-pointer">
+                  className="glass rounded-3xl overflow-hidden hover:border-red-600/20 transition-all duration-300 cursor-pointer">
                   {/* Summary Row */}
                   <div className="p-6 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-orange-500/10 rounded-xl flex items-center justify-center text-orange-500 font-black text-lg">
+                      <div className="w-12 h-12 bg-red-600/10 rounded-xl flex items-center justify-center text-red-600 font-black text-lg">
                         {booking.clientName.charAt(0)}
                       </div>
                       <div>
                         <p className="text-white font-bold text-lg">{booking.clientName}</p>
                         <div className="flex items-center gap-3 mt-0.5">
-                          <span className="bg-orange-500/10 text-orange-500 text-xs font-bold px-2 py-0.5 rounded-lg">{booking.service}</span>
+                          <span className="bg-red-600/10 text-red-600 text-xs font-bold px-2 py-0.5 rounded-lg">{booking.service}</span>
                           <span className="text-neutral-500 text-xs">{booking.time}</span>
                         </div>
                       </div>
@@ -111,7 +111,7 @@ function BarberDashboard() {
                         <div className="bg-neutral-800/50 p-4 rounded-xl">
                           <p className="text-neutral-500 text-xs font-bold uppercase mb-1">Fecha & Hora</p>
                           <p className="text-white font-bold">{booking.date}</p>
-                          <p className="text-orange-500 font-bold">{booking.time}</p>
+                          <p className="text-red-600 font-bold">{booking.time}</p>
                         </div>
                       </div>
                       {svc && (
@@ -123,14 +123,14 @@ function BarberDashboard() {
                               <p className="text-neutral-400 text-sm">{svc.includes}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-orange-500 font-black text-2xl">${svc.price}</p>
+                              <p className="text-red-600 font-black text-2xl">${svc.price}</p>
                               <p className="text-neutral-500 text-xs">{svc.duration} min</p>
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-2 mt-3">
                             {svc.details?.map((d, i) => (
                               <div key={i} className="flex items-center gap-2 text-xs text-neutral-400">
-                                <span className="text-orange-500">-</span> {d}
+                                <span className="text-red-600">-</span> {d}
                               </div>
                             ))}
                           </div>
@@ -144,7 +144,7 @@ function BarberDashboard() {
                             WhatsApp
                           </a>
                         )}
-                        <button className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Check-in</button>
+                        <button className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Check-in</button>
                       </div>
                     </div>
                   )}
@@ -164,13 +164,13 @@ function BarberDashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {SERVICES.map(s => (
               <button key={s.id} onClick={() => setSelectedService(s)}
-                className="glass p-4 rounded-2xl flex items-center gap-3 hover:border-orange-500/20 transition-all text-left cursor-pointer group">
+                className="glass p-4 rounded-2xl flex items-center gap-3 hover:border-red-600/20 transition-all text-left cursor-pointer group">
                 <img src={s.image} className="w-12 h-12 rounded-xl object-cover" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-sm group-hover:text-orange-500 transition-colors truncate">{s.name}</p>
+                  <p className="text-white font-bold text-sm group-hover:text-red-600 transition-colors truncate">{s.name}</p>
                   <p className="text-neutral-500 text-xs truncate">{s.includes}</p>
                 </div>
-                <p className="text-orange-500 font-bold">${s.price}</p>
+                <p className="text-red-600 font-bold">${s.price}</p>
               </button>
             ))}
           </div>

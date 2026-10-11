@@ -37,8 +37,8 @@ export async function sendBookingEmail(bookingData, type = 'confirmacion') {
     time: bookingData.time,
     notes: bookingData.notes || 'Ninguna',
     subject: type === 'confirmacion' 
-      ? 'Reserva Confirmada - BarberNike Shop' 
-      : 'Reserva Cancelada - BarberNike Shop',
+      ? 'Reserva Confirmada - Barber Kalvin' 
+      : 'Reserva Cancelada - Barber Kalvin',
     type_message: type === 'confirmacion'
       ? 'Tu cita ha sido agendada con éxito. A continuación te presentamos el detalle de tu reserva:'
       : 'Lamentamos informarte que tu cita ha sido cancelada. A continuación te presentamos el detalle del registro cancelado:'

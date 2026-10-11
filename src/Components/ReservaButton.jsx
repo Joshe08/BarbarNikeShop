@@ -1,6 +1,6 @@
 function ReservaButton() {
   return (
-    <button className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg hover:shadow-orange-500/30"
+    <button className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2.5 rounded-full transition-all duration-300 cursor-pointer hover:scale-105 hover:shadow-lg hover:shadow-red-600/30"
       style={{ fontFamily: "'Poppins', sans-serif" }}
     >
       {/* Icono de calendario/reserva */}

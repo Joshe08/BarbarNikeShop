@@ -6,7 +6,7 @@ import { formatCOP } from '../utils/format';
 
 // Descuento fijo del 20% para el personal de la barberia
 const STAFF_DISCOUNT = 0.20;
-const STAFF_ROLES = ['barber', 'stylist', 'manicurist', 'admin'];
+const STAFF_ROLES = ['barber'];
 
 const FALLBACK_PRODUCTS = [
   { id: 'fp-1', name: 'Cera Mate Premium', price: 35000, description: 'Control extremo con acabado mate. Fijacion fuerte todo el dia sin brillo.', category: 'capilar', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=600&q=70&fm=webp' },
@@ -14,7 +14,7 @@ const FALLBACK_PRODUCTS = [
   { id: 'fp-3', name: 'Shampoo Profesional', price: 28000, description: 'Limpieza profunda con formula sin sulfatos. Hidrata y fortalece desde la raiz.', category: 'capilar', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { id: 'fp-4', name: 'Perfume Barber Fresh', price: 85000, description: 'Fragancia masculina de larga duracion. Notas de madera, citrico y musgo.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { id: 'fp-5', name: 'Maquina de Corte Pro', price: 280000, description: 'Motor de alta potencia con 5 alturas de corte. Bateria de larga duracion.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { id: 'fp-6', name: 'Gorra BarberNike Classic', price: 45000, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
+  { id: 'fp-6', name: 'Gorra Barber Kalvin Classic', price: 45000, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { id: 'fp-7', name: 'Acondicionador Intensivo', price: 25000, description: 'Hidratacion profunda que deja el cabello suave y manejable. Sin parabenos.', category: 'capilar', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { id: 'fp-8', name: 'Recortadora de Barba', price: 150000, description: 'Precision milimetrica para definir tu barba. Incluye 8 peines guia.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=70&fm=webp' },
 ];
@@ -32,7 +32,7 @@ function ProductCard({ product, onBuy, isStaff }) {
   const discountedPrice = isStaff ? Math.round(product.price * (1 - STAFF_DISCOUNT)) : null;
 
   return (
-    <div className="group relative bg-neutral-900 border border-white/5 rounded-3xl overflow-hidden flex flex-col shadow-md hover:border-orange-500/30 hover:shadow-orange-500/10 hover:shadow-xl transition-all duration-300 h-full">
+    <div className="group relative bg-neutral-900 border border-white/5 rounded-3xl overflow-hidden flex flex-col shadow-md hover:border-red-600/30 hover:shadow-red-600/10 hover:shadow-xl transition-all duration-300 h-full">
       <div className="relative overflow-hidden h-48 bg-neutral-800 flex-shrink-0">
         {!imgError ? (
           <img
@@ -80,13 +80,13 @@ function ProductCard({ product, onBuy, isStaff }) {
                 <span className="text-green-400 font-black text-base block">{formatCOP(discountedPrice)}</span>
               </>
             ) : (
-              <span className="text-orange-500 font-black text-base block">{formatCOP(product.price)}</span>
+              <span className="text-red-600 font-black text-base block">{formatCOP(product.price)}</span>
             )}
             <span className="text-neutral-600 text-[9px] font-bold uppercase tracking-wider">{product.stock > 0 ? 'Disponible' : 'Sin stock'}</span>
           </div>
           <button 
             onClick={() => onBuy(product)}
-            className="bg-white/5 hover:bg-orange-500 text-white hover:text-white border border-white/10 hover:border-orange-500 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all cursor-pointer"
+            className="bg-white/5 hover:bg-red-600 text-white hover:text-white border border-white/10 hover:border-red-600 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl transition-all cursor-pointer"
           >
             Comprar
           </button>
@@ -166,7 +166,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
   };
 
   const openWhatsApp = () => {
-    const text = `*NUEVO PEDIDO - BARBER NIKE* 💈\n\n` +
+    const text = `*NUEVO PEDIDO - Barber Kalvin* 💈\n\n` +
       `*Producto:* ${product.name}\n` +
       (isStaff
         ? `*Precio original:* ~~${formatCOP(product.price)}~~\n*Precio empleado (-${STAFF_DISCOUNT*100}%):* ${formatCOP(finalPrice)}\n`
@@ -207,7 +207,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                 <span className="text-[9px] bg-green-500/20 text-green-400 font-bold px-2 py-0.5 rounded border border-green-500/10 uppercase tracking-wider">Staff -20%</span>
               </div>
             ) : (
-              <p className="text-orange-500 font-black text-lg">{formatCOP(product.price)}</p>
+              <p className="text-red-600 font-black text-lg">{formatCOP(product.price)}</p>
             )}
           </div>
         </div>
@@ -224,12 +224,12 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
               )}
 
               {isStaff && user ? (
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-4 flex items-center justify-between">
+                <div className="bg-red-600/10 border border-red-600/20 rounded-2xl p-4 flex items-center justify-between">
                   <div>
                     <p className="text-neutral-500 text-[10px] font-black uppercase tracking-widest">Comprador Detectado</p>
                     <p className="text-white font-black text-sm">{user.name}</p>
                   </div>
-                  <span className="bg-orange-500 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full font-bold">
+                  <span className="bg-red-600 text-white text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full font-bold">
                     Personal
                   </span>
                 </div>
@@ -241,7 +241,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                     value={name} 
                     onChange={e => setName(e.target.value)} 
                     placeholder="Ej. Juan Pérez"
-                    className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-orange-500 outline-none transition-all font-medium"
+                    className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600 outline-none transition-all font-medium"
                   />
                 </div>
               )}
@@ -251,13 +251,13 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                 <div className="grid grid-cols-2 gap-3">
                   <button 
                     onClick={() => setMethod('recogida')}
-                    className={`p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${method === 'recogida' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-white/5 text-neutral-400 hover:border-white/20'}`}
+                    className={`p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${method === 'recogida' ? 'bg-red-600/10 border-red-600 text-red-600' : 'bg-neutral-800 border-white/5 text-neutral-400 hover:border-white/20'}`}
                   >
                     Recogida
                   </button>
                   <button 
                     onClick={() => setMethod('domicilio')}
-                    className={`p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${method === 'domicilio' ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-neutral-800 border-white/5 text-neutral-400 hover:border-white/20'}`}
+                    className={`p-3 rounded-2xl border text-xs font-bold transition-all cursor-pointer ${method === 'domicilio' ? 'bg-red-600/10 border-red-600 text-red-600' : 'bg-neutral-800 border-white/5 text-neutral-400 hover:border-white/20'}`}
                   >
                     Domicilio
                   </button>
@@ -269,7 +269,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                     <select 
                       value={selectedBranchId}
                       onChange={e => setSelectedBranchId(e.target.value)}
-                      className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3.5 text-white text-sm focus:border-orange-500 outline-none cursor-pointer transition-all"
+                      className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3.5 text-white text-sm focus:border-red-600 outline-none cursor-pointer transition-all"
                     >
                       {branches.map(b => (
                         <option key={b.id} value={b.id}>{b.name}</option>
@@ -284,7 +284,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                     value={address} 
                     onChange={e => setAddress(e.target.value)} 
                     placeholder="Dirección completa y barrio..."
-                    className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm mt-2 focus:border-orange-500 outline-none transition-all animate-fade-in"
+                    className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm mt-2 focus:border-red-600 outline-none transition-all animate-fade-in"
                   />
                 )}
               </div>
@@ -310,7 +310,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
             <div className="p-4 border-t border-white/5 shrink-0">
               <button 
                 onClick={handleNext}
-                className="w-full bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-red-600/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
                 Confirmar Compra
               </button>
@@ -345,7 +345,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-neutral-500">Total:</span>
-                <span className="text-orange-500 font-black text-sm">{formatCOP(finalPrice)}</span>
+                <span className="text-red-600 font-black text-sm">{formatCOP(finalPrice)}</span>
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-neutral-500">Método de entrega:</span>
@@ -439,17 +439,17 @@ export default function ProductsSection() {
 
   return (
     <section id="productos" className="py-16 sm:py-24 px-4 sm:px-8 relative overflow-hidden">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-orange-500/4 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-red-600/4 blur-[100px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Encabezado */}
         <div className="text-center mb-10 space-y-3">
-          <p className="text-orange-500 font-black tracking-[0.4em] uppercase text-[10px] sm:text-xs">Tienda BarberNike</p>
+          <p className="text-red-600 font-black tracking-[0.4em] uppercase text-[10px] sm:text-xs">Tienda Barber Kalvin</p>
           <h2 className="text-white text-3xl sm:text-5xl font-black leading-tight tracking-tighter" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            Productos <span className="text-orange-500">Premium</span>
+            Productos <span className="text-red-600">Premium</span>
           </h2>
           <p className="text-neutral-400 text-sm max-w-lg mx-auto leading-relaxed">
-            Lleva la experiencia BarberNike a casa. Productos seleccionados para tu cuidado diario.
+            Lleva la experiencia Barber Kalvin a casa. Productos seleccionados para tu cuidado diario.
           </p>
         </div>
 
@@ -465,7 +465,7 @@ export default function ProductsSection() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Buscar producto..."
-              className="w-full bg-neutral-900 border border-white/8 rounded-2xl pl-11 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-orange-500/50 focus:outline-none transition-all"
+              className="w-full bg-neutral-900 border border-white/8 rounded-2xl pl-11 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-red-600/50 focus:outline-none transition-all"
             />
             {search && (
               <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors cursor-pointer">
@@ -479,7 +479,7 @@ export default function ProductsSection() {
           <select
             value={activeCategory}
             onChange={e => setActiveCategory(e.target.value)}
-            className="bg-neutral-900 border border-white/8 rounded-2xl px-4 py-3 text-sm text-white font-bold focus:border-orange-500/50 focus:outline-none cursor-pointer transition-all sm:w-44"
+            className="bg-neutral-900 border border-white/8 rounded-2xl px-4 py-3 text-sm text-white font-bold focus:border-red-600/50 focus:outline-none cursor-pointer transition-all sm:w-44"
           >
             {CATEGORIES.map(cat => (
               <option key={cat.key} value={cat.key}>{cat.label}</option>
@@ -494,7 +494,7 @@ export default function ProductsSection() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <p className="font-bold text-sm">Sin resultados para "{search}"</p>
-            <button onClick={() => { setSearch(''); setActiveCategory('all'); }} className="text-orange-500 text-xs font-bold hover:text-orange-400 cursor-pointer transition-colors">Limpiar filtros</button>
+            <button onClick={() => { setSearch(''); setActiveCategory('all'); }} className="text-red-600 text-xs font-bold hover:text-red-500 cursor-pointer transition-colors">Limpiar filtros</button>
           </div>
         ) : (
           <>
@@ -526,7 +526,7 @@ export default function ProductsSection() {
                   </button>
                   <div className="flex gap-1.5">
                     {filteredProducts.map((_, i) => (
-                      <button key={i} onClick={() => goTo(i)} className={`transition-all duration-300 rounded-full cursor-pointer ${i === currentSlide ? 'w-5 h-2 bg-orange-500' : 'w-2 h-2 bg-neutral-700'}`} />
+                      <button key={i} onClick={() => goTo(i)} className={`transition-all duration-300 rounded-full cursor-pointer ${i === currentSlide ? 'w-5 h-2 bg-red-600' : 'w-2 h-2 bg-neutral-700'}`} />
                     ))}
                   </div>
                   <button onClick={() => goTo((currentSlide + 1) % filteredProducts.length)} className="bg-neutral-800 border border-white/10 text-white p-2.5 rounded-xl hover:bg-neutral-700 transition-all cursor-pointer">

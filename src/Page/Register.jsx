@@ -44,16 +44,16 @@ function Register() {
   const strengthColor = ['', 'bg-red-500', 'bg-yellow-500', 'bg-green-500'];
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4 selection:bg-red-600 selection:text-white">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-orange-500/5 rounded-full blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-red-600/5 rounded-full blur-[120px]" />
       </div>
 
       <div className="w-full max-w-lg relative z-10">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block">
             <span className="text-white text-3xl font-black tracking-tight">
-              Barber<span className="text-orange-500">Nike</span>
+              <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span>
             </span>
           </Link>
           <p className="text-neutral-500 text-sm mt-2">Crea tu cuenta y agenda tus citas</p>
@@ -61,7 +61,7 @@ function Register() {
 
         <div className="bg-neutral-900/80 backdrop-blur-xl border border-white/8 rounded-[2.5rem] p-8 shadow-2xl">
           <h1 className="text-white font-black text-2xl mb-2">
-            Crear <span className="text-orange-500">cuenta</span>
+            Crear <span className="text-red-600">cuenta</span>
           </h1>
           <p className="text-neutral-500 text-sm mb-7">Es gratis y solo toma un minuto</p>
 
@@ -83,7 +83,7 @@ function Register() {
                 onChange={e => handle('name', e.target.value)}
                 placeholder="Ej: Juan Pérez"
                 required
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
               />
             </div>
 
@@ -96,7 +96,7 @@ function Register() {
                   onChange={e => handle('email', e.target.value)}
                   placeholder="tu@correo.com"
                   required
-                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
                 />
               </div>
               <div>
@@ -106,7 +106,7 @@ function Register() {
                   value={form.phone}
                   onChange={e => handle('phone', e.target.value)}
                   placeholder="573001234567"
-                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
                 />
               </div>
             </div>
@@ -120,7 +120,7 @@ function Register() {
                   onChange={e => handle('password', e.target.value)}
                   placeholder="Mínimo 6 caracteres"
                   required
-                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 pr-12 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 pr-12 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-white transition-colors cursor-pointer">
@@ -150,7 +150,7 @@ function Register() {
                 onChange={e => handle('confirm', e.target.value)}
                 placeholder="Repite tu contraseña"
                 required
-                className={`w-full bg-neutral-800/60 border rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all ${
+                className={`w-full bg-neutral-800/60 border rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all ${
                   form.confirm && form.password !== form.confirm ? 'border-red-500/50' : 'border-white/5'
                 }`}
               />
@@ -162,7 +162,7 @@ function Register() {
             <button
               type="submit"
               disabled={loading || (form.confirm && form.password !== form.confirm)}
-              className="w-full bg-orange-500 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-600 disabled:opacity-40 transition-all shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer mt-2"
+              className="w-full bg-red-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-700 disabled:opacity-40 transition-all shadow-lg shadow-red-600/20 active:scale-[0.98] cursor-pointer mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -179,7 +179,7 @@ function Register() {
           <div className="mt-6 text-center">
             <p className="text-neutral-500 text-sm">
               ¿Ya tienes cuenta?{' '}
-              <Link to="/login" className="text-orange-500 font-black hover:text-orange-400 transition-colors">Inicia sesión</Link>
+              <Link to="/login" className="text-red-600 font-black hover:text-red-500 transition-colors">Inicia sesión</Link>
             </p>
           </div>
         </div>

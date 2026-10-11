@@ -364,7 +364,7 @@ export function AuthProvider({ children }) {
 
       await updateDoc(doc(db, 'users', uid), updates);
 
-      const workerRoles = ['barber', 'stylist', 'manicurist'];
+      const workerRoles = ['barber'];
       if (workerRoles.includes(user.role)) {
         await updateDoc(doc(db, 'workers', uid), {
           name,
@@ -390,14 +390,14 @@ export function AuthProvider({ children }) {
       {loading ? (
         <div className="fixed inset-0 bg-neutral-950 flex flex-col items-center justify-center z-[9999]">
           <div className="relative w-24 h-24 mb-6">
-            <div className="absolute inset-0 bg-orange-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="w-full h-full border-4 border-white/5 border-t-orange-500 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 bg-red-600 rounded-full blur-xl opacity-20 animate-pulse"></div>
+            <div className="w-full h-full border-4 border-white/5 border-t-red-600 rounded-full animate-spin"></div>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-orange-500 text-3xl font-black">B</span>
+              <span className="text-red-600 text-3xl font-black">B</span>
             </div>
           </div>
-          <h1 className="text-white text-xl font-black tracking-widest uppercase">BarberNike</h1>
-          <p className="text-orange-500 text-xs font-bold tracking-[0.2em] uppercase mt-2 animate-pulse">Cargando...</p>
+          <h1 className="text-white text-xl font-black tracking-widest uppercase">Barber Kalvin</h1>
+          <p className="text-red-600 text-xs font-bold tracking-[0.2em] uppercase mt-2 animate-pulse">Cargando...</p>
         </div>
       ) : (
         children

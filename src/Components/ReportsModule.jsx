@@ -92,7 +92,7 @@ const chartDefaults = {
 
 function StatCard({ label, value, icon, color = 'orange', sub }) {
   const colors = {
-    orange: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
+    orange: 'text-red-600 bg-red-600/10 border-red-600/20',
     green:  'text-green-400 bg-green-500/10 border-green-500/20',
     blue:   'text-blue-400 bg-blue-500/10 border-blue-500/20',
     red:    'text-red-400 bg-red-500/10 border-red-500/20',
@@ -264,7 +264,7 @@ export default function ReportsModule() {
       doc.setTextColor(249, 115, 22);
       doc.setFontSize(22);
       doc.setFont('helvetica', 'bold');
-      doc.text('BarberNike - Reporte de Gestión', 14, 22);
+      doc.text('Barber Kalvin - Reporte de Gestión', 14, 22);
       doc.setTextColor(160, 160, 160);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
@@ -330,7 +330,7 @@ export default function ReportsModule() {
         });
       }
 
-      doc.save(`reporte_barbernike_${period === 'custom-day' ? `dia_${customDate}` : period}_${new Date().toISOString().slice(0, 10)}.pdf`);
+      doc.save(`reporte_Barber Kalvin_${period === 'custom-day' ? `dia_${customDate}` : period}_${new Date().toISOString().slice(0, 10)}.pdf`);
     } catch (err) {
       console.error('Error exportando PDF:', err);
       setError('Error al exportar PDF. Intenta de nuevo.');
@@ -488,7 +488,7 @@ export default function ReportsModule() {
 
       // Banner principal
       const rSummaryTitle = addSummaryRow([
-        cCell('BARBERNIKE - REPORTE DE GESTIÓN DE NEGOCIO', STYLE_MAIN_TITLE),
+        cCell('Barber Kalvin - REPORTE DE GESTIÓN DE NEGOCIO', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE)
       ], 38);
@@ -641,7 +641,7 @@ export default function ReportsModule() {
 
       // Banner principal de citas
       const rBookTitle = addBookingRow([
-        cCell('BARBERNIKE - DETALLE DE CITAS', STYLE_MAIN_TITLE),
+        cCell('Barber Kalvin - DETALLE DE CITAS', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
@@ -742,7 +742,7 @@ export default function ReportsModule() {
 
       // Banner principal de gastos
       const rExpTitle = addExpenseRow([
-        cCell('BARBERNIKE - DETALLE DE GASTOS OPERATIVOS', STYLE_MAIN_TITLE),
+        cCell('Barber Kalvin - DETALLE DE GASTOS OPERATIVOS', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
@@ -806,7 +806,7 @@ export default function ReportsModule() {
       wsExpenses['!views'] = [{ showGridLines: true }];
       XLSX.utils.book_append_sheet(wb, wsExpenses, 'Gastos');
 
-      XLSX.writeFile(wb, `reporte_barbernike_${period === 'custom-day' ? `dia_${customDate}` : period}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      XLSX.writeFile(wb, `reporte_Barber Kalvin_${period === 'custom-day' ? `dia_${customDate}` : period}_${new Date().toISOString().slice(0, 10)}.xlsx`);
     } catch (err) {
       console.error('Error exportando Excel:', err);
       setError('Error al exportar Excel. Intenta de nuevo.');
@@ -844,7 +844,7 @@ export default function ReportsModule() {
                 onClick={() => setPeriod(opt.value)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                   period === opt.value
-                    ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
+                    ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                     : 'text-neutral-400 hover:text-white'
                 }`}
               >
@@ -855,7 +855,7 @@ export default function ReportsModule() {
               onClick={() => setPeriod('custom-day')}
               className={`px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 period === 'custom-day'
-                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
+                  ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                   : 'text-neutral-400 hover:text-white'
               }`}
             >
@@ -869,7 +869,7 @@ export default function ReportsModule() {
               type="date"
               value={customDate}
               onChange={e => setCustomDate(e.target.value)}
-              className="bg-neutral-800 border border-white/5 rounded-2xl px-4 py-2 text-xs font-black uppercase tracking-wider text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-orange-500 transition-all"
+              className="bg-neutral-800 border border-white/5 rounded-2xl px-4 py-2 text-xs font-black uppercase tracking-wider text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600 transition-all"
             />
           )}
           {/* Exportar */}
@@ -963,14 +963,14 @@ export default function ReportsModule() {
             <div className="space-y-2.5">
               {frequentClients.map(([name, count], i) => (
                 <div key={name} className="flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 text-xs font-black flex-shrink-0">
+                  <div className="w-7 h-7 rounded-xl bg-red-600/10 border border-red-600/20 flex items-center justify-center text-red-600 text-xs font-black flex-shrink-0">
                     {i + 1}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-sm font-bold truncate">{name}</p>
                     <div className="w-full bg-neutral-800 rounded-full h-1 mt-1">
                       <div
-                        className="bg-orange-500 h-1 rounded-full transition-all"
+                        className="bg-red-600 h-1 rounded-full transition-all"
                         style={{ width: `${Math.min((count / (frequentClients[0]?.[1] || 1)) * 100, 100)}%` }}
                       />
                     </div>
@@ -1013,7 +1013,7 @@ export default function ReportsModule() {
                   const statusMap = {
                     pending: { label: 'Pendiente', cls: 'text-yellow-400' },
                     confirmed: { label: 'Confirmada', cls: 'text-blue-400' },
-                    in_progress: { label: 'En proceso', cls: 'text-orange-400' },
+                    in_progress: { label: 'En proceso', cls: 'text-red-500' },
                     completed: { label: 'Finalizada', cls: 'text-green-400' },
                     cancelled: { label: 'Cancelada', cls: 'text-red-400' },
                   };
@@ -1026,7 +1026,7 @@ export default function ReportsModule() {
                       <td className="py-3 text-neutral-300">{b.workerName || '-'}</td>
                       <td className="py-3 text-neutral-300">{b.branchName || 'Sede Norte'}</td>
                       <td className="py-3"><span className={`text-xs font-bold ${st.cls}`}>{st.label}</span></td>
-                      <td className="py-3 text-right text-orange-400 font-bold">{formatCOP(b.servicePrice || 0)}</td>
+                      <td className="py-3 text-right text-red-500 font-bold">{formatCOP(b.servicePrice || 0)}</td>
                     </tr>
                   );
                 })}

@@ -15,9 +15,9 @@ function ServiceDetailModal({ service, onClose, showMargin = false, onBook }) {
   });
 
   const isMen = service.category === 'men';
-  const accentText = isMen ? 'text-orange-500' : 'text-violet-400';
-  const accentBg = isMen ? 'bg-orange-500 hover:bg-orange-600 shadow-orange-500/20' : 'bg-gradient-to-r from-violet-700 to-indigo-700 hover:opacity-90 shadow-violet-600/20';
-  const dotColor = isMen ? 'bg-orange-500' : 'bg-violet-500';
+  const accentText = isMen ? 'text-red-600' : 'text-violet-400';
+  const accentBg = isMen ? 'bg-red-600 hover:bg-red-700 shadow-red-600/20' : 'bg-gradient-to-r from-violet-700 to-indigo-700 hover:opacity-90 shadow-violet-600/20';
+  const dotColor = isMen ? 'bg-red-600' : 'bg-violet-500';
 
   return (
     <div className="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in">

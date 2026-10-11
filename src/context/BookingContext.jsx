@@ -30,7 +30,7 @@ export function BookingProvider({ children }) {
       return () => clearTimeout(timer);
     }
     
-    const isStaff = ['admin', 'barber', 'stylist', 'manicurist'].includes(user.role);
+    const isStaff = ['admin', 'barber'].includes(user.role);
     const q = isStaff
       ? query(collection(db, 'bookings'), orderBy('createdAt', 'desc'))
       : query(collection(db, 'bookings'), where('clientId', '==', user.uid));

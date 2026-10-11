@@ -69,17 +69,17 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-neutral-950 flex selection:bg-red-600 selection:text-white">
       {/* Left panel — decorative */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-neutral-900 items-center justify-center p-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-transparent" />
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px]" />
-        <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-orange-500/5 rounded-full blur-[80px]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 via-transparent to-transparent" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-red-600/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-1/4 -right-20 w-64 h-64 bg-red-600/5 rounded-full blur-[80px]" />
         <div className="relative z-10 text-center space-y-6">
           <div className="text-white text-5xl font-black tracking-tight">
-            Barber<span className="text-orange-500">Nike</span>
+            <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span>
           </div>
-          <div className="w-16 h-1 bg-orange-500 rounded-full mx-auto" />
+          <div className="w-16 h-1 bg-red-600 rounded-full mx-auto" />
           <p className="text-neutral-400 text-lg leading-relaxed max-w-xs">
             Gestión profesional de citas para la barbería y el salón de belleza más premium.
           </p>
@@ -91,7 +91,7 @@ function Login() {
               { label: 'Años', value: '5+' }
             ].map(s => (
               <div key={s.label} className="bg-white/5 border border-white/5 rounded-2xl p-4 text-center">
-                <p className="text-orange-500 font-black text-2xl">{s.value}</p>
+                <p className="text-red-600 font-black text-2xl">{s.value}</p>
                 <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">{s.label}</p>
               </div>
             ))}
@@ -104,12 +104,12 @@ function Login() {
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-10">
             <Link to="/">
-              <span className="text-white text-3xl font-black">Barber<span className="text-orange-500">Nike</span></span>
+              <span className="text-white text-3xl font-black"><img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain inline-block mr-2 align-middle" />Barber<span className="text-red-600">Kalvin</span></span>
             </Link>
           </div>
 
           <div className="mb-10">
-            <h1 className="text-white font-black text-3xl mb-2">Bienvenido <span className="text-orange-500">de vuelta</span></h1>
+            <h1 className="text-white font-black text-3xl mb-2">Bienvenido <span className="text-red-600">de vuelta</span></h1>
             <p className="text-neutral-500">Ingresa tus credenciales para continuar</p>
           </div>
 
@@ -135,7 +135,7 @@ function Login() {
                   type="button"
                   onClick={handleResend}
                   disabled={resendLoading}
-                  className="text-left text-orange-500 hover:text-orange-400 text-xs font-black uppercase tracking-widest pl-8 cursor-pointer disabled:opacity-50 transition-colors"
+                  className="text-left text-red-600 hover:text-red-500 text-xs font-black uppercase tracking-widest pl-8 cursor-pointer disabled:opacity-50 transition-colors"
                 >
                   {resendLoading ? 'Reenviando...' : '¿No recibiste el correo? Haz click aquí para reenviar'}
                 </button>
@@ -152,7 +152,7 @@ function Login() {
                 onChange={e => handle('email', e.target.value)}
                 placeholder="tu@correo.com"
                 required
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
               />
             </div>
 
@@ -165,7 +165,7 @@ function Login() {
                   onChange={e => handle('password', e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 pr-12 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-4 pr-12 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
                 />
                 <button
                   type="button"
@@ -185,7 +185,7 @@ function Login() {
                 </button>
               </div>
               <div className="text-right mt-2">
-                <Link to="/forgot-password" className="text-neutral-500 hover:text-orange-500 text-xs font-bold transition-colors">
+                <Link to="/forgot-password" className="text-neutral-500 hover:text-red-600 text-xs font-bold transition-colors">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
@@ -194,7 +194,7 @@ function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-orange-600 disabled:opacity-40 transition-all shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer mt-2"
+              className="w-full bg-red-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-red-700 disabled:opacity-40 transition-all shadow-lg shadow-red-600/20 active:scale-[0.98] cursor-pointer mt-2"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -211,7 +211,7 @@ function Login() {
           <div className="mt-8 text-center">
             <p className="text-neutral-500 text-sm">
               ¿No tienes cuenta?{' '}
-              <Link to="/register" className="text-orange-500 font-black hover:text-orange-400 transition-colors">
+              <Link to="/register" className="text-red-600 font-black hover:text-red-500 transition-colors">
                 Regístrate gratis
               </Link>
             </p>

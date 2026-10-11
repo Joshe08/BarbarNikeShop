@@ -7,11 +7,12 @@ import ImageUploadField from './ImageUploadField';
 import ReportsModule from './ReportsModule';
 import CommissionsModule from './CommissionsModule';
 import ClosuresModule from './ClosuresModule';
+import QRModule from './QRModule';
 
 const STATUS_CONFIG = {
   pending:     { label: 'Pendiente',   color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
   confirmed:   { label: 'Confirmada',  color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-  in_progress: { label: 'En proceso',  color: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
+  in_progress: { label: 'En proceso',  color: 'bg-red-600/10 text-red-500 border-red-600/20' },
   completed:   { label: 'Finalizada',  color: 'bg-green-500/10 text-green-400 border-green-500/20' },
   cancelled:   { label: 'Cancelada',   color: 'bg-red-500/10 text-red-400 border-red-500/20' },
 };
@@ -34,7 +35,7 @@ const FALLBACK_PRODUCTS = [
   { name: 'Shampoo Profesional', price: 28000, stock: 30, description: 'Limpieza profunda con formula sin sulfatos. Hidrata y fortalece desde la raiz.', category: 'capilar', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { name: 'Perfume Barber Fresh', price: 85000, stock: 10, description: 'Fragancia masculina de larga duracion. Notas de madera, citrico y musgo.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { name: 'Maquina de Corte Pro', price: 280000, stock: 5, description: 'Motor de alta potencia con 5 alturas de corte. Bateria de larga duracion.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Gorra BarberNike Classic', price: 45000, stock: 12, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
+  { name: 'Gorra Barber Kalvin Classic', price: 45000, stock: 12, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { name: 'Acondicionador Intensivo', price: 25000, stock: 25, description: 'Hidratacion profunda que deja el cabello suave y manejable. Sin parabenos.', category: 'capilar', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=70&fm=webp' },
   { name: 'Recortadora de Barba', price: 150000, stock: 8, description: 'Precision milimetrica para definir tu barra. Incluye 8 peines guia.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=70&fm=webp' },
 ];
@@ -126,7 +127,7 @@ function Toast({ message, visible }) {
 
 function StatCard({ label, value, sub, color = 'orange' }) {
   const colors = {
-    orange: 'text-orange-500 border-orange-500/10 bg-orange-500/5',
+    orange: 'text-red-600 border-red-600/10 bg-red-600/5',
     green:  'text-green-400 border-green-400/10 bg-green-400/5',
     blue:   'text-blue-400 border-blue-400/10 bg-blue-400/5',
     purple: 'text-purple-400 border-purple-400/10 bg-purple-500/5',
@@ -166,7 +167,7 @@ function FormField({ label, value, onChange, type = 'text', placeholder = '' }) 
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder || label}
-        className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all text-sm font-medium"
+        className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all text-sm font-medium"
       />
     </div>
   );
@@ -186,7 +187,7 @@ const cleanPhone = (phoneStr) => {
 const getReminderLink = (bk, clientPhoneStr) => {
   const formattedPhone = cleanPhone(clientPhoneStr);
   if (!formattedPhone) return null;
-  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *BarberNike (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
+  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 };
 
@@ -344,16 +345,16 @@ function AdminDashboard() {
   if (appLoading || loadingBookings) {
     return (
       <div className="min-h-screen bg-neutral-950 flex flex-col items-center justify-center p-4 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-orange-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-600/10 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="relative z-10 flex flex-col items-center space-y-6">
           <div className="text-white text-3xl font-black tracking-tight mb-2">
-            Barber<span className="text-orange-500">Nike</span>
+            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span>
           </div>
 
           <div className="relative w-16 h-16">
             <div className="absolute inset-0 rounded-full border-4 border-white/5" />
-            <div className="absolute inset-0 rounded-full border-4 border-t-orange-500 animate-spin" />
+            <div className="absolute inset-0 rounded-full border-4 border-t-red-600 animate-spin" />
           </div>
 
           <div className="space-y-1 text-center">
@@ -696,6 +697,7 @@ function AdminDashboard() {
     { key: 'commissions', label: 'Comisiones' },
     { key: 'closures',    label: 'Cierres de Sede' },
     { key: 'users',       label: 'Usuarios' },
+    { key: 'qr',          label: '📲 Código QR' },
   ];
 
   return (
@@ -713,22 +715,22 @@ function AdminDashboard() {
         />
       )}
       {/* ── BANNER SUPERIOR ────────────────────────────── */}
-      <div className="bg-gradient-to-r from-orange-600/20 via-neutral-900 to-neutral-900 border-b border-white/5 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-full bg-orange-500/5 blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-red-700/20 via-neutral-900 to-neutral-900 border-b border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-full bg-red-600/5 blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-2xl bg-orange-500 flex items-center justify-center text-white font-black text-base shadow-lg shadow-orange-500/30 border border-orange-400/20">
+            <div className="w-10 h-10 rounded-2xl bg-red-600 flex items-center justify-center text-white font-black text-base shadow-lg shadow-red-600/30 border border-red-500/20">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" /></svg>
             </div>
             <div>
-              <h1 className="text-white text-xl font-black tracking-tight">Panel de <span className="text-orange-500">Administración</span></h1>
-              <p className="text-neutral-500 text-xs">BarberNike Shop · Control total</p>
+              <h1 className="text-white text-xl font-black tracking-tight">Panel de <span className="text-red-600">Administración</span></h1>
+              <p className="text-neutral-500 text-xs">Barber Kalvin Shop · Control total</p>
             </div>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
-            <div className="bg-orange-500/10 border border-orange-500/20 px-4 py-2 rounded-2xl text-center">
+            <div className="bg-red-600/10 border border-red-600/20 px-4 py-2 rounded-2xl text-center">
               <p className="text-neutral-500 text-[9px] uppercase tracking-widest font-bold">Ingresos</p>
-              <p className="text-orange-500 font-black text-lg">{formatCOP(totalRevenue)}</p>
+              <p className="text-red-600 font-black text-lg">{formatCOP(totalRevenue)}</p>
             </div>
             <div className="bg-white/5 border border-white/5 px-4 py-2 rounded-2xl text-center">
               <p className="text-neutral-500 text-[9px] uppercase tracking-widest font-bold">Citas hoy</p>
@@ -757,7 +759,7 @@ function AdminDashboard() {
                   onClick={() => setTab(t.key)}
                   className={`px-3 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
                     tab === t.key
-                      ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20'
+                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
                       : 'text-neutral-500 hover:text-white hover:bg-white/5'
                   }`}
                 >
@@ -783,7 +785,7 @@ function AdminDashboard() {
                   <select
                     value={statsBranchFilter}
                     onChange={e => setStatsBranchFilter(e.target.value)}
-                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-orange-500"
+                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600"
                   >
                     <option value="all">Todas las Sedes (Comparativa)</option>
                     {branches.map(b => (
@@ -797,7 +799,7 @@ function AdminDashboard() {
                     type="date"
                     value={statsStartDate}
                     onChange={e => setStatsStartDate(e.target.value)}
-                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-orange-500 cursor-pointer"
+                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-red-600 cursor-pointer"
                   />
                 </div>
                 <div className="flex flex-col space-y-1">
@@ -806,7 +808,7 @@ function AdminDashboard() {
                     type="date"
                     value={statsEndDate}
                     onChange={e => setStatsEndDate(e.target.value)}
-                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-orange-500 cursor-pointer"
+                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-red-600 cursor-pointer"
                   />
                 </div>
               </div>
@@ -814,9 +816,9 @@ function AdminDashboard() {
 
             {/* KPIs principales */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-gradient-to-br from-orange-500/20 to-orange-500/5 border border-orange-500/20 rounded-3xl p-5 col-span-2 sm:col-span-1">
+              <div className="bg-gradient-to-br from-red-600/20 to-red-600/5 border border-red-600/20 rounded-3xl p-5 col-span-2 sm:col-span-1">
                 <p className="text-neutral-400 text-[9px] font-black uppercase tracking-widest">Ingresos totales</p>
-                <p className="text-orange-400 font-black text-2xl mt-1 tracking-tight">{formatCOP(totalRevenue)}</p>
+                <p className="text-red-500 font-black text-2xl mt-1 tracking-tight">{formatCOP(totalRevenue)}</p>
                 <p className="text-neutral-600 text-xs mt-1">Citas completadas</p>
               </div>
               <div className="bg-neutral-900 border border-white/5 rounded-3xl p-5">
@@ -844,13 +846,13 @@ function AdminDashboard() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h3 className="text-white font-black text-lg flex items-center gap-2">
-                      <span className="w-1.5 h-4 bg-orange-500 rounded-full"></span>
+                      <span className="w-1.5 h-4 bg-red-600 rounded-full"></span>
                       Comparativa Financiera de Sedes
                     </h3>
                     <p className="text-neutral-500 text-xs mt-0.5">Distribución de ingresos totales (Servicios + Productos) por sucursal.</p>
                   </div>
                   {leadingBranch && leadingBranch.revenue > 0 && (
-                    <div className="bg-orange-500/10 border border-orange-500/20 text-orange-500 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-2">
+                    <div className="bg-red-600/10 border border-red-600/20 text-red-600 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-2">
                       <span>🏆 Sede Líder: {leadingBranch.name}</span>
                     </div>
                   )}
@@ -863,18 +865,18 @@ function AdminDashboard() {
 
                     return (
                       <div key={bc.id} className="bg-neutral-950/40 border border-white/5 p-5 rounded-2xl relative overflow-hidden group hover:border-white/10 transition-all">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/5 to-transparent blur-2xl rounded-full" />
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-red-600/5 to-transparent blur-2xl rounded-full" />
                         <div className="flex justify-between items-start mb-3">
                           <div>
                             <h4 className="text-white font-bold text-base">{bc.name}</h4>
                             <p className="text-neutral-500 text-xs mt-0.5">{bc.bookingsCount} citas en total · {bc.completedCount} finalizadas</p>
                           </div>
-                          <span className="text-orange-500 font-black text-lg">{percentage}%</span>
+                          <span className="text-red-600 font-black text-lg">{percentage}%</span>
                         </div>
 
                         {/* Barra de progreso */}
                         <div className="h-2.5 bg-neutral-800 rounded-full overflow-hidden mb-4">
-                          <div className="h-full bg-gradient-to-r from-orange-600 to-amber-500 rounded-full" style={{ width: `${percentage}%` }} />
+                          <div className="h-full bg-gradient-to-r from-red-700 to-amber-500 rounded-full" style={{ width: `${percentage}%` }} />
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 text-xs bg-neutral-900/60 p-3 rounded-xl">
@@ -896,8 +898,8 @@ function AdminDashboard() {
 
             {/* Segunda fila */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <StatCard label="Barbería" value={formatCOP(barberRevenue)} sub="Sección masculina" color="orange" />
-              <StatCard label="Salón" value={formatCOP(stylistRevenue)} sub="Sección femenina" color="purple" />
+              <StatCard label="Barbería" value={formatCOP(barberRevenue)} sub="Ingresos por cortes" color="red" />
+              <StatCard label="Citas Hoy" value={filteredBookingsForStats.filter(b => b.date === getTodayDateString()).length} sub="Agendadas para hoy" color="blue" />
               <StatCard label="Completadas" value={completedCount} sub="Citas finalizadas" color="green" />
               <StatCard label="Trabajadores" value={workers.filter(w => w.active).length} sub="Activos" color="blue" />
             </div>
@@ -926,7 +928,7 @@ function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-neutral-900 border border-white/5 rounded-3xl p-6 shadow-md">
                 <h3 className="text-white font-black text-lg mb-5 flex items-center gap-2">
-                  <span className="w-1.5 h-4 bg-orange-500 rounded-full"></span>
+                  <span className="w-1.5 h-4 bg-red-600 rounded-full"></span>
                   Servicios mas solicitados
                 </h3>
                 {topServices.length === 0
@@ -937,10 +939,10 @@ function AdminDashboard() {
                       <div className="flex-1">
                         <div className="flex justify-between mb-1.5">
                           <span className="text-white text-sm font-bold">{name}</span>
-                          <span className="text-orange-500 text-xs font-bold">{count} citas</span>
+                          <span className="text-red-600 text-xs font-bold">{count} citas</span>
                         </div>
                         <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
-                          <div className="h-full bg-orange-500 rounded-full" style={{ width: `${(count / bookings.length) * 100}%` }} />
+                          <div className="h-full bg-red-600 rounded-full" style={{ width: `${(count / bookings.length) * 100}%` }} />
                         </div>
                       </div>
                     </div>
@@ -1005,7 +1007,7 @@ function AdminDashboard() {
                   onClick={() => setBookingFilter(k)}
                   className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest cursor-pointer transition-all ${
                     bookingFilter === k
-                      ? 'bg-orange-500 text-white shadow-sm'
+                      ? 'bg-red-600 text-white shadow-sm'
                       : 'bg-neutral-800 text-neutral-500 hover:text-white'
                   }`}
                 >
@@ -1018,7 +1020,7 @@ function AdminDashboard() {
                   type="date"
                   value={bookingCustomDate}
                   onChange={e => setBookingCustomDate(e.target.value)}
-                  className="bg-neutral-800 border border-white/5 rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-orange-500 transition-all"
+                  className="bg-neutral-800 border border-white/5 rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600 transition-all"
                 />
               )}
 
@@ -1057,11 +1059,7 @@ function AdminDashboard() {
                             <span className={`text-[9px] px-2.5 py-0.5 rounded-full font-black border uppercase tracking-wider ${STATUS_CONFIG[bk.status]?.color}`}>
                               {STATUS_CONFIG[bk.status]?.label}
                             </span>
-                            {bk.category === 'women' ? (
-                              <span className="text-[9px] px-2.5 py-0.5 rounded-full font-black bg-purple-500/10 text-purple-400 border border-purple-500/20 uppercase tracking-wider">Salon Nike</span>
-                            ) : (
-                              <span className="text-[9px] px-2.5 py-0.5 rounded-full font-black bg-orange-500/10 text-orange-500 border border-orange-500/20 uppercase tracking-wider">Barberia</span>
-                            )}
+                            <span className="text-[9px] px-2.5 py-0.5 rounded-full font-black bg-red-600/10 text-red-500 border border-red-600/20 uppercase tracking-wider">Barbería</span>
                           </div>
                           <p className="text-neutral-400 text-sm font-medium">
                             Servicio: <span className="text-white font-bold">{bk.service}</span> — Especialista: <span className="text-white font-bold">{bk.workerName}</span>
@@ -1076,7 +1074,7 @@ function AdminDashboard() {
                           )}
                         </div>
                         <div className="flex items-center gap-3 self-end sm:self-auto flex-wrap">
-                          <span className="text-orange-500 font-black text-lg">{formatCOP(bk.servicePrice)}</span>
+                          <span className="text-red-600 font-black text-lg">{formatCOP(bk.servicePrice)}</span>
                           
                           <select
                             value={bk.status}
@@ -1092,7 +1090,7 @@ function AdminDashboard() {
                                 showToast('✓ Estado de cita actualizado');
                               }
                             }}
-                            className="bg-neutral-800 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none focus:border-orange-500 cursor-pointer"
+                            className="bg-neutral-800 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white font-bold outline-none focus:border-red-600 cursor-pointer"
                           >
                             <option value="pending">Pendiente</option>
                             <option value="confirmed">Confirmada</option>
@@ -1146,7 +1144,7 @@ function AdminDashboard() {
               <h2 className="text-white font-black text-xl">Gestion de Especialistas</h2>
               <button
                 onClick={() => setEditingWorker({ name: '', specialty: '', phone: '', role: 'barber', percentage: '50', image: '', category: 'men', schedule: {}, branchId: 'branch-1' })}
-                className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-orange-500/20 cursor-pointer transition-all"
+                className="bg-red-600 hover:bg-red-700 text-white text-xs font-black uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-red-600/20 cursor-pointer transition-all"
               >
                 Agregar Especialista
               </button>
@@ -1164,7 +1162,7 @@ function AdminDashboard() {
                           {w.active !== false ? 'Activo' : 'Inactivo'}
                         </span>
                       </div>
-                      <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mt-1">{w.specialty}</p>
+                      <p className="text-red-600 text-xs font-bold uppercase tracking-widest mt-1">{w.specialty}</p>
                       <p className="text-neutral-500 text-xs font-medium uppercase mt-0.5">Rol: {w.role === 'barber' ? 'Barbero' : w.role === 'stylist' ? 'Estilista' : 'Manicurista'}</p>
                       <p className="text-neutral-500 text-xs font-medium mt-1">
                         Sede: <span className="text-neutral-300 font-bold">{branches.find(b => b.id === (w.branchId || 'branch-1'))?.name || 'Sede Norte'}</span>
@@ -1195,7 +1193,7 @@ function AdminDashboard() {
               <h2 className="text-white font-black text-xl">Catalogo de Servicios</h2>
               <button
                 onClick={() => setEditingService({ name: '', price: '', duration: '30', category: 'men', description: '', includes: '', image: '' })}
-                className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-orange-500/20 cursor-pointer transition-all"
+                className="bg-red-600 hover:bg-red-700 text-white text-xs font-black uppercase tracking-widest px-6 py-3 rounded-2xl shadow-lg shadow-red-600/20 cursor-pointer transition-all"
               >
                 Agregar Servicio
               </button>
@@ -1206,7 +1204,7 @@ function AdminDashboard() {
               {services.filter(s => s.category === 'men' || !s.category).length > 0 && (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3 border-b border-white/5 pb-2">
-                    <span className="w-1.5 h-5 bg-orange-500 rounded-full animate-pulse" />
+                    <span className="w-1.5 h-5 bg-red-600 rounded-full animate-pulse" />
                     <h3 className="text-white font-black text-sm uppercase tracking-widest">Barbería (Hombres)</h3>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -1216,7 +1214,7 @@ function AdminDashboard() {
                           <img src={s.image} className="w-16 h-16 rounded-2xl object-cover border border-white/10 flex-shrink-0" />
                           <div className="min-w-0">
                             <p className="text-white font-black text-lg truncate">{s.name}</p>
-                            <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mt-0.5">{formatCOP(s.price)}</p>
+                            <p className="text-red-600 text-xs font-bold uppercase tracking-widest mt-0.5">{formatCOP(s.price)}</p>
                             <p className="text-neutral-500 text-xs font-medium uppercase mt-0.5">Seccion: Barbería</p>
                             <span className="inline-block bg-white/5 text-neutral-400 text-[9px] font-bold px-2 py-0.5 rounded-md uppercase mt-2">{s.duration} min</span>
                           </div>
@@ -1234,55 +1232,6 @@ function AdminDashboard() {
                   </div>
                 </div>
               )}
-
-              {/* Category Women */}
-              {services.filter(s => s.category === 'women').length > 0 && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3 border-b border-white/5 pb-2">
-                    <span className="w-1.5 h-5 bg-pink-500 rounded-full animate-pulse" />
-                    <h3 className="text-white font-black text-sm uppercase tracking-widest">Salón Nike (Mujeres)</h3>
-                  </div>
-
-                  {/* Group women by subcategory */}
-                  {Object.entries({
-                    cortes: 'Cortes & Peinados',
-                    coloracion: 'Coloración',
-                    tratamientos: 'Tratamientos',
-                    unas: 'Manicura & Uñas'
-                  }).map(([subKey, subLabel]) => {
-                    const subServices = services.filter(s => s.category === 'women' && s.subcategory === subKey);
-                    if (subServices.length === 0) return null;
-                    return (
-                      <div key={subKey} className="space-y-3 pl-4 border-l border-white/5">
-                        <h4 className="text-neutral-400 font-bold text-xs uppercase tracking-widest">{subLabel}</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {subServices.map(s => (
-                            <div key={s.id} className="bg-neutral-900 border border-white/5 rounded-3xl p-6 flex flex-col justify-between gap-5 shadow-md hover:border-white/10 transition-all">
-                              <div className="flex items-start gap-4">
-                                <img src={s.image} className="w-16 h-16 rounded-2xl object-cover border border-white/10 flex-shrink-0" />
-                                <div className="min-w-0">
-                                  <p className="text-white font-black text-lg truncate">{s.name}</p>
-                                  <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mt-0.5">{formatCOP(s.price)}</p>
-                                  <p className="text-neutral-500 text-xs font-medium uppercase mt-0.5">Seccion: Salón Nike</p>
-                                  <span className="inline-block bg-white/5 text-neutral-400 text-[9px] font-bold px-2 py-0.5 rounded-md uppercase mt-2">{s.duration} min</span>
-                                </div>
-                              </div>
-                              <div className="border-t border-white/5 pt-4 flex justify-end">
-                                <button
-                                  onClick={() => setEditingService({ ...s, price: s.price?.toString() || '', duration: s.duration?.toString() || '' })}
-                                  className="bg-neutral-800 hover:bg-neutral-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer"
-                                >
-                                  Editar Detalles
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </div>
           </div>
         )}
@@ -1296,7 +1245,7 @@ function AdminDashboard() {
                 <button
                   onClick={() => setInventorySubTab('products')}
                   className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer ${
-                    inventorySubTab === 'products' ? 'bg-orange-500 text-white shadow-sm' : 'text-neutral-500 hover:text-white'
+                    inventorySubTab === 'products' ? 'bg-red-600 text-white shadow-sm' : 'text-neutral-500 hover:text-white'
                   }`}
                 >
                   Productos
@@ -1323,10 +1272,10 @@ function AdminDashboard() {
             {inventorySubTab === 'products' && (
               <div className="space-y-4 animate-fade-in">
                 {products.length === 0 && (
-                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-3xl p-6 text-center space-y-3 mb-6">
-                    <p className="text-orange-400 font-bold text-sm">Tu inventario está vacío.</p>
+                  <div className="bg-red-600/10 border border-red-600/20 rounded-3xl p-6 text-center space-y-3 mb-6">
+                    <p className="text-red-500 font-bold text-sm">Tu inventario está vacío.</p>
                     <p className="text-neutral-400 text-xs">Puedes cargar los productos base de la barbería para que aparezcan aquí y en la página principal.</p>
-                    <button onClick={handleSyncProducts} className="bg-orange-500 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-orange-400 transition-colors cursor-pointer mt-2 inline-block">
+                    <button onClick={handleSyncProducts} className="bg-red-600 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-500 transition-colors cursor-pointer mt-2 inline-block">
                       Cargar productos base
                     </button>
                   </div>
@@ -1336,7 +1285,7 @@ function AdminDashboard() {
                     <div key={p.id} className="bg-neutral-900 border border-white/5 rounded-3xl p-6 shadow-md flex flex-col space-y-3">
                       <img src={p.image || 'https://via.placeholder.com/150'} alt={p.name} className="w-full h-32 object-cover rounded-xl mb-3" />
                       <h4 className="text-white font-black text-lg truncate">{p.name}</h4>
-                      <p className="text-orange-500 font-black text-base">{formatCOP(p.price)}</p>
+                      <p className="text-red-600 font-black text-base">{formatCOP(p.price)}</p>
                       <p className="text-neutral-400 text-sm">Stock: {p.stock}</p>
                       {p.stock <= LOW_STOCK_THRESHOLD && (
                         <span className="inline-block bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full text-xs font-bold uppercase mt-1">
@@ -1344,7 +1293,7 @@ function AdminDashboard() {
                         </span>
                       )}
                       <div className="flex gap-2 mt-3">
-                        <button onClick={() => setEditingProduct({ ...p, price: p.price?.toString() || '', stock: p.stock?.toString() || '' })} className="flex-1 bg-orange-500/10 text-orange-500 py-2 rounded-xl text-xs font-bold hover:bg-orange-500 hover:text-white transition-all cursor-pointer">Editar</button>
+                        <button onClick={() => setEditingProduct({ ...p, price: p.price?.toString() || '', stock: p.stock?.toString() || '' })} className="flex-1 bg-red-600/10 text-red-600 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition-all cursor-pointer">Editar</button>
                         <button onClick={() => { setSellingProduct(p); setSellingQuantity('1'); }} className="flex-1 bg-green-500/10 text-green-400 py-2 rounded-xl text-xs font-bold hover:bg-green-500 hover:text-white transition-all cursor-pointer">Vender</button>
                         <button onClick={() => handleDeleteProduct(p.id)} className="bg-red-500/10 text-red-400 px-3 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer" title="Eliminar">
                           <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
@@ -1379,7 +1328,7 @@ function AdminDashboard() {
                           <p className="text-red-400 font-black text-lg bg-red-500/10 px-2.5 py-1 rounded-xl">-{formatCOP(e.amount)}</p>
                         </div>
                         <div className="flex gap-2 border-t border-white/5 pt-4">
-                          <button onClick={() => setEditingExpense({ ...e, amount: e.amount?.toString() || '' })} className="flex-1 bg-orange-500/10 text-orange-500 py-2 rounded-xl text-xs font-bold hover:bg-orange-500 hover:text-white transition-all cursor-pointer">Editar</button>
+                          <button onClick={() => setEditingExpense({ ...e, amount: e.amount?.toString() || '' })} className="flex-1 bg-red-600/10 text-red-600 py-2 rounded-xl text-xs font-bold hover:bg-red-600 hover:text-white transition-all cursor-pointer">Editar</button>
                           <button onClick={() => handleDeleteExpense(e.id)} className="flex-1 bg-red-500/10 text-red-400 py-2 rounded-xl text-xs font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Eliminar</button>
                         </div>
                       </div>
@@ -1406,7 +1355,7 @@ function AdminDashboard() {
                       <select
                         value={balanceBranchFilter}
                         onChange={e => setBalanceBranchFilter(e.target.value)}
-                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-orange-500"
+                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600"
                       >
                         <option value="all">Todas las Sedes</option>
                         {branches.map(b => (
@@ -1420,7 +1369,7 @@ function AdminDashboard() {
                         type="date"
                         value={balanceStartDate}
                         onChange={e => setBalanceStartDate(e.target.value)}
-                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-orange-500 cursor-pointer"
+                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-red-600 cursor-pointer"
                       />
                     </div>
                     <div className="flex flex-col space-y-1">
@@ -1429,7 +1378,7 @@ function AdminDashboard() {
                         type="date"
                         value={balanceEndDate}
                         onChange={e => setBalanceEndDate(e.target.value)}
-                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-orange-500 cursor-pointer"
+                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-2.5 text-xs font-bold text-neutral-300 outline-none focus:border-red-600 cursor-pointer"
                       />
                     </div>
                   </div>
@@ -1453,7 +1402,7 @@ function AdminDashboard() {
                   </div>
                   <div className="bg-neutral-900 border border-white/5 rounded-3xl p-5">
                     <p className="text-neutral-400 text-[9px] font-black uppercase tracking-widest">Ventas de Productos</p>
-                    <p className="text-orange-400 font-black text-2xl mt-1 tracking-tight">
+                    <p className="text-red-500 font-black text-2xl mt-1 tracking-tight">
                       {formatCOP(balanceProductsRevenue)}
                     </p>
                     <p className="text-neutral-600 text-xs mt-1">{balanceSalesCount} transacciones</p>
@@ -1541,6 +1490,13 @@ function AdminDashboard() {
         {/* ── CIERRES ───────────────────────────────────── */}
         {tab === 'closures' && <ClosuresModule setConfirmDialog={setConfirmDialog} />}
 
+        {/* ── CÓDIGO QR ──────────────────────────────────── */}
+        {tab === 'qr' && (
+          <div className="bg-neutral-900/50 border border-white/5 rounded-3xl p-6">
+            <QRModule />
+          </div>
+        )}
+
         {/* ── USERS ─────────────────────────────────────── */}
         {tab === 'users' && (
           <div className="space-y-4">
@@ -1559,16 +1515,16 @@ function AdminDashboard() {
                   placeholder="Buscar por nombre, correo..."
                   value={userSearch}
                   onChange={e => setUserSearch(e.target.value)}
-                  className="w-full bg-neutral-900 border border-white/5 rounded-2xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-900 border border-white/5 rounded-2xl pl-10 pr-4 py-3 text-white text-sm placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all"
                 />
               </div>
               <div className="flex gap-1 bg-neutral-900 border border-white/5 p-1 rounded-2xl overflow-x-auto">
-                {[['all','Todos'],['client','Clientes'],['barber','Barberos'],['stylist','Estilistas'],['manicurist','Manicuristas'],['admin','Admins']].map(([val, label]) => (
+                {[['all','Todos'],['client','Clientes'],['barber','Barberos'],['admin','Admins']].map(([val, label]) => (
                   <button
                     key={val}
                     onClick={() => setUserRoleFilter(val)}
                     className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer ${
-                      userRoleFilter === val ? 'bg-orange-500 text-white' : 'text-neutral-500 hover:text-white'
+                      userRoleFilter === val ? 'bg-red-600 text-white' : 'text-neutral-500 hover:text-white'
                     }`}
                   >{label}</button>
                 ))}
@@ -1597,7 +1553,7 @@ function AdminDashboard() {
                         {u.photoURL || u.image ? (
                           <img src={u.photoURL || u.image} alt={u.name} className="w-full h-full object-cover" />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center font-black text-orange-500 text-lg">
+                          <div className="w-full h-full flex items-center justify-center font-black text-red-600 text-lg">
                             {u.name?.charAt(0)?.toUpperCase() || '?'}
                           </div>
                         )}
@@ -1619,13 +1575,12 @@ function AdminDashboard() {
                         <select
                           value={u.role || 'client'}
                           onChange={(e) => updateUserRole(u.uid, e.target.value)}
-                          className="bg-neutral-800 text-white text-xs font-bold px-3 py-2 rounded-xl border border-white/10 outline-none cursor-pointer focus:border-orange-500"
+                          className="bg-neutral-800 text-white text-xs font-bold px-3 py-2 rounded-xl border border-white/10 outline-none cursor-pointer focus:border-red-600"
                         >
                           <option value="client">Cliente</option>
                           <option value="admin">Administrador</option>
                           <option value="barber">Barbero</option>
-                          <option value="stylist">Estilista</option>
-                          <option value="manicurist">Manicurista</option>
+                          
                         </select>
                       </div>
                       <div className="flex items-center gap-2">
@@ -1682,9 +1637,9 @@ function AdminDashboard() {
                           </div>
                         )}
                         {nearReward && (
-                          <div className="bg-orange-500/10 border border-orange-500/20 rounded-xl px-3 py-1.5 flex items-center gap-2">
+                          <div className="bg-red-600/10 border border-red-600/20 rounded-xl px-3 py-1.5 flex items-center gap-2">
                             <span className="text-sm">🔥</span>
-                            <p className="text-orange-400 text-[10px] font-black">¡Le faltan solo {lvl.next - pts} pts para el siguiente nivel!</p>
+                            <p className="text-red-500 text-[10px] font-black">¡Le faltan solo {lvl.next - pts} pts para el siguiente nivel!</p>
                           </div>
                         )}
                       </div>
@@ -1711,16 +1666,15 @@ function AdminDashboard() {
           <div>
             <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Rol</label>
             <select value={editingWorker.role} onChange={e => setEditingWorker(p => ({ ...p, role: e.target.value, category: e.target.value === 'barber' ? 'men' : 'women' }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-orange-500 text-sm font-medium">
+              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-red-600 text-sm font-medium">
               <option value="barber">Barbero</option>
-              <option value="stylist">Estilista</option>
-              <option value="manicurist">Manicurista</option>
+              
             </select>
           </div>
           <div>
             <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Sede (Sucursal)</label>
             <select value={editingWorker.branchId || 'branch-1'} onChange={e => setEditingWorker(p => ({ ...p, branchId: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-orange-500 text-sm font-medium">
+              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-red-600 text-sm font-medium">
               {branches.map(b => (
                 <option key={b.id} value={b.id}>{b.name}</option>
               ))}
@@ -1749,7 +1703,7 @@ function AdminDashboard() {
                           type="checkbox"
                           checked={active}
                           onChange={e => handleDayCheck(day, e.target.checked)}
-                          className="rounded border-white/10 text-orange-500 focus:ring-0 focus:ring-offset-0 bg-neutral-900 w-4 h-4 cursor-pointer"
+                          className="rounded border-white/10 text-red-600 focus:ring-0 focus:ring-offset-0 bg-neutral-900 w-4 h-4 cursor-pointer"
                         />
                         {DAY_LABELS[day]}
                       </label>
@@ -1795,7 +1749,7 @@ function AdminDashboard() {
 
           <div className="flex gap-3 pt-2">
             {editingWorker.id && <button onClick={() => handleDeleteWorker(editingWorker.id)} className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Eliminar</button>}
-            <button onClick={() => handleSaveWorker(editingWorker)} className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Guardar</button>
+            <button onClick={() => handleSaveWorker(editingWorker)} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Guardar</button>
           </div>
         </EditModal>
       )}
@@ -1807,23 +1761,11 @@ function AdminDashboard() {
           <div>
             <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Categoria</label>
             <select value={editingService.category} onChange={e => setEditingService(p => ({ ...p, category: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-orange-500 text-sm font-medium">
+              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-red-600 text-sm font-medium">
               <option value="men">Barberia (Hombres)</option>
-              <option value="women">Salon Nike (Mujeres)</option>
+              
             </select>
           </div>
-          {editingService.category === 'women' && (
-            <div>
-              <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Subcategoria</label>
-              <select value={editingService.subcategory || 'cortes'} onChange={e => setEditingService(p => ({ ...p, subcategory: e.target.value }))}
-                className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-orange-500 text-sm font-medium">
-                <option value="cortes">Cortes & Peinados</option>
-                <option value="coloracion">Coloracion</option>
-                <option value="tratamientos">Tratamientos</option>
-                <option value="unas">Manicura & Unas</option>
-              </select>
-            </div>
-          )}
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Precio ($)" type="number" value={editingService.price} onChange={v => setEditingService(p => ({ ...p, price: v }))} />
             <FormField label="Duracion (min)" type="number" value={editingService.duration} onChange={v => setEditingService(p => ({ ...p, duration: v }))} />
@@ -1836,7 +1778,7 @@ function AdminDashboard() {
 
           <div className="flex gap-3 pt-2">
             {editingService.id && <button onClick={() => handleDeleteService(editingService.id)} className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Eliminar</button>}
-            <button onClick={() => handleSaveService(editingService)} className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Guardar</button>
+            <button onClick={() => handleSaveService(editingService)} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Guardar</button>
           </div>
         </EditModal>
       )}
@@ -1852,13 +1794,13 @@ function AdminDashboard() {
               onChange={e => setEditingProduct(p => ({ ...p, description: e.target.value }))}
               placeholder="Descripcion del producto..."
               rows={2}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none transition-all text-sm font-medium resize-none"
+              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none transition-all text-sm font-medium resize-none"
             />
           </div>
           <div>
             <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Categoria</label>
             <select value={editingProduct.category || 'capilar'} onChange={e => setEditingProduct(p => ({ ...p, category: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-orange-500 text-sm font-medium">
+              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-red-600 text-sm font-medium">
               <option value="capilar">Cuidado Capilar</option>
               <option value="maquinas">Maquinas</option>
               <option value="accesorios">Accesorios</option>
@@ -1872,7 +1814,7 @@ function AdminDashboard() {
           <div className="flex gap-3 pt-2">
             {editingProduct.id && <button onClick={() => handleDeleteProduct(editingProduct.id)} className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Eliminar</button>}
             <button onClick={() => setEditingProduct(null)} className="bg-neutral-800 text-neutral-400 px-4 py-3 rounded-xl font-bold hover:bg-neutral-700 transition-all cursor-pointer">Cancelar</button>
-            <button onClick={() => handleSaveProduct(editingProduct)} className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Guardar</button>
+            <button onClick={() => handleSaveProduct(editingProduct)} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Guardar</button>
           </div>
         </EditModal>
       )}
@@ -1887,7 +1829,7 @@ function AdminDashboard() {
             <select
               value={editingExpense.branchId || 'all'}
               onChange={e => setEditingExpense(p => ({ ...p, branchId: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-orange-500/50 outline-none transition-all cursor-pointer uppercase font-bold"
+              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600/50 outline-none transition-all cursor-pointer uppercase font-bold"
             >
               <option value="all">General (Todas las Sedes)</option>
               {branches.map(b => (
@@ -1901,7 +1843,7 @@ function AdminDashboard() {
               type="date"
               value={editingExpense.date ? editingExpense.date.split('T')[0] : ''}
               onChange={e => setEditingExpense(p => ({ ...p, date: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-orange-500/50 outline-none transition-all cursor-pointer font-bold"
+              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600/50 outline-none transition-all cursor-pointer font-bold"
             />
           </div>
           <div className="flex gap-3 pt-2">
@@ -1916,7 +1858,7 @@ function AdminDashboard() {
               if (editingExpense.id) await updateExpense(editingExpense.id, formattedExpense);
               else await addExpense(formattedExpense);
               setEditingExpense(null);
-            }} className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Guardar</button>
+            }} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Guardar</button>
           </div>
         </EditModal>
       )}
@@ -1930,7 +1872,7 @@ function AdminDashboard() {
             <select
               value={sellBranchId}
               onChange={e => setSellBranchId(e.target.value)}
-              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-orange-500/50 outline-none transition-all cursor-pointer uppercase font-bold"
+              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600/50 outline-none transition-all cursor-pointer uppercase font-bold"
             >
               {branches.map(b => (
                 <option key={b.id} value={b.id}>{b.name}</option>
@@ -1939,7 +1881,7 @@ function AdminDashboard() {
           </div>
           <div className="flex gap-3 pt-2">
             <button onClick={() => setSellingProduct(null)} className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Cancelar</button>
-            <button onClick={async () => { await sellProduct(sellingProduct.id, Number(sellingQuantity) || 1, sellBranchId); setSellingProduct(null); }} className="flex-1 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all cursor-pointer">Confirmar Venta</button>
+            <button onClick={async () => { await sellProduct(sellingProduct.id, Number(sellingQuantity) || 1, sellBranchId); setSellingProduct(null); }} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Confirmar Venta</button>
           </div>
         </EditModal>
       )}

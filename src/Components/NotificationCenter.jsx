@@ -114,10 +114,10 @@ function NotificationCenter() {
                 {/* Sin leer primero */}
                 {unread.length > 0 && (
                   <div>
-                    <p className="px-4 pt-3 pb-1 text-[9px] font-black uppercase tracking-widest text-orange-500">Sin leer ({unread.length})</p>
+                    <p className="px-4 pt-3 pb-1 text-[9px] font-black uppercase tracking-widest text-red-600">Sin leer ({unread.length})</p>
                     {unread.map(n => (
-                      <div key={n.id} className="p-4 flex items-start gap-3 bg-orange-500/3 hover:bg-white/3 transition-colors">
-                        <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-orange-500 animate-pulse" />
+                      <div key={n.id} className="p-4 flex items-start gap-3 bg-red-600/3 hover:bg-white/3 transition-colors">
+                        <span className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-red-600 animate-pulse" />
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-xs font-bold">{n.title}</p>
                           <p className="text-neutral-400 text-[11px] mt-0.5 leading-relaxed break-words">{n.message}</p>

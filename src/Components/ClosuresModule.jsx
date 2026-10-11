@@ -135,7 +135,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
               <select
                 value={selectedBranchId}
                 onChange={e => setSelectedBranchId(e.target.value)}
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-orange-500 text-sm transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-red-600 text-sm transition-all"
               >
                 <option value="all">Todas las Sedes (Cierre General)</option>
                 {branches.map(b => (
@@ -152,7 +152,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
                 value={selectedDate}
                 onChange={e => setSelectedDate(e.target.value)}
                 required
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-orange-500 text-sm transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-red-600 text-sm transition-all"
               />
             </div>
 
@@ -164,7 +164,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
                 placeholder="Ej: Mantenimiento de instalaciones, Feriado nacional, Falta de fluido eléctrico..."
                 required
                 rows={3}
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-orange-500 text-sm transition-all resize-none"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white outline-none focus:border-red-600 text-sm transition-all resize-none"
               />
             </div>
 
@@ -172,13 +172,13 @@ export default function ClosuresModule({ setConfirmDialog }) {
             {selectedDate && (
               <div className="pt-2">
                 {affectedBookings.length > 0 ? (
-                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-4 space-y-3">
+                  <div className="bg-red-600/10 border border-red-600/20 rounded-2xl p-4 space-y-3">
                     <div className="flex gap-2">
-                      <svg className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                       <div>
-                        <p className="text-orange-400 text-xs font-bold">⚠️ Se detectaron {affectedBookings.length} citas agendadas</p>
+                        <p className="text-red-500 text-xs font-bold">⚠️ Se detectaron {affectedBookings.length} citas agendadas</p>
                         <p className="text-neutral-500 text-[10px] mt-0.5">Existen citas activas programadas en este día y sede.</p>
                       </div>
                     </div>
@@ -189,7 +189,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
                         type="checkbox"
                         checked={autoCancel}
                         onChange={e => setAutoCancel(e.target.checked)}
-                        className="rounded border-white/10 text-orange-500 focus:ring-0 focus:ring-offset-0 bg-neutral-800 cursor-pointer"
+                        className="rounded border-white/10 text-red-600 focus:ring-0 focus:ring-offset-0 bg-neutral-800 cursor-pointer"
                       />
                       <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-300">
                         Auto-cancelar y notificar clientes
@@ -204,7 +204,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
                             <span className="text-white font-bold block">{b.clientName}</span>
                             <span>{b.service} ({b.workerName})</span>
                           </div>
-                          <span className="text-orange-500 font-bold font-mono">{b.time}</span>
+                          <span className="text-red-600 font-bold font-mono">{b.time}</span>
                         </div>
                       ))}
                     </div>
@@ -223,7 +223,7 @@ export default function ClosuresModule({ setConfirmDialog }) {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-40 text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-orange-500/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-40 text-white font-black text-xs uppercase tracking-widest py-4 rounded-2xl shadow-lg shadow-red-600/20 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               {submitting ? (
                 <>
@@ -270,12 +270,12 @@ export default function ClosuresModule({ setConfirmDialog }) {
                       className={`p-5 rounded-2xl border transition-all flex justify-between items-center gap-4 ${
                         isExpired 
                           ? 'bg-neutral-900/20 border-white/5 opacity-50' 
-                          : 'bg-neutral-850 border-white/10 hover:border-orange-500/30 shadow-lg shadow-black/20'
+                          : 'bg-neutral-850 border-white/10 hover:border-red-600/30 shadow-lg shadow-black/20'
                       }`}
                     >
                       <div className="space-y-1.5 flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="bg-orange-500/10 text-orange-500 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider border border-orange-500/20">
+                          <span className="bg-red-600/10 text-red-600 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider border border-red-600/20">
                             {c.branchName || 'Sede'}
                           </span>
                           {isExpired && (

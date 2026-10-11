@@ -57,7 +57,7 @@ function LoyaltyCard({ user, points, onRedeem }) {
         {/* Encabezado de la tarjeta */}
         <div className="flex justify-between items-start">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/50">BarberNike</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-white/50">Barber Kalvin</p>
             <p className="text-white/80 text-xs font-bold mt-0.5">Tarjeta de Fidelidad</p>
           </div>
           <div className="text-right">
@@ -133,7 +133,7 @@ function RedeemModal({ points, user, onClose, redeemPoints }) {
       <div className="relative bg-neutral-900 border border-white/10 rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden animate-fade-in">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-yellow-600/20 to-orange-500/10 border-b border-white/5 p-6 flex justify-between items-center">
+        <div className="bg-gradient-to-r from-yellow-600/20 to-red-600/10 border-b border-white/5 p-6 flex justify-between items-center">
           <div>
             <h3 className="text-white font-black text-xl">Canjear Puntos</h3>
             <p className="text-yellow-400 font-black text-sm mt-0.5">🏆 {points.toLocaleString('es-CO')} pts disponibles</p>
@@ -157,7 +157,7 @@ function RedeemModal({ points, user, onClose, redeemPoints }) {
                 </p>
                 <p className="text-neutral-500 text-xs">Nuevo saldo: <span className="text-white font-black">{result.newPoints} pts</span></p>
                 <button onClick={onClose}
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all cursor-pointer">
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest transition-all cursor-pointer">
                   Entendido
                 </button>
               </div>
@@ -215,7 +215,7 @@ function RedeemModal({ points, user, onClose, redeemPoints }) {
                 <button
                   onClick={handleRedeem}
                   disabled={loading}
-                  className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-neutral-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 cursor-pointer shadow-lg shadow-yellow-500/20 disabled:opacity-50 mt-2">
+                  className="w-full bg-gradient-to-r from-yellow-500 to-red-600 text-neutral-900 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 cursor-pointer shadow-lg shadow-yellow-500/20 disabled:opacity-50 mt-2">
                   {loading ? 'Procesando...' : `Canjear ${selected.name} (${selected.points} pts)`}
                 </button>
               )}
@@ -284,7 +284,7 @@ function ClientDashboard() {
     return () => clearInterval(interval);
   }, [resendCooldown]);
 
-  const forbiddenRoles = ['admin', 'barber', 'stylist', 'manicurist'];
+  const forbiddenRoles = ['admin', 'barber'];
   if (!user || forbiddenRoles.includes(user.role)) {
     return null;
   }
@@ -348,7 +348,7 @@ function ClientDashboard() {
   const STATUS_LABELS = {
     pending:     { label: 'Pendiente',  color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
     confirmed:   { label: 'Confirmada', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-    in_progress: { label: 'En proceso', color: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
+    in_progress: { label: 'En proceso', color: 'bg-red-600/10 text-red-500 border-red-600/20' },
     completed:   { label: 'Finalizada', color: 'bg-green-500/10 text-green-400 border-green-500/20' },
     cancelled:   { label: 'Cancelada',  color: 'bg-red-500/10 text-red-400 border-red-500/20' }
   };
@@ -362,9 +362,9 @@ function ClientDashboard() {
 
         {/* Banner de verificación de correo */}
         {user && !user.emailVerified && (
-          <div className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border border-orange-500/20 rounded-[2rem] p-6 flex flex-col md:flex-row items-center justify-between gap-4 animate-slide-up">
+          <div className="bg-gradient-to-r from-red-600/10 to-red-500/10 border border-red-600/20 rounded-[2rem] p-6 flex flex-col md:flex-row items-center justify-between gap-4 animate-slide-up">
             <div className="flex items-center gap-4 text-left">
-              <div className="w-12 h-12 bg-orange-500/10 rounded-2xl flex items-center justify-center border border-orange-500/20 text-orange-500 flex-shrink-0">
+              <div className="w-12 h-12 bg-red-600/10 rounded-2xl flex items-center justify-center border border-red-600/20 text-red-600 flex-shrink-0">
                 <svg className="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l8-4a2 2 0 011.642 0l8 4A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.25 0l-2.25 1.5" />
                 </svg>
@@ -378,7 +378,7 @@ function ClientDashboard() {
             </div>
             <div className="flex gap-2 w-full md:w-auto">
               <button onClick={handleVerifyEmail} disabled={checkingVerif}
-                className="flex-1 md:flex-none bg-orange-500 hover:bg-orange-600 text-white font-black text-[10px] uppercase tracking-widest px-5 py-3.5 rounded-xl transition-all cursor-pointer shadow-md shadow-orange-500/10 active:scale-95 disabled:opacity-50">
+                className="flex-1 md:flex-none bg-red-600 hover:bg-red-700 text-white font-black text-[10px] uppercase tracking-widest px-5 py-3.5 rounded-xl transition-all cursor-pointer shadow-md shadow-red-600/10 active:scale-95 disabled:opacity-50">
                 {checkingVerif ? "Verificando..." : "Ya lo verifiqué"}
               </button>
               <button onClick={handleResendVerif} disabled={resendCooldown > 0}
@@ -402,7 +402,7 @@ function ClientDashboard() {
             <div>
               <div className="flex items-center gap-2.5">
                 <h1 className="text-white text-3xl sm:text-4xl font-black">
-                  Hola, <span className="text-orange-500">{user.name}</span>
+                  Hola, <span className="text-red-600">{user.name}</span>
                 </h1>
                 <button onClick={() => setProfileOpen(true)}
                   className="bg-neutral-900 hover:bg-neutral-800 border border-white/5 hover:border-white/10 text-neutral-400 hover:text-white p-2 rounded-xl transition-all cursor-pointer shadow-md active:scale-95"
@@ -420,9 +420,9 @@ function ClientDashboard() {
               <p className="text-neutral-500 text-[10px] uppercase tracking-widest font-black">Total Reservas</p>
               <p className="text-white font-black text-2xl mt-0.5">{clientBookings.length}</p>
             </div>
-            <div className="bg-orange-500/10 border border-orange-500/20 px-6 py-3 rounded-2xl text-center shadow-md">
+            <div className="bg-red-600/10 border border-red-600/20 px-6 py-3 rounded-2xl text-center shadow-md">
               <p className="text-neutral-500 text-[10px] uppercase tracking-widest font-black">Activas</p>
-              <p className="text-orange-500 font-black text-2xl mt-0.5">{activeBookings.length}</p>
+              <p className="text-red-600 font-black text-2xl mt-0.5">{activeBookings.length}</p>
             </div>
           </div>
         </div>
@@ -491,12 +491,12 @@ function ClientDashboard() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-white font-black text-xl flex items-center gap-2">
-              <div className="w-1.5 h-5 bg-orange-500 rounded-full"></div>
+              <div className="w-1.5 h-5 bg-red-600 rounded-full"></div>
               Próximas Citas
             </h2>
             {activeBookings.length > 0 && (
               <button onClick={() => setIsNewBookingOpen(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-black text-[10px] uppercase tracking-widest px-5 py-3 rounded-xl transition-all shadow-md shadow-orange-500/10 active:scale-95 cursor-pointer">
+                className="bg-red-600 hover:bg-red-700 text-white font-black text-[10px] uppercase tracking-widest px-5 py-3 rounded-xl transition-all shadow-md shadow-red-600/10 active:scale-95 cursor-pointer">
                 Nueva Cita
               </button>
             )}
@@ -504,8 +504,8 @@ function ClientDashboard() {
 
           {activeBookings.length === 0 ? (
             <div className="bg-neutral-900/40 border border-white/5 rounded-[2.5rem] p-12 text-center flex flex-col items-center space-y-6">
-              <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center border border-orange-500/20 shadow-md">
-                <svg className="w-8 h-8 text-orange-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-16 h-16 bg-red-600/10 rounded-2xl flex items-center justify-center border border-red-600/20 shadow-md">
+                <svg className="w-8 h-8 text-red-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
@@ -516,7 +516,7 @@ function ClientDashboard() {
                 </p>
               </div>
               <button onClick={() => setIsNewBookingOpen(true)}
-                className="bg-orange-500 hover:bg-orange-600 text-white font-black text-xs uppercase tracking-widest px-8 py-4 rounded-2xl transition-all shadow-lg shadow-orange-500/25 active:scale-95 cursor-pointer">
+                className="bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-widest px-8 py-4 rounded-2xl transition-all shadow-lg shadow-red-600/25 active:scale-95 cursor-pointer">
                 Agendar Nueva Cita
               </button>
             </div>
@@ -529,7 +529,7 @@ function ClientDashboard() {
 
                 return (
                   <div key={bk.id} className="bg-neutral-900 border border-white/5 rounded-3xl p-6 flex flex-col justify-between gap-6 shadow-lg hover:border-white/10 transition-all relative overflow-hidden group">
-                    <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${isMen ? 'from-orange-500/5' : 'from-violet-500/5'} blur-2xl rounded-full`} />
+                    <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${isMen ? 'from-red-600/5' : 'from-violet-500/5'} blur-2xl rounded-full`} />
 
                     <div className="space-y-4">
                       <div className="flex justify-between items-start gap-4">

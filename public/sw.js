@@ -1,4 +1,4 @@
-const CACHE_NAME = 'barbernike-v1';
+const CACHE_NAME = 'Barber Kalvin-v1';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

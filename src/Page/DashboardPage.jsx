@@ -26,10 +26,10 @@ function DashboardPage() {
 
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
-  const workerRoles = ['barber', 'stylist', 'manicurist'];
+  const workerRoles = ['barber'];
 
   return (
-    <div className="min-h-screen bg-neutral-950 overflow-x-hidden selection:bg-orange-500 selection:text-white pt-[76px]">
+    <div className="min-h-screen bg-neutral-950 overflow-x-hidden selection:bg-red-600 selection:text-white pt-[76px]">
       <Header onBookingClick={() => setIsBookingOpen(true)} />
       {user.role === 'admin' ? (
         <AdminDashboard />

@@ -28,7 +28,7 @@ function buildWhatsAppUrl(selection, user, notes, editBooking) {
   const timeStr = selection.time || editBooking?.time;
 
   const msg =
-    `*Nueva Reserva - BarberNike Shop*\n\n` +
+    `*Nueva Reserva - Barber Kalvin Shop*\n\n` +
     `*Cliente:* ${user?.name}\n` +
     `*Telefono:* ${user?.phone || 'N/A'}\n` +
     `*Servicio:* ${serviceName}\n` +
@@ -64,7 +64,7 @@ function buildGoogleCalendarUrl(selection, editBooking) {
     };
 
     const dates = `${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}`;
-    const text = encodeURIComponent(`Cita en BarberNike: ${serviceName}`);
+    const text = encodeURIComponent(`Cita en Barber Kalvin: ${serviceName}`);
     const details = encodeURIComponent(`Especialista: ${workerName}\nServicio: ${serviceName}\nSede: ${branchName}`);
     const location = encodeURIComponent(branchAddress || branchName);
 
@@ -100,13 +100,13 @@ function buildIcsDataUri(selection, editBooking) {
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//BarberNike//NONSGML Citas//ES',
+      'PRODID:-//Barber Kalvin//NONSGML Citas//ES',
       'BEGIN:VEVENT',
-      `UID:${Date.now()}@barbernike.com`,
+      `UID:${Date.now()}@barberkalvin.com`,
       `DTSTAMP:${formatIcsDate(new Date())}`,
       `DTSTART:${formatIcsDate(startDate)}`,
       `DTEND:${formatIcsDate(endDate)}`,
-      `SUMMARY:Cita en BarberNike: ${serviceName}`,
+      `SUMMARY:Cita en Barber Kalvin: ${serviceName}`,
       `DESCRIPTION:Especialista: ${workerName}\\nServicio: ${serviceName}\\nSede: ${branchName}`,
       `LOCATION:${branchAddress || branchName}`,
       'END:VEVENT',
@@ -137,8 +137,8 @@ function SlotButton({ time, status, selected, onClick }) {
       onClick={onClick}
       className={`${base} cursor-pointer ${
         selected
-          ? 'bg-orange-500 text-white shadow-[0_5px_15px_rgba(249,115,22,0.4)]'
-          : 'bg-neutral-800/50 border border-white/5 text-neutral-400 hover:border-orange-500/50 hover:text-white'
+          ? 'bg-red-600 text-white shadow-[0_5px_15px_rgba(249,115,22,0.4)]'
+          : 'bg-neutral-800/50 border border-white/5 text-neutral-400 hover:border-red-600/50 hover:text-white'
       }`}
     >
       {time}
@@ -212,7 +212,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
 
   return (
     <div className="space-y-6 animate-slide-up text-center max-w-md mx-auto">
-      <div className="mx-auto w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+      <div className="mx-auto w-14 h-14 rounded-2xl bg-red-600/10 border border-red-600/20 flex items-center justify-center text-red-600">
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V8a4 4 0 10-8 0v3m-2 0h12a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1v-8a1 1 0 011-1z" />
         </svg>
@@ -250,7 +250,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
                 placeholder="Ej: Juan Pérez"
                 required
                 disabled={loading}
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none text-sm transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none text-sm transition-all"
               />
             </div>
             <div className="space-y-1.5">
@@ -261,7 +261,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
                 onChange={e => setPhone(e.target.value)}
                 placeholder="Ej: 3001234567"
                 disabled={loading}
-                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none text-sm transition-all"
+                className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none text-sm transition-all"
               />
             </div>
           </>
@@ -276,7 +276,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
             placeholder="correo@ejemplo.com"
             required
             disabled={loading}
-            className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none text-sm transition-all"
+            className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none text-sm transition-all"
           />
         </div>
 
@@ -289,7 +289,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
             placeholder="••••••••"
             required
             disabled={loading}
-            className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-orange-500 outline-none text-sm transition-all"
+            className="w-full bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-white placeholder:text-neutral-600 focus:border-red-600 outline-none text-sm transition-all"
           />
         </div>
 
@@ -316,7 +316,7 @@ function AuthRequiredStep({ accentBg, accentShadow, onBack }) {
         <button
           type="button"
           onClick={() => { setIsLogin(!isLogin); setError(''); }}
-          className="text-orange-500 hover:text-orange-400 text-xs font-bold transition-colors cursor-pointer"
+          className="text-red-600 hover:text-red-500 text-xs font-bold transition-colors cursor-pointer"
         >
           {isLogin ? '¿No tienes una cuenta? Regístrate gratis' : '¿Ya tienes una cuenta? Inicia sesión'}
         </button>
@@ -386,7 +386,7 @@ function EmailVerificationStep({ accentBg, accentShadow, onBack }) {
 
   return (
     <div className="space-y-6 animate-slide-up text-center max-w-md mx-auto">
-      <div className="mx-auto w-14 h-14 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500">
+      <div className="mx-auto w-14 h-14 rounded-2xl bg-red-600/10 border border-red-600/20 flex items-center justify-center text-red-600">
         <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l8-4a2 2 0 011.642 0l8 4A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.25 0l-2.25 1.5" />
         </svg>
@@ -449,7 +449,7 @@ function EmailVerificationStep({ accentBg, accentShadow, onBack }) {
 function BookingModal({ isOpen, onClose, preselectedService = null, editBooking = null }) {
   const { user, isAuthenticated } = useAuth();
   const { addBooking, updateBooking, getClientDailyBookingCount, MAX_BOOKINGS_PER_DAY } = useBookings();
-  const { barbers, stylists, manicurists, menServices, womenServices, branches, closures } = useApp();
+  const { barbers = [], menServices = [], branches = [], closures = [] } = useApp();
 
   const [category, setCategory] = useState(null); // 'men' | 'women'
   const [step, setStep] = useState(0); // 0=branch, 1=cat, 2=worker, 3=service, 4=datetime, 5=confirm, 7=success
@@ -469,9 +469,9 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
   );
 
   const isMen = category !== 'women';
-  const accent = isMen ? 'text-orange-500' : 'text-violet-400';
-  const accentBg = isMen ? 'bg-orange-500' : 'bg-gradient-to-r from-violet-700 to-indigo-700';
-  const accentShadow = isMen ? 'shadow-orange-500/30' : 'shadow-violet-600/30';
+  const accent = isMen ? 'text-red-600' : 'text-violet-400';
+  const accentBg = isMen ? 'bg-red-600' : 'bg-gradient-to-r from-violet-700 to-indigo-700';
+  const accentShadow = isMen ? 'shadow-red-600/30' : 'shadow-violet-600/30';
 
   const reset = () => {
     setStep(0);
@@ -487,12 +487,10 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
   useEffect(() => {
     if (isOpen) {
       if (editBooking) {
-        const allW = [...barbers, ...stylists, ...manicurists];
-        const foundWorker = allW.find(w => w.id === editBooking.workerId);
-        const foundBranch = branches.find(b => b.id === editBooking.branchId) || branches.find(b => b.id === (foundWorker?.branchId || 'branch-1'));
-        const allS = [...menServices, ...womenServices];
-        const foundService = allS.find(s => s.name === editBooking.service);
-        setCategory(editBooking.category);
+        const foundWorker = (barbers || []).find(w => w.id === editBooking.workerId);
+        const foundBranch = (branches || []).find(b => b.id === editBooking.branchId) || (branches || []).find(b => b.id === (foundWorker?.branchId || 'branch-1'));
+        const foundService = (menServices || []).find(s => s.name === editBooking.service);
+        setCategory('men');
         setSelection({
           branch: foundBranch || null,
           worker: foundWorker || null,
@@ -503,7 +501,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
         setNotes(editBooking.notes || '');
         setStep(4);
       } else if (preselectedService) {
-        setCategory(preselectedService.category === 'men' ? 'men' : 'women');
+        setCategory('men');
         setSelection({
           branch: null,
           worker: null,
@@ -516,10 +514,10 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
         reset();
       }
     }
-  }, [isOpen, preselectedService, editBooking, barbers.length, stylists.length, manicurists.length, branches.length]);
+  }, [isOpen, preselectedService, editBooking, (barbers || []).length, (branches || []).length]);
   /* eslint-enable react-hooks/set-state-in-effect, react-hooks/exhaustive-deps */
   if (!isOpen) return null;
-  const availableWorkers = (category === 'men' ? barbers : [...stylists, ...manicurists]).filter(w => {
+  const availableWorkers = (barbers || []).filter(w => {
     // Restriccion de sede
     if (selection.branch && w.branchId !== selection.branch.id) {
       return false;
@@ -537,15 +535,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
     return true;
   });
 
-  const availableServices = isMen
-    ? menServices
-    : (selection.worker?.role === 'manicurist'
-        ? womenServices.filter(s => s.workerRoles?.includes('manicurist'))
-        : womenServices.filter(s => s.workerRoles?.includes('stylist') || !s.workerRoles));
-
-  const groupedWomenServices = Object.entries(SUBCATEGORY_LABELS)
-    .map(([key, label]) => ({ key, label, items: availableServices.filter(s => s.subcategory === key) }))
-    .filter(g => g.items.length > 0);
+  const availableServices = menServices || [];
 
   const handleClose = () => { reset(); onClose(); };
 
@@ -725,7 +715,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
           {step === 0 && (
             <div className="space-y-6 animate-slide-up">
               <div className="text-center space-y-2 mb-8">
-                <h3 className="text-white font-black text-2xl">¿En qué <span className="text-orange-500">sede</span> deseas tu cita?</h3>
+                <h3 className="text-white font-black text-2xl">¿En qué <span className="text-red-600">sede</span> deseas tu cita?</h3>
                 <p className="text-neutral-500 text-sm">Selecciona una de nuestras sucursales</p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -734,84 +724,23 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                     key={b.id}
                     onClick={() => {
                       setSelection(p => ({ ...p, branch: b }));
-                      if (preselectedService) {
-                        setStep(2);
-                      } else {
-                        setStep(1);
-                      }
+                      setCategory('men');
+                      setStep(2);
                     }}
-                    className="group p-8 rounded-[2rem] border border-white/5 bg-neutral-800/30 hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer text-center space-y-4"
+                    className="group p-8 rounded-[2rem] border border-white/5 bg-neutral-800/30 hover:border-red-600/50 hover:bg-red-600/5 transition-all cursor-pointer text-center space-y-4"
                   >
-                    <div className="text-neutral-400 font-black text-xs uppercase tracking-widest group-hover:text-orange-500">Sucursal</div>
+                    <div className="text-neutral-400 font-black text-xs uppercase tracking-widest group-hover:text-red-600">Sucursal</div>
                     <div>
-                      <p className="text-white font-black text-xl group-hover:text-orange-500 transition-colors">{b.name}</p>
+                      <p className="text-white font-black text-xl group-hover:text-red-600 transition-colors">{b.name}</p>
                       <p className="text-neutral-500 text-sm mt-1">{b.address}</p>
                       {b.phone && <p className="text-neutral-600 text-xs mt-1">Tel: {b.phone}</p>}
                     </div>
-                    <span className="inline-block bg-orange-500/10 text-orange-500 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
+                    <span className="inline-block bg-red-600/10 text-red-600 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
                       Seleccionar
                     </span>
                   </button>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* ─── STEP 1: Category ─────────────────────────── */}
-          {step === 1 && (
-            <div className="space-y-6 animate-slide-up">
-              <div className="text-center space-y-2 mb-8">
-                <h3 className="text-white font-black text-2xl">¿Que tipo de <span className="text-orange-500">servicio</span> buscas?</h3>
-                <p className="text-neutral-500 text-sm">Selecciona la categoria que mejor te describe</p>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <button
-                  onClick={() => { setCategory('men'); setStep(2); }}
-                  className="group p-8 rounded-[2rem] border border-white/5 bg-neutral-800/30 hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer text-center space-y-4"
-                >
-                  <div className="text-neutral-400 font-black text-xs uppercase tracking-widest group-hover:text-orange-500">Seccion Masculina</div>
-                  <div>
-                    <p className="text-white font-black text-xl group-hover:text-orange-500 transition-colors">Barberia</p>
-                    <p className="text-neutral-500 text-sm mt-1">Cortes, fade, barba y mas</p>
-                  </div>
-                  <span className="inline-block bg-orange-500/10 text-orange-500 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
-                    {barbers.filter(w => !selection.branch || w.branchId === selection.branch.id).length} barberos disponibles
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => { setCategory('women'); setStep(2); }}
-                  className="group p-8 rounded-[2rem] border border-white/5 bg-neutral-800/30 hover:border-purple-500/50 hover:bg-purple-500/5 transition-all cursor-pointer text-center space-y-4"
-                >
-                  <div className="text-neutral-400 font-black text-xs uppercase tracking-widest group-hover:text-purple-400">Seccion Femenina</div>
-                  <div>
-                    <p className="text-white font-black text-xl group-hover:text-purple-400 transition-colors">Salon Nike</p>
-                    <p className="text-neutral-500 text-sm mt-1">Cabello, color, unas y mas</p>
-                  </div>
-                  <span className="inline-block bg-purple-500/10 text-purple-400 text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest">
-                    {(stylists.filter(w => !selection.branch || w.branchId === selection.branch.id).length + manicurists.filter(w => !selection.branch || w.branchId === selection.branch.id).length)} especialistas
-                  </span>
-                </button>
-              </div>
-
-              {!isAuthenticated && (
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-4 flex items-start gap-3">
-                  <svg className="h-5 w-5 text-orange-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <p className="text-orange-400 text-sm font-bold">Reserva sin complicaciones</p>
-                    <p className="text-neutral-500 text-xs mt-1">
-                      Puedes seleccionar tu sede, especialista, servicio y horario preferido. Al finalizar, podrás iniciar sesión o registrarte rápidamente sin perder tu selección.
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              <button onClick={() => { setStep(0); setCategory(null); }} className="text-neutral-500 hover:text-white text-sm font-bold transition-colors cursor-pointer flex items-center gap-2 mt-4">
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                Cambiar Sede
-              </button>
             </div>
           )}
 
@@ -823,12 +752,12 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
               </h3>
 
               {/* Aviso si el usuario autenticado es staff */}
-              {user && ['barber','stylist','manicurist'].includes(user.role) && (
-                <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-3 flex items-center gap-3">
-                  <svg className="h-5 w-5 text-orange-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {user && ['barber'].includes(user.role) && (
+                <div className="bg-red-600/10 border border-red-600/20 rounded-2xl p-3 flex items-center gap-3">
+                  <svg className="h-5 w-5 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-orange-400 text-xs font-bold">No puedes agendar una cita contigo mismo. Selecciona otro especialista.</p>
+                  <p className="text-red-500 text-xs font-bold">No puedes agendar una cita contigo mismo. Selecciona otro especialista.</p>
                 </div>
               )}
 
@@ -850,17 +779,11 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                 </div>
               )}
               <button
-                onClick={() => {
-                  if (preselectedService) {
-                    setStep(0);
-                  } else {
-                    setStep(1);
-                  }
-                }}
+                onClick={() => setStep(0)}
                 className="text-neutral-500 hover:text-white text-sm font-bold transition-colors cursor-pointer flex items-center gap-2"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                {preselectedService ? 'Cambiar sede' : 'Cambiar categoria'}
+                Cambiar sede
               </button>
             </div>
           )}
@@ -872,49 +795,23 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                 Selecciona el <span className={accent}>Servicio</span>
               </h3>
 
-              {isMen ? (
-                <div className="grid grid-cols-1 gap-4 max-h-[420px] overflow-y-auto pr-1">
+              <div className="grid grid-cols-1 gap-4 max-h-[420px] overflow-y-auto pr-1">
                   {availableServices.map(s => (
                     <button key={s.id}
                       onClick={() => continueAfterService(s)}
-                      className={`p-5 rounded-[2rem] border transition-all text-left cursor-pointer group ${selection.service?.id === s.id ? 'border-orange-500 bg-orange-500/10' : 'border-white/5 bg-neutral-800/30 hover:border-orange-500/30'}`}
+                      className="p-5 rounded-[2rem] border transition-all text-left cursor-pointer group border-white/5 bg-neutral-800/30 hover:border-red-600/30"
                     >
                       <div className="flex justify-between items-start gap-4">
                         <div className="flex-1">
-                          <p className="text-white font-black text-lg group-hover:text-orange-500 transition-colors">{s.name}</p>
+                          <p className="text-white font-black text-lg group-hover:text-red-600 transition-colors">{s.name}</p>
                           <p className="text-neutral-500 text-sm mt-1 line-clamp-2">{s.description}</p>
                           <span className="inline-block bg-white/5 text-neutral-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest mt-3">{s.duration} min</span>
                         </div>
-                        <p className="text-orange-500 font-black text-2xl flex-shrink-0">{formatCOP(s.price)}</p>
+                        <p className="text-red-600 font-black text-2xl flex-shrink-0">{formatCOP(s.price)}</p>
                       </div>
                     </button>
                   ))}
                 </div>
-              ) : (
-                <div className="space-y-6 max-h-[420px] overflow-y-auto pr-1">
-                  {groupedWomenServices.map(group => (
-                    <div key={group.key}>
-                      <p className="text-neutral-500 text-[10px] font-black uppercase tracking-widest mb-3">{group.label}</p>
-                      <div className="space-y-3">
-                        {group.items.map(s => (
-                          <button key={s.id}
-                            onClick={() => continueAfterService(s)}
-                            className={`w-full p-5 rounded-2xl border transition-all text-left cursor-pointer group ${selection.service?.id === s.id ? 'border-purple-500 bg-purple-500/10' : 'border-white/5 bg-neutral-800/30 hover:border-purple-500/30'}`}
-                          >
-                            <div className="flex justify-between items-center gap-4">
-                              <div>
-                                <p className="text-white font-bold group-hover:text-purple-400 transition-colors">{s.name}</p>
-                                <p className="text-neutral-600 text-xs mt-0.5">{s.duration} min</p>
-                              </div>
-                              <p className="text-purple-400 font-black text-xl">{formatCOP(s.price)}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
 
               <button onClick={() => setStep(2)} className="text-neutral-500 hover:text-white text-sm font-bold transition-colors cursor-pointer flex items-center gap-2">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
@@ -931,8 +828,8 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
               <div>
                 <label className="text-neutral-500 text-[10px] font-black uppercase tracking-widest mb-3 block">Elige un dia</label>
                 {isClosedForToday && (
-                  <div className="bg-orange-500/10 border border-orange-500/20 rounded-2xl p-3 mb-3">
-                    <p className="text-orange-400 text-xs font-bold flex items-center gap-2">
+                  <div className="bg-red-600/10 border border-red-600/20 rounded-2xl p-3 mb-3">
+                    <p className="text-red-500 text-xs font-bold flex items-center gap-2">
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
@@ -949,7 +846,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                     if (val < minDate) val = minDate;
                     setSelection(p => ({ ...p, date: val, time: '' }));
                   }}
-                  className="w-full bg-neutral-800/50 border border-white/5 rounded-2xl p-4 text-white focus:border-orange-500 outline-none transition-all"
+                  className="w-full bg-neutral-800/50 border border-white/5 rounded-2xl p-4 text-white focus:border-red-600 outline-none transition-all"
                 />
               </div>
 
@@ -1062,7 +959,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-5 text-center space-y-3">
                   <p className="text-red-400 font-bold">Debes iniciar sesion para confirmar</p>
                   <div className="flex gap-3 justify-center">
-                    <Link to="/login" onClick={handleClose} className="bg-orange-500 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all">
+                    <Link to="/login" onClick={handleClose} className="bg-red-600 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-red-700 transition-all">
                       Iniciar sesion
                     </Link>
                     <Link to="/register" onClick={handleClose} className="bg-neutral-800 text-white px-6 py-2 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-neutral-700 transition-all">
@@ -1124,7 +1021,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   placeholder="Detalles sobre algun corte especial, alergia, preferencia de bebida, etc..."
-                  className="w-full bg-neutral-800/50 border border-white/5 rounded-2xl p-4 text-white text-sm focus:border-orange-500 outline-none transition-all resize-none h-20"
+                  className="w-full bg-neutral-800/50 border border-white/5 rounded-2xl p-4 text-white text-sm focus:border-red-600 outline-none transition-all resize-none h-20"
                 />
               </div>
 
@@ -1196,7 +1093,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
 
                 {/* Card de Calendario Recordatorio */}
                 <div className="bg-neutral-900 border border-white/5 rounded-3xl p-5 space-y-4">
-                  <div className="flex items-center gap-3 justify-center text-orange-500 font-bold text-xs uppercase tracking-widest">
+                  <div className="flex items-center gap-3 justify-center text-red-600 font-bold text-xs uppercase tracking-widest">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
@@ -1207,19 +1104,19 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                       href={buildGoogleCalendarUrl(selection, editBooking)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-white/5 hover:bg-white/10 border border-white/10 text-white py-4 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-orange-500/30"
+                      className="bg-white/5 hover:bg-white/10 border border-white/10 text-white py-4 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-red-600/30"
                     >
-                      <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="currentColor">
+                      <svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z" />
                       </svg>
                       Google Calendar
                     </a>
                     <a
                       href={buildIcsDataUri(selection, editBooking)}
-                      download={`cita-barbernike-${selection.date || editBooking?.date || 'reserva'}.ics`}
-                      className="bg-white/5 hover:bg-white/10 border border-white/10 text-white py-4 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-orange-500/30"
+                      download={`cita-barberkalvin-${selection.date || editBooking?.date || 'reserva'}.ics`}
+                      className="bg-white/5 hover:bg-white/10 border border-white/10 text-white py-4 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer hover:border-red-600/30"
                     >
-                      <svg className="w-4 h-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                       </svg>
                       Apple / iCal

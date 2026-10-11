@@ -8,15 +8,13 @@ import ProfileModal from './ProfileModal';
 const STATUS_CONFIG = {
   pending:     { label: 'Pendiente',  color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20', dot: 'bg-yellow-400' },
   confirmed:   { label: 'Confirmada', color: 'text-blue-400',   bg: 'bg-blue-500/10 border-blue-500/20',     dot: 'bg-blue-400' },
-  in_progress: { label: 'En proceso', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20', dot: 'bg-orange-400' },
+  in_progress: { label: 'En proceso', color: 'text-red-500', bg: 'bg-red-600/10 border-red-600/20', dot: 'bg-red-500' },
   completed:   { label: 'Finalizada', color: 'text-green-400',  bg: 'bg-green-500/10 border-green-500/20',   dot: 'bg-green-400' },
   cancelled:   { label: 'Cancelada',  color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20',       dot: 'bg-red-400' },
 };
 
 const ROLE_CONFIG = {
-  barber:     { label: 'Barbero',     accent: 'orange', gradient: 'from-orange-600 to-amber-500' },
-  stylist:    { label: 'Estilista',   accent: 'purple', gradient: 'from-purple-600 to-violet-500' },
-  manicurist: { label: 'Manicurista', accent: 'pink',   gradient: 'from-pink-600 to-rose-500' },
+  barber: { label: 'Barbero', accent: 'red', gradient: 'from-red-700 to-red-500' },
 };
 
 function getTodayStr() {
@@ -90,7 +88,7 @@ const cleanPhone = (phoneStr) => {
 const getReminderLink = (bk, clientPhoneStr) => {
   const formattedPhone = cleanPhone(clientPhoneStr);
   if (!formattedPhone) return null;
-  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *BarberNike (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
+  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 };
 
@@ -148,7 +146,7 @@ function WorkerDashboard() {
     [myBookings, todayStr]
   );
 
-  const workerRoles = ['barber', 'stylist', 'manicurist'];
+  const workerRoles = ['barber'];
   if (!user || !workerRoles.includes(user.role)) {
     return (
       <div className="min-h-screen bg-neutral-950 flex items-center justify-center p-4">
@@ -199,14 +197,8 @@ function WorkerDashboard() {
     );
   }
 
-  const accentMap = { barber: 'orange', stylist: 'purple', manicurist: 'pink' };
-  const accent = accentMap[user?.role] || 'orange';
-  const accentColorMap = {
-    orange: { border: 'border-orange-500/30', dot: 'bg-orange-500', badge: 'bg-orange-500/10 text-orange-400 border-orange-500/20', glow: 'from-orange-500/8' },
-    purple: { border: 'border-purple-500/30', dot: 'bg-purple-500', badge: 'bg-purple-500/10 text-purple-400 border-purple-500/20', glow: 'from-purple-500/8' },
-    pink:   { border: 'border-pink-500/30',   dot: 'bg-pink-500',   badge: 'bg-pink-500/10 text-pink-400 border-pink-500/20',     glow: 'from-pink-500/8' },
-  };
-  const ac = accentColorMap[accent];
+  const accent = 'red';
+  const ac = { border: 'border-red-600/30', dot: 'bg-red-600', badge: 'bg-red-600/10 text-red-500 border-red-600/20', glow: 'from-red-600/8' };
 
   return (
     <div className="min-h-screen bg-neutral-950">
@@ -257,7 +249,7 @@ function WorkerDashboard() {
             <StatCard label="Hoy" value={stats.today} colorClass="text-white" />
             <StatCard label="Proximas" value={stats.upcoming} colorClass="text-white" />
             <StatCard label="Finalizadas" value={stats.completed} colorClass="text-green-400" />
-            <StatCard label="Ingresos" value={formatCOP(stats.revenue)} colorClass="text-orange-400" />
+            <StatCard label="Ingresos" value={formatCOP(stats.revenue)} colorClass="text-red-500" />
           </div>
         </div>
       </div>
@@ -303,7 +295,7 @@ function WorkerDashboard() {
                 <div className="text-right">
                   <p className="text-white font-black text-4xl tabular-nums tracking-tight">{nextBooking.time}</p>
                   <p className="text-neutral-500 text-sm">{nextBooking.date}</p>
-                  <p className="text-orange-400 font-bold text-sm mt-1">{formatCOP(nextBooking.servicePrice)}</p>
+                  <p className="text-red-500 font-bold text-sm mt-1">{formatCOP(nextBooking.servicePrice)}</p>
                 </div>
               </div>
             </div>
@@ -450,7 +442,7 @@ function WorkerDashboard() {
                           <div className="grid grid-cols-2 gap-2">
                             {[
                               { s: 'confirmed',   label: 'Confirmar',   cls: 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white hover:border-blue-500' },
-                              { s: 'in_progress', label: 'Iniciar',     cls: 'bg-orange-500/10 border-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-white hover:border-orange-500' },
+                              { s: 'in_progress', label: 'Iniciar',     cls: 'bg-red-600/10 border-red-600/20 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-600' },
                               { s: 'completed',   label: 'Finalizar',   cls: 'bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500 hover:text-white hover:border-green-500' },
                               { s: 'cancelled',   label: 'Cancelar',    cls: 'bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500' },
                               { s: 'noshow',      label: 'No Asistió',  cls: 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700 hover:text-white' },

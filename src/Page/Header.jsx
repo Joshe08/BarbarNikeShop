@@ -139,7 +139,7 @@ function Header({ onBookingClick }) {
     >
       {/* Logo */}
       <Link to="/" className="text-white text-xl font-black tracking-tight hover:opacity-80 transition-opacity z-[110]">
-        Barber<span className="text-orange-500">Nike</span>
+        <img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span>
       </Link>
 
       {/* Desktop Navigation */}
@@ -150,7 +150,7 @@ function Header({ onBookingClick }) {
               key={item.label}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
-              className="text-white text-sm font-medium tracking-wide hover:text-orange-500 transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-orange-500 after:transition-all after:duration-300 hover:after:w-full"
+              className="text-white text-sm font-medium tracking-wide hover:text-red-600 transition-colors duration-300 relative after:content-[''] after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-red-600 after:transition-all after:duration-300 hover:after:w-full"
             >
               {item.label}
             </a>
@@ -166,7 +166,7 @@ function Header({ onBookingClick }) {
               <NotificationCenter />
 
               {/* Enlace al panel de control (Dashboard) o sección de mis citas */}
-              <Link to="/dashboard" className="bg-orange-500/10 hover:bg-orange-500 hover:text-white text-orange-500 border border-orange-500/10 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer">
+              <Link to="/dashboard" className="bg-red-600/10 hover:bg-red-600 hover:text-white text-red-600 border border-red-600/10 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all cursor-pointer">
                 {user.role === 'client' ? 'Mis Citas' : 'Panel'}
               </Link>
 
@@ -181,7 +181,7 @@ function Header({ onBookingClick }) {
                 </div>
                 <div>
                   <p className="text-white text-sm font-bold leading-none">{user.name}</p>
-                  <p className="text-orange-500 text-[10px] font-black uppercase tracking-widest">{user.role}</p>
+                  <p className="text-red-600 text-[10px] font-black uppercase tracking-widest">{user.role}</p>
                 </div>
               </div>
               
@@ -196,7 +196,7 @@ function Header({ onBookingClick }) {
           ) : (
             <>
               <div onClick={onBookingClick}><ReservaButton /></div>
-              <Link to="/login" className="bg-white hover:bg-orange-500 text-black hover:text-white font-bold px-6 py-2.5 rounded-full transition-all text-sm">
+              <Link to="/login" className="bg-white hover:bg-red-600 text-black hover:text-white font-bold px-6 py-2.5 rounded-full transition-all text-sm">
                 Login
               </Link>
             </>
@@ -224,11 +224,11 @@ function Header({ onBookingClick }) {
         
         <div className={`absolute top-0 right-0 w-[320px] sm:w-[350px] h-[100dvh] bg-[#0f172a] flex flex-col shadow-[-10px_0_50px_rgba(0,0,0,0.5)] transition-transform duration-500 ease-out border-l border-white/5 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
           <div className="p-8 bg-[#0a0f1d] border-b border-white/5 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <div className="flex justify-between items-start relative z-10">
               <div>
-                <h2 className="text-white text-3xl font-black tracking-tighter">Barber<span className="text-orange-500">Nike</span></h2>
-                <p className="text-orange-500/60 text-[10px] uppercase tracking-[0.3em] font-black mt-1">The Premium Experience</p>
+                <h2 className="text-white text-3xl font-black tracking-tighter"><img src="/logo.png" alt="Barber Kalvin Logo" className="h-10 w-10 object-contain inline-block mr-2" />Barber<span className="text-red-600">Kalvin</span></h2>
+                <p className="text-red-600/60 text-[10px] uppercase tracking-[0.3em] font-black mt-1">The Premium Experience</p>
               </div>
               <button onClick={() => setIsMenuOpen(false)} className="text-neutral-500 hover:text-white transition-colors p-2 -mr-2">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -250,7 +250,7 @@ function Header({ onBookingClick }) {
                   className="flex items-center gap-5 px-4 py-4 rounded-2xl hover:bg-white/5 group transition-all duration-300 border border-transparent hover:border-white/5"
                 >
                   {/* Cuadrado con icono SVG dinámico (reemplaza las siglas IN, CT, RS susceptibles a traduccion) */}
-                  <div className="w-12 h-12 rounded-xl bg-neutral-900 border border-white/5 flex items-center justify-center text-neutral-500 group-hover:bg-orange-500/10 group-hover:text-orange-500 group-hover:border-orange-500/20 transition-all shadow-inner">
+                  <div className="w-12 h-12 rounded-xl bg-neutral-900 border border-white/5 flex items-center justify-center text-neutral-500 group-hover:bg-red-600/10 group-hover:text-red-600 group-hover:border-red-600/20 transition-all shadow-inner">
                     {item.icon}
                   </div>
                   <span className="text-neutral-300 font-bold text-lg group-hover:text-white group-hover:translate-x-1 transition-all">
@@ -265,15 +265,15 @@ function Header({ onBookingClick }) {
               <Link 
                 to="/dashboard" 
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-5 px-4 py-4 rounded-2xl hover:bg-orange-500/5 group transition-all duration-300 border border-transparent hover:border-orange-500/10"
+                className="flex items-center gap-5 px-4 py-4 rounded-2xl hover:bg-red-600/5 group transition-all duration-300 border border-transparent hover:border-red-600/10"
               >
                 {/* Cuadrado con icono SVG de panel de control */}
-                <div className="w-12 h-12 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-lg shadow-orange-500/5">
+                <div className="w-12 h-12 rounded-xl bg-red-600/10 border border-red-600/20 flex items-center justify-center text-red-600 group-hover:bg-red-600 group-hover:text-white transition-all shadow-lg shadow-red-600/5">
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span className="text-orange-500 font-bold text-lg group-hover:text-orange-400 group-hover:translate-x-1 transition-all">
+                <span className="text-red-600 font-bold text-lg group-hover:text-red-500 group-hover:translate-x-1 transition-all">
                   {user.role === 'client' ? 'Mis Citas' : 'Dashboard'}
                 </span>
               </Link>
@@ -295,7 +295,7 @@ function Header({ onBookingClick }) {
                 {/* Tarjeta de presentacion del usuario */}
                 <div className="flex items-center gap-4 p-4 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md shadow-xl">
                   {/* Foto de perfil circular o fallback a la inicial (ambos protegidos contra traductores de navegador) */}
-                  <div className="w-12 h-12 rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-orange-500/20 flex-shrink-0 notranslate" translate="no">
+                  <div className="w-12 h-12 rounded-2xl overflow-hidden border border-white/10 bg-neutral-900 flex items-center justify-center text-white font-black text-xl shadow-lg shadow-red-600/20 flex-shrink-0 notranslate" translate="no">
                     {user?.image ? (
                       <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
                     ) : (
@@ -304,7 +304,7 @@ function Header({ onBookingClick }) {
                   </div>
                   <div className="min-w-0">
                     <p className="text-white text-base font-bold truncate">{user.name}</p>
-                    <p className="text-orange-500 text-[10px] font-black uppercase tracking-widest">{user.role}</p>
+                    <p className="text-red-600 text-[10px] font-black uppercase tracking-widest">{user.role}</p>
                   </div>
                 </div>
                 
@@ -320,7 +320,7 @@ function Header({ onBookingClick }) {
               <Link 
                 to="/login" 
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-center gap-3 w-full bg-white text-black py-5 rounded-2xl font-black text-sm tracking-widest hover:bg-orange-500 hover:text-white transition-all active:scale-95 shadow-2xl shadow-white/5"
+                className="flex items-center justify-center gap-3 w-full bg-white text-black py-5 rounded-2xl font-black text-sm tracking-widest hover:bg-red-600 hover:text-white transition-all active:scale-95 shadow-2xl shadow-white/5"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
