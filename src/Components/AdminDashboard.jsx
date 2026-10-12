@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useBookings } from '../context/BookingContext';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -30,16 +30,6 @@ const DAY_LABELS = {
   sunday: 'Domingo'
 };
 
-const FALLBACK_PRODUCTS = [
-  { name: 'Cera Mate Premium', price: 35000, stock: 20, description: 'Control extremo con acabado mate. Fijacion fuerte todo el dia sin brillo.', category: 'capilar', image: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Pomada Brillante', price: 32000, stock: 15, description: 'Acabado brillante con fijacion media. Ideal para looks clasicos y retro.', category: 'capilar', image: 'https://images.unsplash.com/photo-1621607512022-6aecc4fed814?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Shampoo Profesional', price: 28000, stock: 30, description: 'Limpieza profunda con formula sin sulfatos. Hidrata y fortalece desde la raiz.', category: 'capilar', image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Perfume Barber Fresh', price: 85000, stock: 10, description: 'Fragancia masculina de larga duracion. Notas de madera, citrico y musgo.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Maquina de Corte Pro', price: 280000, stock: 5, description: 'Motor de alta potencia con 5 alturas de corte. Bateria de larga duracion.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Gorra Barber Kalvin Classic', price: 45000, stock: 12, description: 'Gorra premium con logo bordado. Tela transpirable y ajuste perfecto.', category: 'accesorios', image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Acondicionador Intensivo', price: 25000, stock: 25, description: 'Hidratacion profunda que deja el cabello suave y manejable. Sin parabenos.', category: 'capilar', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=600&q=70&fm=webp' },
-  { name: 'Recortadora de Barba', price: 150000, stock: 8, description: 'Precision milimetrica para definir tu barra. Incluye 8 peines guia.', category: 'maquinas', image: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=70&fm=webp' },
-];
 
 function ConfirmModal({ title, message, onConfirm, onCancel }) {
   return (
@@ -212,9 +202,47 @@ function AdminDashboard() {
     localStorage.setItem('admin_dashboard_tab', tab);
   }, [tab]);
 
+  const tabsNavRef = useRef(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkTabsScroll = () => {
+    if (!tabsNavRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = tabsNavRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+  };
+
   useEffect(() => {
-    localStorage.setItem('admin_inventory_tab', inventorySubTab);
-  }, [inventorySubTab]);
+    checkTabsScroll();
+    window.addEventListener('resize', checkTabsScroll);
+    return () => window.removeEventListener('resize', checkTabsScroll);
+  }, []);
+
+  // Asegurar que el tab activo siempre quede visible y centrado al seleccionarlo o cargarlo
+  useEffect(() => {
+    if (!tabsNavRef.current) return;
+    const activeBtn = tabsNavRef.current.querySelector(`[data-tab-key="${tab}"]`);
+    if (activeBtn) {
+      activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    setTimeout(checkTabsScroll, 350);
+  }, [tab]);
+
+  const scrollTabs = (direction) => {
+    if (!tabsNavRef.current) return;
+    const offset = direction === 'left' ? -280 : 280;
+    tabsNavRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    setTimeout(checkTabsScroll, 350);
+  };
+
+  const handleTabsWheel = (e) => {
+    if (!tabsNavRef.current) return;
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      tabsNavRef.current.scrollLeft += e.deltaY;
+      checkTabsScroll();
+    }
+  };
 
   const [bookingFilter, setBookingFilter] = useState('all');
   const [bookingCustomDate, setBookingCustomDate] = useState(() => {
@@ -561,11 +589,6 @@ function AdminDashboard() {
     });
   };
 
-  const handleSyncProducts = async () => {
-    for (const p of FALLBACK_PRODUCTS) {
-      await addProduct(p);
-    }
-  };
 
   const handleDayCheck = (day, checked) => {
     setEditingWorker(prev => {
@@ -698,27 +721,63 @@ function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
 
-        {/* ── NAVEGACION DE TABS ─────────────────────────── */}
-        <div className="relative">
-          {/* Fade izquierdo/derecho para indicar scroll */}
-          <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-neutral-950 to-transparent z-10 pointer-events-none sm:hidden" />
-          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-neutral-950 to-transparent z-10 pointer-events-none sm:hidden" />
-          <div className="overflow-x-auto scrollbar-hide pb-1">
-            <div className="flex gap-1 bg-neutral-900 border border-white/5 p-1.5 rounded-2xl w-max min-w-full shadow-md">
-              {TABS.map(t => (
-                <button
-                  key={t.key}
-                  onClick={() => setTab(t.key)}
-                  className={`px-3 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 ${
-                    tab === t.key
-                      ? 'bg-red-600 text-white shadow-lg shadow-red-600/20'
-                      : 'text-neutral-500 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {t.label}
-                </button>
-              ))}
+        {/* ── NAVEGACION DE TABS (STICKY CON CONTROLES SUAVES) ─── */}
+        <div className="sticky top-[76px] z-30 bg-neutral-950/95 backdrop-blur-md py-2.5 -mx-4 px-4 sm:-mx-8 sm:px-8 border-b border-white/5 shadow-2xl transition-all">
+          <div className="relative flex items-center gap-2 max-w-7xl mx-auto">
+            {/* Botón flecha izquierda */}
+            <button
+              type="button"
+              onClick={() => scrollTabs('left')}
+              className={`flex items-center justify-center w-8 h-8 rounded-xl bg-neutral-900 border border-white/10 text-white hover:bg-neutral-800 transition-all flex-shrink-0 cursor-pointer shadow-md ${
+                canScrollLeft ? 'opacity-100 hover:scale-105' : 'opacity-30 cursor-not-allowed'
+              }`}
+              title="Desplazar a la izquierda"
+              disabled={!canScrollLeft}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            {/* Contenedor desplazable de tabs */}
+            <div
+              ref={tabsNavRef}
+              onWheel={handleTabsWheel}
+              onScroll={checkTabsScroll}
+              className="flex-1 overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent pb-1 select-none"
+            >
+              <div className="flex gap-1.5 bg-neutral-900/90 border border-white/5 p-1.5 rounded-2xl w-max min-w-full shadow-inner">
+                {TABS.map(t => (
+                  <button
+                    key={t.key}
+                    data-tab-key={t.key}
+                    onClick={() => setTab(t.key)}
+                    className={`px-3.5 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${
+                      tab === t.key
+                        ? 'bg-red-600 text-white shadow-lg shadow-red-600/30 scale-[1.02]'
+                        : 'text-neutral-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span>{t.label}</span>
+                  </button>
+                ))}
+              </div>
             </div>
+
+            {/* Botón flecha derecha */}
+            <button
+              type="button"
+              onClick={() => scrollTabs('right')}
+              className={`flex items-center justify-center w-8 h-8 rounded-xl bg-neutral-900 border border-white/10 text-white hover:bg-neutral-800 transition-all flex-shrink-0 cursor-pointer shadow-md ${
+                canScrollRight ? 'opacity-100 hover:scale-105' : 'opacity-30 cursor-not-allowed'
+              }`}
+              title="Desplazar a la derecha"
+              disabled={!canScrollRight}
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -1143,12 +1202,9 @@ function AdminDashboard() {
             {inventorySubTab === 'products' && (
               <div className="space-y-4 animate-fade-in">
                 {products.length === 0 && (
-                  <div className="bg-red-600/10 border border-red-600/20 rounded-3xl p-6 text-center space-y-3 mb-6">
-                    <p className="text-red-500 font-bold text-sm">Tu inventario está vacío.</p>
-                    <p className="text-neutral-400 text-xs">Puedes cargar los productos base de la barbería para que aparezcan aquí y en la página principal.</p>
-                    <button onClick={handleSyncProducts} className="bg-red-600 text-white px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-red-500 transition-colors cursor-pointer mt-2 inline-block">
-                      Cargar productos base
-                    </button>
+                  <div className="bg-neutral-900/40 border border-white/5 rounded-3xl p-10 text-center space-y-2 mb-6">
+                    <p className="text-white font-bold text-sm">No hay productos en el inventario.</p>
+                    <p className="text-neutral-500 text-xs">Agrega tu primer producto usando el botón de abajo.</p>
                   </div>
                 )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
