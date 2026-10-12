@@ -290,28 +290,25 @@ function AdminDashboard() {
     if (!bookings) return 0;
     return bookings.filter(b => 
       b.status === 'completed' &&
-      isDateInRange(b.date, balanceStartDate, balanceEndDate) &&
-      (balanceBranchFilter === 'all' || (b.branchId || 'branch-1') === balanceBranchFilter)
+      isDateInRange(b.date, balanceStartDate, balanceEndDate)
     ).length;
-  }, [bookings, balanceBranchFilter, balanceStartDate, balanceEndDate]);
+  }, [bookings, balanceStartDate, balanceEndDate]);
 
   const balanceCitasRevenue = useMemo(() => {
     if (!bookings) return 0;
     return bookings.filter(b => 
       b.status === 'completed' &&
-      isDateInRange(b.date, balanceStartDate, balanceEndDate) &&
-      (balanceBranchFilter === 'all' || (b.branchId || 'branch-1') === balanceBranchFilter)
+      isDateInRange(b.date, balanceStartDate, balanceEndDate)
     ).reduce((sum, b) => sum + (b.servicePrice || 0), 0);
-  }, [bookings, balanceBranchFilter, balanceStartDate, balanceEndDate]);
+  }, [bookings, balanceStartDate, balanceEndDate]);
 
   const periodSales = useMemo(() => {
     if (!sales) return [];
     const sList = sales.filter(s => 
-      isDateInRange(s.date, balanceStartDate, balanceEndDate) &&
-      (balanceBranchFilter === 'all' || (s.branchId || 'branch-1') === balanceBranchFilter)
+      isDateInRange(s.date, balanceStartDate, balanceEndDate)
     );
     return [...sList].sort((a,b) => (b.date || '').localeCompare(a.date || ''));
-  }, [sales, balanceBranchFilter, balanceStartDate, balanceEndDate]);
+  }, [sales, balanceStartDate, balanceEndDate]);
 
   const balanceProductsRevenue = useMemo(() => {
     return periodSales.reduce((sum, s) => sum + (s.total || 0), 0);
