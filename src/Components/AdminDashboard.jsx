@@ -224,8 +224,6 @@ function AdminDashboard() {
     const day = String(localDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   });
-  const [selectedBranchFilter, setSelectedBranchFilter] = useState('all');
-  const [statsBranchFilter, setStatsBranchFilter] = useState('all');
   const getFirstDayOfMonth = () => {
     const now = new Date();
     const year = now.getFullYear();
@@ -244,8 +242,6 @@ function AdminDashboard() {
   const [statsEndDate, setStatsEndDate] = useState(getTodayDateString());
   const [balanceStartDate, setBalanceStartDate] = useState(getFirstDayOfMonth());
   const [balanceEndDate, setBalanceEndDate] = useState(getTodayDateString());
-  const [balanceBranchFilter, setBalanceBranchFilter] = useState('all');
-  const [sellBranchId, setSellBranchId] = useState('branch-1');
   const [editingWorker, setEditingWorker] = useState(null);
   const [editingService, setEditingService] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -328,18 +324,16 @@ function AdminDashboard() {
   const balanceExpensesCount = useMemo(() => {
     if (!expenses) return 0;
     return expenses.filter(e => 
-      isDateInRange(e.date, balanceStartDate, balanceEndDate) &&
-      (balanceBranchFilter === 'all' || e.branchId === balanceBranchFilter)
+      isDateInRange(e.date, balanceStartDate, balanceEndDate)
     ).length;
-  }, [expenses, balanceBranchFilter, balanceStartDate, balanceEndDate]);
+  }, [expenses, balanceStartDate, balanceEndDate]);
 
   const balanceExpensesAmount = useMemo(() => {
     if (!expenses) return 0;
     return expenses.filter(e => 
-      isDateInRange(e.date, balanceStartDate, balanceEndDate) &&
-      (balanceBranchFilter === 'all' || e.branchId === balanceBranchFilter)
+      isDateInRange(e.date, balanceStartDate, balanceEndDate)
     ).reduce((sum, e) => sum + (e.amount || 0), 0);
-  }, [expenses, balanceBranchFilter, balanceStartDate, balanceEndDate]);
+  }, [expenses, balanceStartDate, balanceEndDate]);
 
   const balanceNetProfit = balanceCitasRevenue + balanceProductsRevenue - balanceExpensesAmount;
 
@@ -368,30 +362,19 @@ function AdminDashboard() {
   }
 
   // ── Stats ──────────────────────────────────────────────────
-
-  // Filtrar citas según la sede seleccionada en estadísticas
-  const filteredBookingsForStats = bookings.filter(b => {
-    if (statsBranchFilter === 'all') return true;
-    return (b.branchId || 'branch-1') === statsBranchFilter;
-  });
+  const filteredBookingsForStats = bookings;
 
   const completedBookings = filteredBookingsForStats.filter(b => b.status === 'completed' && isDateInRange(b.date, statsStartDate, statsEndDate));
   const totalRevenue = completedBookings.reduce((s, b) => s + (b.servicePrice || 0), 0);
   
-  // Filtrar ingresos por Barberia (Hombres) y Salon (Mujeres)
-  const barberRevenue = completedBookings
-    .filter(b => b.workerRole === 'barber' || workers.find(w => w.id === b.workerId)?.role === 'barber')
-    .reduce((s, b) => s + (b.servicePrice || 0), 0);
-
-  const stylistRevenue = completedBookings
-    .filter(b => b.workerRole !== 'barber' && workers.find(w => w.id === b.workerId)?.role !== 'barber')
-    .reduce((s, b) => s + (b.servicePrice || 0), 0);
+  // Ingresos por Barberia
+  const barberRevenue = totalRevenue;
 
   const completedCount = completedBookings.length;
   const pendingCount = filteredBookingsForStats.filter(b => b.status === 'pending' && isDateInRange(b.date, statsStartDate, statsEndDate)).length;
   const cancelledCount = filteredBookingsForStats.filter(b => b.status === 'cancelled' && isDateInRange(b.date, statsStartDate, statsEndDate)).length;
 
-  // Top services y workers (filtrados por sede y periodo)
+  // Top services y workers
   const topBookingsForPeriod = filteredBookingsForStats.filter(b => isDateInRange(b.date, statsStartDate, statsEndDate));
 
   const serviceCount = {};
@@ -402,43 +385,14 @@ function AdminDashboard() {
   topBookingsForPeriod.forEach(b => { if (b.workerName) workerCount[b.workerName] = (workerCount[b.workerName] || 0) + 1; });
   const topWorkers = Object.entries(workerCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
-  // Gastos locales filtrados por sede
-  const filteredExpensesForStats = expenses.filter(e => {
-    if (statsBranchFilter === 'all') return true;
-    return e.branchId === statsBranchFilter;
-  });
-  const localExpenses = filteredExpensesForStats.filter(e => isDateInRange(e.date, statsStartDate, statsEndDate)).reduce((sum, e) => sum + (e.amount || 0), 0);
+  // Gastos
+  const localExpenses = expenses.filter(e => isDateInRange(e.date, statsStartDate, statsEndDate)).reduce((sum, e) => sum + (e.amount || 0), 0);
 
-  // Ventas locales filtradas por sede
-  const filteredSalesForStats = sales.filter(s => {
-    if (statsBranchFilter === 'all') return true;
-    return (s.branchId || 'branch-1') === statsBranchFilter;
-  });
-  const localProductRevenue = filteredSalesForStats.filter(s => isDateInRange(s.date, statsStartDate, statsEndDate)).reduce((sum, s) => sum + (s.total || 0), 0);
+  // Ventas de productos
+  const localProductRevenue = sales.filter(s => isDateInRange(s.date, statsStartDate, statsEndDate)).reduce((sum, s) => sum + (s.total || 0), 0);
 
-  // Ganancia neta local (Citas + Ventas - Gastos)
+  // Ganancia neta (Citas + Ventas - Gastos)
   const localNetProfit = totalRevenue + localProductRevenue - localExpenses;
-
-  // Calcular comparación de sedes para cuando el filtro es 'all'
-  const branchComparison = branches.map(b => {
-    const bBookings = bookings.filter(bk => (bk.branchId || 'branch-1') === b.id && isDateInRange(bk.date, statsStartDate, statsEndDate));
-    const bCompleted = bBookings.filter(bk => bk.status === 'completed');
-    const bRevenue = bCompleted.reduce((sum, bk) => sum + (bk.servicePrice || 0), 0);
-    const bSales = sales.filter(s => (s.branchId || 'branch-1') === b.id && isDateInRange(s.date, statsStartDate, statsEndDate)).reduce((sum, s) => sum + (s.total || 0), 0);
-    const bExpenses = expenses.filter(e => e.branchId === b.id && isDateInRange(e.date, statsStartDate, statsEndDate)).reduce((sum, e) => sum + (e.amount || 0), 0);
-    const bNetProfit = bRevenue + bSales - bExpenses;
-
-    return {
-      ...b,
-      bookingsCount: bBookings.length,
-      completedCount: bCompleted.length,
-      revenue: bRevenue + bSales,
-      netProfit: bNetProfit
-    };
-  });
-
-  // Determinar sede líder
-  const leadingBranch = [...branchComparison].sort((a, b) => b.revenue - a.revenue)[0];  // Calculations are moved to top of component to satisfy Rules of Hooks
 
   if (!user || user.role !== 'admin') {
     return (
@@ -470,7 +424,6 @@ function AdminDashboard() {
 
   // Booking filter
   const filteredBookings = bookings.filter(b => {
-    if (selectedBranchFilter !== 'all' && (b.branchId || 'branch-1') !== selectedBranchFilter) return false;
     if (bookingFilter === 'today') return b.date === todayStr;
     if (bookingFilter === 'custom-day') return b.date === bookingCustomDate;
     const now = new Date();
@@ -775,26 +728,13 @@ function AdminDashboard() {
         {/* ── ESTADÍSTICAS ───────────────────────────────── */}
         {tab === 'stats' && (
           <div className="space-y-6">
-            {/* Selector de Sede y Período para Estadísticas */}
+            {/* Período para Estadísticas */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-neutral-900/40 p-5 rounded-3xl border border-white/5">
               <div>
                 <h3 className="text-white font-black text-sm uppercase tracking-wider">Filtrar Análisis y Ganancias</h3>
-                <p className="text-neutral-500 text-xs mt-0.5">Segmenta ingresos, citas, egresos y ganancias por sede y período de tiempo.</p>
+                <p className="text-neutral-500 text-xs mt-0.5">Controla ingresos, citas, egresos y ganancias de Barber Kalvin por período de tiempo.</p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex flex-col space-y-1">
-                  <span className="text-neutral-500 text-[9px] font-black uppercase tracking-widest pl-1">Sede</span>
-                  <select
-                    value={statsBranchFilter}
-                    onChange={e => setStatsBranchFilter(e.target.value)}
-                    className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600"
-                  >
-                    <option value="all">Todas las Sedes (Comparativa)</option>
-                    {branches.map(b => (
-                      <option key={b.id} value={b.id}>{b.name}</option>
-                    ))}
-                  </select>
-                </div>
                 <div className="flex flex-col space-y-1">
                   <span className="text-neutral-500 text-[9px] font-black uppercase tracking-widest pl-1">Desde</span>
                   <input
@@ -839,64 +779,6 @@ function AdminDashboard() {
                 <p className="text-neutral-600 text-xs mt-1">{cancelledCount} canceladas</p>
               </div>
             </div>
-
-
-
-            {/* Comparativa visual entre sedes si está seleccionado 'all' */}
-            {statsBranchFilter === 'all' && branches.length > 0 && (
-              <div className="bg-neutral-900 border border-white/5 rounded-3xl p-6 space-y-6 shadow-xl">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <h3 className="text-white font-black text-lg flex items-center gap-2">
-                      <span className="w-1.5 h-4 bg-red-600 rounded-full"></span>
-                      Comparativa Financiera de Sedes
-                    </h3>
-                    <p className="text-neutral-500 text-xs mt-0.5">Distribución de ingresos totales (Servicios + Productos) por sucursal.</p>
-                  </div>
-                  {leadingBranch && leadingBranch.revenue > 0 && (
-                    <div className="bg-red-600/10 border border-red-600/20 text-red-600 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-wider flex items-center gap-2">
-                      <span>🏆 Sede Líder: {leadingBranch.name}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {branchComparison.map(bc => {
-                    const totalRevenueAll = branchComparison.reduce((sum, item) => sum + item.revenue, 0) || 1;
-                    const percentage = Math.round((bc.revenue / totalRevenueAll) * 100);
-
-                    return (
-                      <div key={bc.id} className="bg-neutral-950/40 border border-white/5 p-5 rounded-2xl relative overflow-hidden group hover:border-white/10 transition-all">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-red-600/5 to-transparent blur-2xl rounded-full" />
-                        <div className="flex justify-between items-start mb-3">
-                          <div>
-                            <h4 className="text-white font-bold text-base">{bc.name}</h4>
-                            <p className="text-neutral-500 text-xs mt-0.5">{bc.bookingsCount} citas en total · {bc.completedCount} finalizadas</p>
-                          </div>
-                          <span className="text-red-600 font-black text-lg">{percentage}%</span>
-                        </div>
-
-                        {/* Barra de progreso */}
-                        <div className="h-2.5 bg-neutral-800 rounded-full overflow-hidden mb-4">
-                          <div className="h-full bg-gradient-to-r from-red-700 to-amber-500 rounded-full" style={{ width: `${percentage}%` }} />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3 text-xs bg-neutral-900/60 p-3 rounded-xl">
-                          <div>
-                            <span className="text-neutral-500 font-bold block">Ingresos totales</span>
-                            <span className="text-white font-black text-sm">{formatCOP(bc.revenue)}</span>
-                          </div>
-                          <div>
-                            <span className="text-neutral-500 font-bold block">Ganancia neta</span>
-                            <span className={`font-black text-sm ${bc.netProfit >= 0 ? 'text-green-400' : 'text-red-400'}`}>{formatCOP(bc.netProfit)}</span>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* Segunda fila */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -1026,16 +908,6 @@ function AdminDashboard() {
                 />
               )}
 
-              <select
-                value={selectedBranchFilter}
-                onChange={e => setSelectedBranchFilter(e.target.value)}
-                className="bg-neutral-800 border border-white/5 rounded-xl px-4 py-2 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer"
-              >
-                <option value="all">Todas las Sedes</option>
-                {branches.map(b => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
-                ))}
-              </select>
               <span className="ml-auto text-neutral-500 text-xs font-bold">{filteredBookings.length} citas registradas</span>
             </div>
 
@@ -1064,10 +936,10 @@ function AdminDashboard() {
                             <span className="text-[9px] px-2.5 py-0.5 rounded-full font-black bg-red-600/10 text-red-500 border border-red-600/20 uppercase tracking-wider">Barbería</span>
                           </div>
                           <p className="text-neutral-400 text-sm font-medium">
-                            Servicio: <span className="text-white font-bold">{bk.service}</span> — Especialista: <span className="text-white font-bold">{bk.workerName}</span>
+                            Servicio: <span className="text-white font-bold">{bk.service}</span> — Barbero: <span className="text-white font-bold">{bk.workerName}</span>
                           </p>
                           <p className="text-neutral-500 text-xs font-bold">
-                            Fecha: {bk.date} · Hora: {bk.time} {bk.branchName && `· Sede: ${bk.branchName}`}
+                            Fecha: {bk.date} · Hora: {bk.time}
                           </p>
                           {bk.cancelReason && (
                             <p className="text-red-400 text-[10px] font-black uppercase tracking-wider bg-red-500/10 px-2 py-1 rounded-lg inline-block mt-1 border border-red-500/20">
@@ -1167,7 +1039,7 @@ function AdminDashboard() {
                       <p className="text-red-600 text-xs font-bold uppercase tracking-widest mt-1">{w.specialty}</p>
                       <p className="text-neutral-500 text-xs font-medium uppercase mt-0.5">Rol: {w.role === 'barber' ? 'Barbero' : w.role === 'stylist' ? 'Estilista' : 'Manicurista'}</p>
                       <p className="text-neutral-500 text-xs font-medium mt-1">
-                        Sede: <span className="text-neutral-300 font-bold">{branches.find(b => b.id === (w.branchId || 'branch-1'))?.name || 'Sede Norte'}</span>
+                        Barbería: <span className="text-neutral-300 font-bold">Barber Kalvin</span>
                       </p>
                       {w.phone && <p className="text-neutral-600 text-xs mt-1">Tel: {w.phone}</p>}
                     </div>
@@ -1324,7 +1196,7 @@ function AdminDashboard() {
                           <div>
                             <p className="text-white font-black text-sm line-clamp-2">{e.description}</p>
                             <p className="text-neutral-500 text-[10px] uppercase tracking-widest mt-1 font-bold">
-                              {e.date ? new Date(e.date.replace(/-/g, '/')).toLocaleDateString() : ''} · Sede: {branches.find(b => b.id === e.branchId)?.name || 'General (Todas)'}
+                              {e.date ? new Date(e.date.replace(/-/g, '/')).toLocaleDateString() : ''}
                             </p>
                           </div>
                           <p className="text-red-400 font-black text-lg bg-red-500/10 px-2.5 py-1 rounded-xl">-{formatCOP(e.amount)}</p>
@@ -1352,19 +1224,6 @@ function AdminDashboard() {
                     <p className="text-neutral-500 text-xs mt-0.5">Controla ingresos de productos, citas y egresos en un período determinado.</p>
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3">
-                    <div className="flex flex-col space-y-1">
-                      <span className="text-neutral-500 text-[9px] font-black uppercase tracking-widest pl-1">Sede</span>
-                      <select
-                        value={balanceBranchFilter}
-                        onChange={e => setBalanceBranchFilter(e.target.value)}
-                        className="bg-neutral-800 border border-white/10 rounded-2xl px-4 py-3 text-xs font-black uppercase tracking-widest text-neutral-300 hover:text-white outline-none cursor-pointer focus:border-red-600"
-                      >
-                        <option value="all">Todas las Sedes</option>
-                        {branches.map(b => (
-                          <option key={b.id} value={b.id}>{b.name}</option>
-                        ))}
-                      </select>
-                    </div>
                     <div className="flex flex-col space-y-1">
                       <span className="text-neutral-500 text-[9px] font-black uppercase tracking-widest pl-1">Desde</span>
                       <input
@@ -1676,15 +1535,7 @@ function AdminDashboard() {
               
             </select>
           </div>
-          <div>
-            <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest mb-2 block">Sede (Sucursal)</label>
-            <select value={editingWorker.branchId || 'branch-1'} onChange={e => setEditingWorker(p => ({ ...p, branchId: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-xl p-3 text-white outline-none focus:border-red-600 text-sm font-medium">
-              {branches.map(b => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
-          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <FormField label="Telefono" value={editingWorker.phone} onChange={v => setEditingWorker(p => ({ ...p, phone: v }))} />
             <FormField label="Comision (%)" type="number" value={editingWorker.percentage} onChange={v => setEditingWorker(p => ({ ...p, percentage: v }))} />
@@ -1830,19 +1681,6 @@ function AdminDashboard() {
           <FormField label="Descripcion" value={editingExpense.description} onChange={v => setEditingExpense(p => ({ ...p, description: v }))} />
           <FormField label="Monto ($)" type="number" value={editingExpense.amount} onChange={v => setEditingExpense(p => ({ ...p, amount: v }))} />
           <div className="space-y-1 mb-4">
-            <label className="text-neutral-500 text-[10px] font-black uppercase tracking-widest block font-bold">Sede</label>
-            <select
-              value={editingExpense.branchId || 'all'}
-              onChange={e => setEditingExpense(p => ({ ...p, branchId: e.target.value }))}
-              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600/50 outline-none transition-all cursor-pointer uppercase font-bold"
-            >
-              <option value="all">General (Todas las Sedes)</option>
-              {branches.map(b => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="space-y-1 mb-4">
             <label className="text-neutral-500 text-[10px] font-black uppercase tracking-widest block font-bold">Fecha</label>
             <input
               type="date"
@@ -1872,21 +1710,9 @@ function AdminDashboard() {
       {sellingProduct && (
         <EditModal title="Vender Producto" onClose={() => setSellingProduct(null)}>
           <FormField label="Cantidad" type="number" value={sellingQuantity} onChange={v => setSellingQuantity(v)} />
-          <div className="space-y-1 mb-4">
-            <label className="text-neutral-500 text-[10px] font-black uppercase tracking-widest block font-bold">Sede</label>
-            <select
-              value={sellBranchId}
-              onChange={e => setSellBranchId(e.target.value)}
-              className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3 text-white text-sm focus:border-red-600/50 outline-none transition-all cursor-pointer uppercase font-bold"
-            >
-              {branches.map(b => (
-                <option key={b.id} value={b.id}>{b.name}</option>
-              ))}
-            </select>
-          </div>
           <div className="flex gap-3 pt-2">
             <button onClick={() => setSellingProduct(null)} className="bg-red-500/10 text-red-400 px-4 py-3 rounded-xl font-bold hover:bg-red-500 hover:text-white transition-all cursor-pointer">Cancelar</button>
-            <button onClick={async () => { await sellProduct(sellingProduct.id, Number(sellingQuantity) || 1, sellBranchId); setSellingProduct(null); }} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Confirmar Venta</button>
+            <button onClick={async () => { await sellProduct(sellingProduct.id, Number(sellingQuantity) || 1, 'branch-1'); setSellingProduct(null); }} className="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-all cursor-pointer">Confirmar Venta</button>
           </div>
         </EditModal>
       )}

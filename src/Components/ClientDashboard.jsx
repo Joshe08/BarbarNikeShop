@@ -549,13 +549,13 @@ function ClientDashboard() {
 
                       <div className="grid grid-cols-3 gap-3 text-xs bg-neutral-950/40 p-3.5 rounded-2xl border border-white/5">
                         <div>
-                          <p className="text-neutral-500 font-bold uppercase tracking-wider text-[9px]">Especialista</p>
+                          <p className="text-neutral-500 font-bold uppercase tracking-wider text-[9px]">Barbero</p>
                           <p className="text-white font-black mt-0.5 truncate">{bk.workerName}</p>
-                          <p className="text-neutral-400 text-[10px] capitalize mt-0.5">{bk.workerRole === 'barber' ? 'Barbero' : bk.workerRole === 'stylist' ? 'Estilista' : 'Manicurista'}</p>
+                          <p className="text-neutral-400 text-[10px] capitalize mt-0.5">Especialista</p>
                         </div>
                         <div>
-                          <p className="text-neutral-500 font-bold uppercase tracking-wider text-[9px]">Sede</p>
-                          <p className="text-white font-black mt-0.5 truncate">{bk.branchName || 'Sede Norte'}</p>
+                          <p className="text-neutral-500 font-bold uppercase tracking-wider text-[9px]">Barbería</p>
+                          <p className="text-white font-black mt-0.5 truncate">Barber Kalvin</p>
                         </div>
                         <div>
                           <p className="text-neutral-500 font-bold uppercase tracking-wider text-[9px]">Fecha y Hora</p>
@@ -635,7 +635,7 @@ function ClientDashboard() {
                           <td className="py-4 px-6 text-neutral-300">
                             <span className="font-bold">{bk.workerName}</span>
                             <span className="text-[10px] text-neutral-500 uppercase tracking-widest block font-bold capitalize mt-0.5">
-                              {bk.workerRole === 'barber' ? 'Barbero' : bk.workerRole === 'stylist' ? 'Estilista' : 'Manicurista'} {bk.branchName && `· ${bk.branchName}`}
+                              Barbero · Barber Kalvin
                             </span>
                           </td>
                           <td className="py-4 px-6 text-neutral-400">

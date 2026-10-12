@@ -86,12 +86,11 @@ function ProductCard({ product, onBuy, isStaff }) {
 }
 
 // Modal de Checkout
-function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
+function CheckoutModal({ product, onClose, isStaff, sellProduct }) {
   const { user } = useAuth();
   const [step, setStep] = useState(1); // 1 = Datos, 3 = Éxito
   const [method, setMethod] = useState('recogida'); // recogida | domicilio
   const [payment, setPayment] = useState('efectivo');
-  const [selectedBranchId, setSelectedBranchId] = useState(branches && branches[0] ? branches[0].id : 'branch-1');
   const [address, setAddress] = useState('');
   const [name, setName] = useState(() => {
     if (isStaff && user) {
@@ -101,8 +100,6 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
   });
   const [error, setError] = useState('');
 
-
-
   useEffect(() => {
     if (isStaff && user?.name) {
       const timer = setTimeout(() => {
@@ -111,15 +108,6 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
       return () => clearTimeout(timer);
     }
   }, [isStaff, user]);
-
-  useEffect(() => {
-    if (branches && branches.length > 0) {
-      const timer = setTimeout(() => {
-        setSelectedBranchId(branches[0].id);
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [branches]);
 
   const finalPrice = isStaff ? Math.round(product.price * (1 - STAFF_DISCOUNT)) : product.price;
 
@@ -139,19 +127,12 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
   const processFinalSale = async () => {
     try {
       if (sellProduct) {
-        await sellProduct(product.id, 1, method === 'recogida' ? selectedBranchId : 'branch-1');
+        await sellProduct(product.id, 1, 'branch-1');
       }
     } catch (err) {
       console.warn('Advertencia al registrar la venta en Firestore (posible restricción de rol/reglas o producto fallback):', err);
     }
     setStep(3);
-  };
-
-
-
-  const getBranchName = () => {
-    const found = branches ? branches.find(b => b.id === selectedBranchId) : null;
-    return found ? found.name : 'Sede Principal';
   };
 
   const openWhatsApp = () => {
@@ -161,7 +142,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
         ? `*Precio original:* ~~${formatCOP(product.price)}~~\n*Precio empleado (-${STAFF_DISCOUNT*100}%):* ${formatCOP(finalPrice)}\n`
         : `*Precio:* ${formatCOP(finalPrice)}\n`) +
       `*Cliente:* ${name}\n` +
-      `*Entrega:* ${method === 'recogida' ? `Recogida en ${getBranchName()} 🏬` : 'A domicilio 🛵'}\n` +
+      `*Entrega:* ${method === 'recogida' ? 'Recogida en Barber Kalvin 🏬' : 'A domicilio 🛵'}\n` +
       (method === 'domicilio' ? `*Dirección:* ${address}\n` : '') +
       `*Método de pago:* ${payment.toUpperCase()}\n` +
       `*Estado del Pago:* PENDIENTE (Pago contra entrega)\n\n` +
@@ -252,18 +233,10 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
                   </button>
                 </div>
                 
-                {method === 'recogida' && branches && branches.length > 0 && (
-                  <div className="space-y-2 mt-2 animate-fade-in">
-                    <label className="text-neutral-400 text-[10px] font-black uppercase tracking-widest block">Seleccionar Sede para Recogida</label>
-                    <select 
-                      value={selectedBranchId}
-                      onChange={e => setSelectedBranchId(e.target.value)}
-                      className="w-full bg-neutral-800 border border-white/5 rounded-2xl p-3.5 text-white text-sm focus:border-red-600 outline-none cursor-pointer transition-all"
-                    >
-                      {branches.map(b => (
-                        <option key={b.id} value={b.id}>{b.name}</option>
-                      ))}
-                    </select>
+                {method === 'recogida' && (
+                  <div className="bg-neutral-800/60 border border-white/5 rounded-2xl p-3.5 text-xs text-neutral-300 flex items-center gap-2 mt-2 animate-fade-in">
+                    <span className="text-red-500 font-bold">📍</span>
+                    <span>Punto de retiro: <strong className="text-white font-bold">Barber Kalvin</strong></span>
                   </div>
                 )}
 
@@ -338,7 +311,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
               </div>
               <div className="flex justify-between border-b border-white/5 pb-2">
                 <span className="text-neutral-500">Método de entrega:</span>
-                <span className="text-white font-medium">{method === 'recogida' ? `Retiro en ${getBranchName()}` : 'Envío a Domicilio'}</span>
+                <span className="text-white font-medium">{method === 'recogida' ? 'Retiro en Barber Kalvin' : 'Envío a Domicilio'}</span>
               </div>
               {method === 'domicilio' && (
                 <div className="flex justify-between border-b border-white/5 pb-2">
@@ -378,7 +351,7 @@ function CheckoutModal({ product, onClose, isStaff, sellProduct, branches }) {
 }
 
 export default function ProductsSection() {
-  const { products, sellProduct, branches } = useApp();
+  const { products, sellProduct } = useApp();
   const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
@@ -551,7 +524,6 @@ export default function ProductsSection() {
           onClose={() => setCheckoutProduct(null)}
           isStaff={isStaff}
           sellProduct={sellProduct}
-          branches={branches}
         />
       )}
 

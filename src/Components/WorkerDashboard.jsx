@@ -88,7 +88,7 @@ const cleanPhone = (phoneStr) => {
 const getReminderLink = (bk, clientPhoneStr) => {
   const formattedPhone = cleanPhone(clientPhoneStr);
   if (!formattedPhone) return null;
-  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
+  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin*. ¡Te esperamos!`;
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 };
 
@@ -370,7 +370,7 @@ function WorkerDashboard() {
                         </span>
                       </div>
                       <p className="text-neutral-400 text-sm truncate">{bk.service}</p>
-                      <p className="text-neutral-600 text-xs mt-0.5">Fecha: {bk.date} · Hora: {bk.time} · {bk.serviceDuration} min {bk.branchName && `· Sede: ${bk.branchName}`}</p>
+                      <p className="text-neutral-600 text-xs mt-0.5">Fecha: {bk.date} · Hora: {bk.time} · {bk.serviceDuration} min</p>
                     </div>
 
                     {/* Precio + flecha */}

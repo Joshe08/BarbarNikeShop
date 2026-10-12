@@ -1,36 +1,96 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function Hero({ onBookingClick }) {
   const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioError, setAudioError] = useState(false);
   const videoRef = useRef(null);
+  const playCountRef = useRef(0);
 
-  const toggleSound = () => {
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
-    setIsMuted(nextMuted);
-    if (nextMuted === false && videoRef.current.paused) {
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Sincronizar estado inicial
+    video.muted = true;
+    setIsMuted(true);
+
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => setIsPlaying(false);
+    const onVolumeChange = () => setIsMuted(video.muted);
+
+    const onEnded = () => {
+      playCountRef.current += 1;
+      if (playCountRef.current < 2) {
+        // Segunda reproducción permitida
+        video.currentTime = 0;
+        video.play().catch(() => setIsPlaying(false));
+      } else {
+        // Máximo 2 reproducciones alcanzadas: detener y esperar interacción manual
+        video.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    video.addEventListener("play", onPlay);
+    video.addEventListener("pause", onPause);
+    video.addEventListener("volumechange", onVolumeChange);
+    video.addEventListener("ended", onEnded);
+
+    // Iniciar primera reproducción automática (muteada para respetar políticas del navegador)
+    video.play().catch(() => {
+      setIsPlaying(false);
+    });
+
+    return () => {
+      video.removeEventListener("play", onPlay);
+      video.removeEventListener("pause", onPause);
+      video.removeEventListener("volumechange", onVolumeChange);
+      video.removeEventListener("ended", onEnded);
+    };
+  }, []);
+
+  const toggleSound = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const video = videoRef.current;
+    if (!video) return;
+
+    setAudioError(false);
+    if (video.muted) {
+      // Intentar desmutear
+      video.muted = false;
+      video.volume = 1;
+      setIsMuted(false);
+      // Si el video estaba pausado o se bloquea el play con audio
+      const promise = video.play();
+      if (promise !== undefined) {
+        promise.catch((err) => {
+          console.warn("Autoplay with sound prevented by browser:", err);
+          // Si el navegador bloqueó la reproducción con sonido
+          video.muted = true;
+          setIsMuted(true);
+          setAudioError(true);
+          setTimeout(() => setAudioError(false), 3000);
+        });
+      }
+    } else {
+      video.muted = true;
+      setIsMuted(true);
     }
   };
 
   const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
-  };
+    const video = videoRef.current;
+    if (!video) return;
 
-  const handleScrollToCatalog = (e) => {
-    e.preventDefault();
-    const el = document.getElementById("catalogo");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    if (video.paused) {
+      video.play().catch(() => setIsPlaying(false));
+    } else {
+      video.pause();
+    }
   };
 
   return (
@@ -96,14 +156,14 @@ function Hero({ onBookingClick }) {
           {/* Overlay de gradiente para contraste y estilo cine */}
           <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/70 via-transparent to-black/30 pointer-events-none z-10" />
 
-          {/* Video element */}
+          {/* Video element (sin loop infinito, controlado por playCountRef hasta 2 reproducciones) */}
           <video
             ref={videoRef}
             src="/video/barber-kalvin.mp4"
             autoPlay
-            loop
             muted={isMuted}
             playsInline
+            preload="auto"
             className="w-full h-[420px] sm:h-[500px] md:h-[560px] object-cover block cursor-pointer transition-transform duration-700 group-hover:scale-[1.01]"
             onClick={togglePlay}
           />
@@ -116,15 +176,22 @@ function Hero({ onBookingClick }) {
             </span>
           </div>
 
+          {/* Feedback si el navegador bloquea audio */}
+          {audioError && (
+            <div className="absolute top-4 right-4 z-20 bg-red-600/90 text-white text-[11px] font-black px-3 py-1.5 rounded-xl shadow-lg border border-red-400 animate-bounce">
+              Toca de nuevo para reproducir audio
+            </div>
+          )}
+
           {/* Controles de Audio y Play flotantes sobre el video */}
-          <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between gap-3 bg-black/60 backdrop-blur-md p-3 rounded-2xl border border-white/10">
+          <div className="absolute bottom-4 left-4 right-4 z-20 flex items-center justify-between gap-3 bg-black/70 backdrop-blur-md p-3 rounded-2xl border border-white/10">
             <button
               onClick={toggleSound}
               type="button"
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
                 isMuted 
-                  ? 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-600/30' 
-                  : 'bg-white text-black hover:bg-neutral-200'
+                  ? 'bg-red-600 text-white hover:bg-red-700 shadow-lg shadow-red-600/30 active:scale-95' 
+                  : 'bg-white text-black hover:bg-neutral-200 active:scale-95'
               }`}
             >
               {isMuted ? (
@@ -148,18 +215,24 @@ function Hero({ onBookingClick }) {
             <button
               onClick={togglePlay}
               type="button"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer active:scale-95 flex items-center gap-1.5 text-xs font-bold"
               title={isPlaying ? "Pausar video" : "Reproducir video"}
             >
               {isPlaying ? (
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="hidden sm:inline">Pausar</span>
+                </>
               ) : (
-                <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <>
+                  <svg className="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="hidden sm:inline">Reproducir</span>
+                </>
               )}
             </button>
           </div>

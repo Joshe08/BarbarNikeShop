@@ -114,7 +114,7 @@ function StatCard({ label, value, icon, color = 'orange', sub }) {
 
 export default function ReportsModule() {
   const { bookings } = useBookings();
-  const { expenses, branches } = useApp();
+  const { expenses } = useApp();
   const [period, setPeriod] = useState('month');
   const [customDate, setCustomDate] = useState(() => {
     const localDate = new Date();
@@ -123,26 +123,19 @@ export default function ReportsModule() {
     const day = String(localDate.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   });
-  const [selectedBranch, setSelectedBranch] = useState('all');
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState('');
 
   const { start, end } = useMemo(() => getDateRange(period, customDate), [period, customDate]);
 
   const filteredBookings = useMemo(() =>
-    bookings.filter(b =>
-      isInRange(b.createdAt || b.date, start, end) &&
-      (selectedBranch === 'all' || (b.branchId || 'branch-1') === selectedBranch)
-    ),
-    [bookings, start, end, selectedBranch]
+    bookings.filter(b => isInRange(b.createdAt || b.date, start, end)),
+    [bookings, start, end]
   );
 
   const filteredExpenses = useMemo(() =>
-    expenses.filter(e =>
-      isInRange(e.date || e.createdAt, start, end) &&
-      (selectedBranch === 'all' || e.branchId === selectedBranch)
-    ),
-    [expenses, start, end, selectedBranch]
+    expenses.filter(e => isInRange(e.date || e.createdAt, start, end)),
+    [expenses, start, end]
   );
 
   const stats = useMemo(() => {
@@ -257,7 +250,6 @@ export default function ReportsModule() {
       const periodLabel = period === 'custom-day'
         ? `Día Específico (${customDate})`
         : (PERIOD_OPTIONS.find(p => p.value === period)?.label || period);
-      const branchNameLabel = selectedBranch === 'all' ? 'Todas las sedes' : (branches.find(b => b.id === selectedBranch)?.name || 'Sede');
 
       doc.setFillColor(18, 18, 18);
       doc.rect(0, 0, 210, 297, 'F');
@@ -268,7 +260,7 @@ export default function ReportsModule() {
       doc.setTextColor(160, 160, 160);
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Sede: ${branchNameLabel}  |  Período: ${periodLabel}  |  Generado: ${new Date().toLocaleDateString('es-CO')}`, 14, 30);
+      doc.text(`Período: ${periodLabel}  |  Generado: ${new Date().toLocaleDateString('es-CO')}`, 14, 30);
 
       // Estadísticas principales
       doc.setTextColor(255, 255, 255);
@@ -349,7 +341,6 @@ export default function ReportsModule() {
       const periodLabel = period === 'custom-day'
         ? `Día Específico (${customDate})`
         : (PERIOD_OPTIONS.find(p => p.value === period)?.label || period);
-      const branchNameLabel = selectedBranch === 'all' ? 'Todas las sedes' : (branches.find(b => b.id === selectedBranch)?.name || 'Sede');
 
       // --- ESTILOS COMPARTIDOS ---
       const STYLE_MAIN_TITLE = {
@@ -504,7 +495,7 @@ export default function ReportsModule() {
       ], 26);
       summaryMerges.push({ s: { r: rSummaryInfo, c: 0 }, e: { r: rSummaryInfo, c: 2 } });
 
-      addSummaryRow([cCell('Sede:', STYLE_LABEL_BOLD), cCell(branchNameLabel.toUpperCase(), STYLE_TEXT_LEFT), cCell('', STYLE_TEXT_LEFT)], 20);
+      addSummaryRow([cCell('Establecimiento:', STYLE_LABEL_BOLD), cCell('BARBER KALVIN', STYLE_TEXT_LEFT), cCell('', STYLE_TEXT_LEFT)], 20);
       addSummaryRow([cCell('Período:', STYLE_LABEL_BOLD), cCell(periodLabel.toUpperCase(), STYLE_TEXT_LEFT), cCell('', STYLE_TEXT_LEFT)], 20);
       addSummaryRow([
         cCell('Generado el:', STYLE_LABEL_BOLD),
@@ -531,7 +522,7 @@ export default function ReportsModule() {
       addSummaryRow([cCell('Total de citas registradas', STYLE_TEXT_LEFT), cCell(filteredBookings.length, STYLE_NUMBER_RIGHT, 'n', '#,##0'), cCell('Todas las citas registradas en el período', STYLE_TEXT_LEFT)], 20);
       addSummaryRow([cCell('Citas completadas (finalizadas)', STYLE_TEXT_LEFT), cCell(completedBookings.length, STYLE_NUMBER_RIGHT, 'n', '#,##0'), cCell('Citas facturadas y cobradas con éxito', STYLE_TEXT_LEFT)], 20);
       addSummaryRow([cCell('Citas canceladas', STYLE_TEXT_LEFT), cCell(cancelledBookings.length, STYLE_NUMBER_RIGHT, 'n', '#,##0'), cCell('Citas no concretadas o canceladas', STYLE_TEXT_LEFT)], 20);
-      addSummaryRow([cCell('Ingresos totales por citas', STYLE_TEXT_LEFT), cCell(totalIncome, STYLE_NUMBER_RIGHT, 'n', '"$"#,##0'), cCell('Recaudación bruta por servicios en la sede', STYLE_TEXT_LEFT)], 20);
+      addSummaryRow([cCell('Ingresos totales por citas', STYLE_TEXT_LEFT), cCell(totalIncome, STYLE_NUMBER_RIGHT, 'n', '"$"#,##0'), cCell('Recaudación bruta por servicios de barbería', STYLE_TEXT_LEFT)], 20);
       addSummaryRow([cCell('Gastos totales del período', STYLE_TEXT_LEFT), cCell(totalExpensesAmt, STYLE_NUMBER_RIGHT, 'n', '"$"#,##0'), cCell('Costos y egresos operativos registrados', STYLE_TEXT_LEFT)], 20);
       
       const STYLE_NET_PROFIT = {
@@ -646,31 +637,29 @@ export default function ReportsModule() {
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
-        cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE)
       ], 38);
-      bookingsMerges.push({ s: { r: rBookTitle, c: 0 }, e: { r: rBookTitle, c: 6 } });
+      bookingsMerges.push({ s: { r: rBookTitle, c: 0 }, e: { r: rBookTitle, c: 5 } });
 
       // Subbanner informativo
       const rBookSub = addBookingRow([
-        cCell(`Sede: ${branchNameLabel.toUpperCase()}  |  Período: ${periodLabel.toUpperCase()}`, {
+        cCell(`Período: ${periodLabel.toUpperCase()}  |  Barber Kalvin`, {
           font: { name: 'Segoe UI', sz: 9, italic: true, color: { rgb: 'E5E5E5' } },
           fill: { fgColor: { rgb: '262626' } },
           alignment: { horizontal: 'center', vertical: 'center' }
         }),
-        cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})
+        cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})
       ], 24);
-      bookingsMerges.push({ s: { r: rBookSub, c: 0 }, e: { r: rBookSub, c: 6 } });
+      bookingsMerges.push({ s: { r: rBookSub, c: 0 }, e: { r: rBookSub, c: 5 } });
 
-      addBookingRow([cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})], 10); // Espacio
+      addBookingRow([cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})], 10); // Espacio
 
       // Cabeceras de tabla
       addBookingRow([
         cCell('Fecha y Hora', STYLE_TABLE_HEADER),
         cCell('Cliente', STYLE_TABLE_HEADER),
         cCell('Servicio', STYLE_TABLE_HEADER),
-        cCell('Especialista', STYLE_TABLE_HEADER),
-        cCell('Sede', STYLE_TABLE_HEADER),
+        cCell('Barbero / Especialista', STYLE_TABLE_HEADER),
         cCell('Estado', STYLE_TABLE_HEADER),
         cCell('Valor', STYLE_TABLE_HEADER)
       ], 25);
@@ -702,7 +691,6 @@ export default function ReportsModule() {
           cCell(b.clientName || '', STYLE_TEXT_LEFT),
           cCell(b.service || '', STYLE_TEXT_LEFT),
           cCell(b.workerName || '', STYLE_TEXT_LEFT),
-          cCell(b.branchName || 'Sede Norte', STYLE_TEXT_LEFT),
           cCell(statusLabels[b.status] || b.status || '', styleEstado),
           cCell(b.servicePrice || 0, STYLE_NUMBER_RIGHT, 'n', '"$"#,##0')
         ], 20);
@@ -715,9 +703,8 @@ export default function ReportsModule() {
         cCell('', STYLE_TOTAL_LABEL),
         cCell('', STYLE_TOTAL_LABEL),
         cCell('', STYLE_TOTAL_LABEL),
-        cCell('', STYLE_TOTAL_LABEL),
         cCell('TOTAL INGRESOS CITAS:', STYLE_TOTAL_LABEL),
-        fCell(`=SUM(G5:G${totalBookingsRowNumber})`, STYLE_TOTAL_ROW)
+        fCell(`=SUM(F5:F${totalBookingsRowNumber})`, STYLE_TOTAL_ROW)
       ], 24);
 
       const wsBookings = XLSX.utils.aoa_to_sheet(bookingsRows);
@@ -745,23 +732,22 @@ export default function ReportsModule() {
         cCell('Barber Kalvin - DETALLE DE GASTOS OPERATIVOS', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE),
-        cCell('', STYLE_MAIN_TITLE),
         cCell('', STYLE_MAIN_TITLE)
       ], 38);
-      expensesMerges.push({ s: { r: rExpTitle, c: 0 }, e: { r: rExpTitle, c: 4 } });
+      expensesMerges.push({ s: { r: rExpTitle, c: 0 }, e: { r: rExpTitle, c: 3 } });
 
       // Subbanner informativo
       const rExpSub = addExpenseRow([
-        cCell(`Sede: ${branchNameLabel.toUpperCase()}  |  Período: ${periodLabel.toUpperCase()}`, {
+        cCell(`Período: ${periodLabel.toUpperCase()}  |  Barber Kalvin`, {
           font: { name: 'Segoe UI', sz: 9, italic: true, color: { rgb: 'E5E5E5' } },
           fill: { fgColor: { rgb: '262626' } },
           alignment: { horizontal: 'center', vertical: 'center' }
         }),
-        cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})
+        cCell('', {}), cCell('', {}), cCell('', {})
       ], 24);
-      expensesMerges.push({ s: { r: rExpSub, c: 0 }, e: { r: rExpSub, c: 4 } });
+      expensesMerges.push({ s: { r: rExpSub, c: 0 }, e: { r: rExpSub, c: 3 } });
 
-      addExpenseRow([cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})], 10); // Espacio
+      addExpenseRow([cCell('', {}), cCell('', {}), cCell('', {}), cCell('', {})], 10); // Espacio
 
       // Cabeceras de tabla
       const STYLE_EXPENSE_HEADER = {
@@ -775,7 +761,6 @@ export default function ReportsModule() {
         cCell('Fecha', STYLE_EXPENSE_HEADER),
         cCell('Categoría', STYLE_EXPENSE_HEADER),
         cCell('Descripción', STYLE_EXPENSE_HEADER),
-        cCell('Sede', STYLE_EXPENSE_HEADER),
         cCell('Monto', STYLE_EXPENSE_HEADER)
       ], 25);
 
@@ -784,7 +769,6 @@ export default function ReportsModule() {
           cCell(e.date || '', STYLE_TEXT_CENTER),
           cCell(e.category || 'Otros', STYLE_TEXT_LEFT),
           cCell(e.description || '', STYLE_TEXT_LEFT),
-          cCell(branches.find(b => b.id === e.branchId)?.name || 'General (Todas)', STYLE_TEXT_LEFT),
           cCell(e.amount || 0, STYLE_NUMBER_RIGHT, 'n', '"$"#,##0')
         ], 20);
       });
@@ -794,9 +778,8 @@ export default function ReportsModule() {
       addExpenseRow([
         cCell('', STYLE_TOTAL_LABEL),
         cCell('', STYLE_TOTAL_LABEL),
-        cCell('', STYLE_TOTAL_LABEL),
         cCell('TOTAL GASTOS:', STYLE_TOTAL_LABEL),
-        fCell(`=SUM(E5:E${totalExpensesRowNumber})`, STYLE_TOTAL_ROW)
+        fCell(`=SUM(D5:D${totalExpensesRowNumber})`, STYLE_TOTAL_ROW)
       ], 24);
 
       const wsExpenses = XLSX.utils.aoa_to_sheet(expensesRows);
@@ -824,18 +807,6 @@ export default function ReportsModule() {
           <p className="text-neutral-500 text-sm mt-1">Estadísticas y análisis del negocio</p>
         </div>
         <div className="flex flex-wrap gap-2 items-center">
-          {/* Selector de Sede */}
-          <select
-            value={selectedBranch}
-            onChange={e => setSelectedBranch(e.target.value)}
-            className="bg-neutral-800 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-black uppercase tracking-wider text-neutral-300 hover:text-white outline-none cursor-pointer"
-          >
-            <option value="all">Todas las Sedes</option>
-            {branches.map(b => (
-              <option key={b.id} value={b.id}>{b.name}</option>
-            ))}
-          </select>
-
           {/* Selector de período */}
           <div className="flex bg-neutral-800/60 border border-white/5 rounded-2xl p-1 gap-1">
             {PERIOD_OPTIONS.map(opt => (
@@ -1002,8 +973,7 @@ export default function ReportsModule() {
                   <th className="text-left pb-3">Fecha</th>
                   <th className="text-left pb-3">Cliente</th>
                   <th className="text-left pb-3">Servicio</th>
-                  <th className="text-left pb-3">Especialista</th>
-                  <th className="text-left pb-3">Sede</th>
+                  <th className="text-left pb-3">Barbero</th>
                   <th className="text-left pb-3">Estado</th>
                   <th className="text-right pb-3">Valor</th>
                 </tr>
@@ -1024,7 +994,6 @@ export default function ReportsModule() {
                       <td className="py-3 text-white font-medium">{b.clientName || '-'}</td>
                       <td className="py-3 text-neutral-300">{b.service || '-'}</td>
                       <td className="py-3 text-neutral-300">{b.workerName || '-'}</td>
-                      <td className="py-3 text-neutral-300">{b.branchName || 'Sede Norte'}</td>
                       <td className="py-3"><span className={`text-xs font-bold ${st.cls}`}>{st.label}</span></td>
                       <td className="py-3 text-right text-red-500 font-bold">{formatCOP(b.servicePrice || 0)}</td>
                     </tr>

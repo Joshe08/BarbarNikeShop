@@ -5,30 +5,20 @@ import { formatCOP } from '../utils/format';
 
 export default function CommissionsModule() {
   const { bookings } = useBookings();
-  const { workers, updateWorker, branches } = useApp();
-  const [selectedBranch, setSelectedBranch] = useState('all');
+  const { workers, updateWorker } = useApp();
   const [editingWorker, setEditingWorker] = useState(null);
   const [newPercentage, setNewPercentage] = useState('');
   const [savingPct, setSavingPct] = useState(false);
   const [error, setError] = useState('');
 
   const completedBookings = useMemo(() =>
-    bookings.filter(b =>
-      b.status === 'completed' &&
-      (selectedBranch === 'all' || (b.branchId || 'branch-1') === selectedBranch)
-    ),
-    [bookings, selectedBranch]
+    bookings.filter(b => b.status === 'completed'),
+    [bookings]
   );
 
-  // Filtrar trabajadores por la sede seleccionada
-  const filteredWorkers = useMemo(() => {
-    if (selectedBranch === 'all') return workers;
-    return workers.filter(w => (w.branchId || 'branch-1') === selectedBranch);
-  }, [workers, selectedBranch]);
-
-  // Calcular comisiones por trabajador filtrado
+  // Calcular comisiones por trabajador
   const commissions = useMemo(() => {
-    return filteredWorkers.map(worker => {
+    return workers.map(worker => {
       const workerBookings = completedBookings.filter(b => b.workerId === worker.id);
       const totalGenerated = workerBookings.reduce((s, b) => s + (b.servicePrice || 0), 0);
       const pct = worker.percentage || 50;
@@ -42,7 +32,7 @@ export default function CommissionsModule() {
         bookings: workerBookings,
       };
     }).sort((a, b) => b.commission - a.commission);
-  }, [filteredWorkers, completedBookings]);
+  }, [workers, completedBookings]);
 
   const totalCommissions = commissions.reduce((s, w) => s + w.commission, 0);
   const totalGenerated = commissions.reduce((s, w) => s + w.totalGenerated, 0);
@@ -84,20 +74,7 @@ export default function CommissionsModule() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-white font-black text-2xl">Comisiones</h2>
-          <p className="text-neutral-500 text-sm mt-1">Gestión de comisiones por trabajador</p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Selector de Sede */}
-          <select
-            value={selectedBranch}
-            onChange={e => setSelectedBranch(e.target.value)}
-            className="bg-neutral-800 border border-white/5 rounded-2xl px-4 py-2.5 text-xs font-black uppercase tracking-wider text-neutral-300 hover:text-white outline-none cursor-pointer"
-          >
-            <option value="all">Todas las Sedes</option>
-            {branches.map(b => (
-              <option key={b.id} value={b.id}>{b.name}</option>
-            ))}
-          </select>
+          <p className="text-neutral-500 text-sm mt-1">Gestión de comisiones por barbero en Barber Kalvin</p>
         </div>
       </div>
 

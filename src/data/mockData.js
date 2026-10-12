@@ -30,7 +30,7 @@ export const BARBERS = [
     specialty: 'Beard & Scissor Cut',
     phone: '573009876543',
     category: 'men',
-    branchId: 'branch-2',
+    branchId: 'branch-1',
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face&fm=webp&q=70',
     schedule: {
       monday: { start: '09:30', end: '19:30' },
@@ -241,15 +241,9 @@ export const ALL_WORKERS = [...BARBERS];
 export const BRANCHES = [
   {
     id: 'branch-1',
-    name: 'Hollywood Pontevedra',
-    address: 'Calle 6C #16-105 B/Pontevedra, Bogotá',
-    phone: '573045449644'
-  },
-  {
-    id: 'branch-2',
-    name: 'Hollywood Sede Sur',
-    address: 'Carrera 50 # 30-40, Bogotá',
-    phone: '573045449644'
+    name: 'Barber Kalvin',
+    address: 'Bogotá, Colombia',
+    phone: '573028676396'
   }
 ];
 

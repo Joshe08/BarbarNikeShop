@@ -46,7 +46,7 @@ function buildGoogleCalendarUrl(selection, editBooking) {
   const timeStr = selection.time || editBooking?.time;
   const serviceName = selection.service?.name || editBooking?.service || 'Servicio';
   const workerName = selection.worker?.name || editBooking?.workerName || 'Especialista';
-  const branchName = selection.branch?.name || editBooking?.branchName || 'Sede';
+  const branchName = selection.branch?.name || editBooking?.branchName || 'Barber Kalvin';
   const branchAddress = selection.branch?.address || '';
 
   if (!dateStr || !timeStr) return '#';
@@ -80,7 +80,7 @@ function buildIcsDataUri(selection, editBooking) {
   const timeStr = selection.time || editBooking?.time;
   const serviceName = selection.service?.name || editBooking?.service || 'Servicio';
   const workerName = selection.worker?.name || editBooking?.workerName || 'Especialista';
-  const branchName = selection.branch?.name || editBooking?.branchName || 'Sede';
+  const branchName = selection.branch?.name || editBooking?.branchName || 'Barber Kalvin';
   const branchAddress = selection.branch?.address || '';
 
   if (!dateStr || !timeStr) return '#';
@@ -567,7 +567,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
         clientEmail: editBooking.clientEmail,
         clientImage: editBooking.clientImage,
         branchId: selection.branch?.id || editBooking.branchId || 'branch-1',
-        branchName: selection.branch?.name || editBooking.branchName || 'Sede Norte',
+        branchName: selection.branch?.name || editBooking.branchName || 'Barber Kalvin',
         workerId: selection.worker?.id || editBooking.workerId || '',
         workerName: selection.worker?.name || editBooking.workerName || 'Especialista no disponible',
         workerRole: selection.worker?.role || editBooking.workerRole || 'staff',
@@ -849,10 +849,10 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                     <svg className="h-5 w-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
-                    Sede Cerrada Temporalmente
+                    Barbería Cerrada Temporalmente
                   </p>
                   <p className="text-neutral-400 text-xs leading-relaxed">
-                    Esta sede estará cerrada el día <span className="text-white font-bold">{selection.date}</span> debido a: <span className="text-white italic">"{closures.find(c => (c.branchId === 'all' || c.branchId === selection.branch?.id) && c.date === selection.date)?.reason || 'Motivo de fuerza mayor'}"</span>.
+                    La barbería estará cerrada el día <span className="text-white font-bold">{selection.date}</span> debido a: <span className="text-white italic">"{closures.find(c => (c.branchId === 'all' || c.branchId === selection.branch?.id) && c.date === selection.date)?.reason || 'Motivo de fuerza mayor'}"</span>.
                   </p>
                   <p className="text-red-400/80 text-[10px] uppercase font-bold tracking-widest">Por favor, selecciona otra fecha.</p>
                 </div>
@@ -964,8 +964,8 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
 
               <div className="bg-neutral-800/30 p-6 rounded-[2rem] border border-white/5 space-y-4">
                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
-                  <span className="text-neutral-500 text-xs font-bold uppercase tracking-widest">Sede</span>
-                  <span className="text-white font-black">{selection.branch?.name || 'Sede Norte'}</span>
+                  <span className="text-neutral-500 text-xs font-bold uppercase tracking-widest">Establecimiento</span>
+                  <span className="text-white font-black">{selection.branch?.name || 'Barber Kalvin'}</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-white/5 pb-4">
                   <span className="text-neutral-500 text-xs font-bold uppercase tracking-widest">Cliente</span>
@@ -979,7 +979,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                       alt={selection.worker?.name || 'Especialista'}
                     />
                     <div>
-                      <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block">Especialista</span>
+                      <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block">Barbero</span>
                       <span className="text-white font-bold text-sm">{selection.worker?.name || editBooking?.workerName || 'Especialista no disponible'}</span>
                     </div>
                   </div>
@@ -1001,7 +1001,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
                     <span className="text-neutral-600 text-xs block">{selection.service?.duration} min</span>
                   </div>
                   <div className="text-right">
-                    <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block mb-1">Total a pagar en sede</span>
+                    <span className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest block mb-1">Total a pagar en barbería</span>
                     {(() => {
                       const promo = (selection.service && getServicePromoInfo) 
                         ? getServicePromoInfo(selection.service, selection.date) 
@@ -1086,7 +1086,7 @@ function BookingModal({ isOpen, onClose, preselectedService = null, editBooking 
               </div>
 
               <div className="bg-neutral-800/50 p-6 rounded-[2rem] border border-white/5 space-y-2">
-                <p className="text-neutral-400 text-xs font-black uppercase tracking-widest">{selection.branch?.name || editBooking?.branchName || 'Sede Norte'}</p>
+                <p className="text-neutral-400 text-xs font-black uppercase tracking-widest">{selection.branch?.name || editBooking?.branchName || 'Barber Kalvin'}</p>
                 <p className={`font-black text-lg ${accent}`}>{selection.worker?.name || editBooking?.workerName || 'Especialista no disponible'}</p>
                 <p className="text-white font-bold">{selection.service?.name || editBooking?.service || ''}</p>
                 <p className="text-neutral-400 text-sm">{selection.date} — {selection.time}</p>
