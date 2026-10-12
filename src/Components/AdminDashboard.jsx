@@ -203,44 +203,43 @@ function AdminDashboard() {
   }, [tab]);
 
   const tabsNavRef = useRef(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const scrollLeftRef = useRef(0);
 
-  const checkTabsScroll = () => {
-    if (!tabsNavRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = tabsNavRef.current;
-    setCanScrollLeft(scrollLeft > 10);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
-  };
-
-  useEffect(() => {
-    checkTabsScroll();
-    window.addEventListener('resize', checkTabsScroll);
-    return () => window.removeEventListener('resize', checkTabsScroll);
-  }, []);
-
-  // Asegurar que el tab activo siempre quede visible y centrado al seleccionarlo o cargarlo
+  // Mover suavemente la vista para centrar la pestaña activa cada vez que cambie de módulo
   useEffect(() => {
     if (!tabsNavRef.current) return;
     const activeBtn = tabsNavRef.current.querySelector(`[data-tab-key="${tab}"]`);
     if (activeBtn) {
       activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
-    setTimeout(checkTabsScroll, 350);
   }, [tab]);
 
-  const scrollTabs = (direction) => {
+  // Permitir arrastre suave con el mouse sin barra visible
+  const handleMouseDown = (e) => {
     if (!tabsNavRef.current) return;
-    const offset = direction === 'left' ? -280 : 280;
-    tabsNavRef.current.scrollBy({ left: offset, behavior: 'smooth' });
-    setTimeout(checkTabsScroll, 350);
+    isDraggingRef.current = true;
+    startXRef.current = e.pageX - tabsNavRef.current.offsetLeft;
+    scrollLeftRef.current = tabsNavRef.current.scrollLeft;
+  };
+
+  const handleMouseLeaveOrUp = () => {
+    isDraggingRef.current = false;
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDraggingRef.current || !tabsNavRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - tabsNavRef.current.offsetLeft;
+    const walk = (x - startXRef.current) * 1.5;
+    tabsNavRef.current.scrollLeft = scrollLeftRef.current - walk;
   };
 
   const handleTabsWheel = (e) => {
     if (!tabsNavRef.current) return;
     if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
       tabsNavRef.current.scrollLeft += e.deltaY;
-      checkTabsScroll();
     }
   };
 
@@ -721,30 +720,21 @@ function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-6">
 
-        {/* ── NAVEGACION DE TABS (STICKY CON CONTROLES SUAVES) ─── */}
-        <div className="sticky top-[76px] z-30 bg-neutral-950/95 backdrop-blur-md py-2.5 -mx-4 px-4 sm:-mx-8 sm:px-8 border-b border-white/5 shadow-2xl transition-all">
-          <div className="relative flex items-center gap-2 max-w-7xl mx-auto">
-            {/* Botón flecha izquierda */}
-            <button
-              type="button"
-              onClick={() => scrollTabs('left')}
-              className={`flex items-center justify-center w-8 h-8 rounded-xl bg-neutral-900 border border-white/10 text-white hover:bg-neutral-800 transition-all flex-shrink-0 cursor-pointer shadow-md ${
-                canScrollLeft ? 'opacity-100 hover:scale-105' : 'opacity-30 cursor-not-allowed'
-              }`}
-              title="Desplazar a la izquierda"
-              disabled={!canScrollLeft}
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
+        {/* ── NAVEGACION DE TABS (DESPLAZAMIENTO FLUIDO SIN BARRA VISIBLE) ─── */}
+        <div className="sticky top-[76px] z-30 bg-neutral-950/95 backdrop-blur-md py-2.5 -mx-4 px-4 sm:-mx-8 sm:px-8 border-b border-white/5 transition-all">
+          <div className="relative max-w-7xl mx-auto">
+            {/* Difuminado suave en extremos sin barras */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-neutral-950 to-transparent z-10 pointer-events-none opacity-80" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-neutral-950 to-transparent z-10 pointer-events-none opacity-80" />
 
-            {/* Contenedor desplazable de tabs */}
             <div
               ref={tabsNavRef}
               onWheel={handleTabsWheel}
-              onScroll={checkTabsScroll}
-              className="flex-1 overflow-x-auto scroll-smooth scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent pb-1 select-none"
+              onMouseDown={handleMouseDown}
+              onMouseLeave={handleMouseLeaveOrUp}
+              onMouseUp={handleMouseLeaveOrUp}
+              onMouseMove={handleMouseMove}
+              className="overflow-x-auto scrollbar-hide scroll-smooth cursor-grab active:cursor-grabbing select-none"
             >
               <div className="flex gap-1.5 bg-neutral-900/90 border border-white/5 p-1.5 rounded-2xl w-max min-w-full shadow-inner">
                 {TABS.map(t => (
@@ -752,7 +742,7 @@ function AdminDashboard() {
                     key={t.key}
                     data-tab-key={t.key}
                     onClick={() => setTab(t.key)}
-                    className={`px-3.5 sm:px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${
+                    className={`px-4 py-2.5 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 ${
                       tab === t.key
                         ? 'bg-red-600 text-white shadow-lg shadow-red-600/30 scale-[1.02]'
                         : 'text-neutral-400 hover:text-white hover:bg-white/5'
@@ -763,21 +753,6 @@ function AdminDashboard() {
                 ))}
               </div>
             </div>
-
-            {/* Botón flecha derecha */}
-            <button
-              type="button"
-              onClick={() => scrollTabs('right')}
-              className={`flex items-center justify-center w-8 h-8 rounded-xl bg-neutral-900 border border-white/10 text-white hover:bg-neutral-800 transition-all flex-shrink-0 cursor-pointer shadow-md ${
-                canScrollRight ? 'opacity-100 hover:scale-105' : 'opacity-30 cursor-not-allowed'
-              }`}
-              title="Desplazar a la derecha"
-              disabled={!canScrollRight}
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
           </div>
         </div>
 
