@@ -435,30 +435,119 @@ function WorkerDashboard() {
                         );
                       })()}
 
-                      {/* Cambiar estado */}
-                      {!['completed', 'cancelled'].includes(bk.status) && (
-                        <div>
-                          <p className="text-neutral-500 text-[9px] font-black uppercase tracking-widest mb-2">Actualizar estado</p>
-                          <div className="grid grid-cols-2 gap-2">
-                            {[
-                              { s: 'confirmed',   label: 'Confirmar',   cls: 'bg-blue-500/10 border-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white hover:border-blue-500' },
-                              { s: 'in_progress', label: 'Iniciar',     cls: 'bg-red-600/10 border-red-600/20 text-red-500 hover:bg-red-600 hover:text-white hover:border-red-600' },
-                              { s: 'completed',   label: 'Finalizar',   cls: 'bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500 hover:text-white hover:border-green-500' },
-                              { s: 'cancelled',   label: 'Cancelar',    cls: 'bg-red-500/10 border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500' },
-                              { s: 'noshow',      label: 'No Asistió',  cls: 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700 hover:text-white' },
-                            ].filter(({ s }) => s !== bk.status && (s === 'noshow' ? bk.status !== 'cancelled' : true)).map(({ s, label, cls }) => (
-                              <button
-                                key={s}
-                                onClick={e => handleStatus(bk.id, s, e)}
-                                disabled={isUpdating}
-                                className={`py-2.5 rounded-2xl text-xs font-black border uppercase tracking-wider transition-all cursor-pointer disabled:opacity-40 ${cls}`}
-                              >
-                                {isUpdating ? '...' : label}
-                              </button>
-                            ))}
+                      {/* Acciones según estado real — flujo de barbería profesional */}
+                      {!['completed', 'cancelled'].includes(bk.status) && (() => {
+                        const s = bk.status;
+
+                        // Botón principal según el siguiente paso lógico
+                        const primaryAction = (() => {
+                          if (s === 'pending') return {
+                            label: '✓ Confirmar Cita',
+                            next: 'confirmed',
+                            cls: 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600 shadow-lg shadow-blue-600/20',
+                            desc: 'El cliente está agendado y la cita queda confirmada en el sistema.'
+                          };
+                          if (s === 'confirmed') return {
+                            label: '▶ Iniciar Servicio',
+                            next: 'in_progress',
+                            cls: 'bg-red-600 hover:bg-red-700 text-white border-red-600 shadow-lg shadow-red-600/25',
+                            desc: 'El cliente llegó y el servicio está en curso.'
+                          };
+                          if (s === 'in_progress') return {
+                            label: '✔ Finalizar Servicio',
+                            next: 'completed',
+                            cls: 'bg-green-600 hover:bg-green-700 text-white border-green-600 shadow-lg shadow-green-600/20',
+                            desc: 'El servicio terminó satisfactoriamente.'
+                          };
+                          return null;
+                        })();
+
+                        // Acciones secundarias (siempre disponibles antes de finalizar)
+                        const secondaryActions = [
+                          s !== 'in_progress' && {
+                            label: 'No Asistió',
+                            next: 'noshow',
+                            cls: 'bg-neutral-800 hover:bg-neutral-700 border-neutral-700 text-neutral-400 hover:text-white',
+                          },
+                          {
+                            label: 'Cancelar',
+                            next: 'cancelled',
+                            cls: 'bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-400 hover:text-red-300',
+                          },
+                        ].filter(Boolean);
+
+                        // Barra de progreso visual del flujo
+                        const steps = [
+                          { key: 'pending',     label: 'Pendiente'  },
+                          { key: 'confirmed',   label: 'Confirmada' },
+                          { key: 'in_progress', label: 'En Proceso' },
+                          { key: 'completed',   label: 'Finalizada' },
+                        ];
+                        const currentStep = steps.findIndex(st => st.key === s);
+
+                        return (
+                          <div className="space-y-4">
+                            {/* Barra de progreso de flujo */}
+                            <div>
+                              <p className="text-neutral-500 text-[9px] font-black uppercase tracking-widest mb-2.5">Progreso de la cita</p>
+                              <div className="flex items-center gap-1">
+                                {steps.map((st, i) => (
+                                  <div key={st.key} className="flex items-center gap-1 flex-1">
+                                    <div className={`flex-1 flex flex-col items-center gap-1`}>
+                                      <div className={`w-full h-1.5 rounded-full transition-all ${
+                                        i <= currentStep
+                                          ? i === currentStep
+                                            ? s === 'in_progress' ? 'bg-red-500' : s === 'confirmed' ? 'bg-blue-500' : 'bg-yellow-500'
+                                            : 'bg-green-500'
+                                          : 'bg-white/10'
+                                      }`} />
+                                      <span className={`text-[8px] font-black uppercase tracking-wider ${
+                                        i === currentStep ? 'text-white' : i < currentStep ? 'text-neutral-500' : 'text-neutral-700'
+                                      }`}>{st.label}</span>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Botón principal — siguiente paso en el flujo */}
+                            {primaryAction && (
+                              <div>
+                                <button
+                                  onClick={e => handleStatus(bk.id, primaryAction.next, e)}
+                                  disabled={isUpdating}
+                                  className={`w-full py-3.5 rounded-2xl text-sm font-black border uppercase tracking-widest transition-all cursor-pointer disabled:opacity-40 ${primaryAction.cls}`}
+                                >
+                                  {isUpdating ? (
+                                    <span className="flex items-center justify-center gap-2">
+                                      <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                      </svg>
+                                      Guardando...
+                                    </span>
+                                  ) : primaryAction.label}
+                                </button>
+                                <p className="text-neutral-600 text-[10px] text-center mt-1.5">{primaryAction.desc}</p>
+                              </div>
+                            )}
+
+                            {/* Acciones secundarias */}
+                            <div className="flex gap-2">
+                              {secondaryActions.map(({ label, next, cls }) => (
+                                <button
+                                  key={next}
+                                  onClick={e => handleStatus(bk.id, next, e)}
+                                  disabled={isUpdating}
+                                  className={`flex-1 py-2.5 rounded-2xl text-xs font-black border uppercase tracking-widest transition-all cursor-pointer disabled:opacity-40 ${cls}`}
+                                >
+                                  {isUpdating ? '...' : label}
+                                </button>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        );
+                      })()}
                     </div>
                   )}
                 </div>
