@@ -188,7 +188,7 @@ const cleanPhone = (phoneStr) => {
 const getReminderLink = (bk, clientPhoneStr) => {
   const formattedPhone = cleanPhone(clientPhoneStr);
   if (!formattedPhone) return null;
-  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin (${bk.branchName || 'Sede Norte'})*. ¡Te esperamos!`;
+  const msg = `Hola *${bk.clientName}*, te recordamos tu cita de hoy *${bk.date}* a las *${bk.time}* para el servicio de *${bk.service}* con *${bk.workerName}* en *Barber Kalvin*. ¡Te esperamos!`;
   return `https://wa.me/${formattedPhone}?text=${encodeURIComponent(msg)}`;
 };
 
@@ -1285,7 +1285,6 @@ function AdminDashboard() {
                         <thead>
                           <tr className="border-b border-white/5 text-[9px] font-black uppercase tracking-widest text-neutral-500">
                             <th className="pb-3 pr-4">Fecha</th>
-                            <th className="pb-3 pr-4">Sede</th>
                             <th className="pb-3 pr-4">Producto</th>
                             <th className="pb-3 pr-4 text-center">Cantidad</th>
                             <th className="pb-3 pr-4 text-right">Precio Unit.</th>
@@ -1298,9 +1297,6 @@ function AdminDashboard() {
                             <tr key={sale.id} className="text-xs text-neutral-300 hover:bg-white/[0.01] transition-colors">
                               <td className="py-3.5 pr-4 whitespace-nowrap">
                                 {sale.date ? new Date(typeof sale.date === 'string' && !sale.date.includes('T') ? sale.date.replace(/-/g, '/') : sale.date).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' }) : 'Sin fecha'}
-                              </td>
-                              <td className="py-3.5 pr-4 font-bold text-white">
-                                {branches.find(b => b.id === sale.branchId)?.name || 'General (Todas)'}
                               </td>
                               <td className="py-3.5 pr-4 font-semibold text-neutral-200">
                                 {sale.productName}

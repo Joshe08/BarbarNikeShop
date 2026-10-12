@@ -137,7 +137,6 @@ function Hero({ onBookingClick }) {
           </button>
           <a 
             href="#catalogo"
-            onClick={handleScrollToCatalog}
             className="group border-2 border-white/10 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black hover:bg-white hover:text-black transition-all active:scale-95 flex items-center justify-center text-sm sm:text-base uppercase tracking-widest gap-2"
           >
             CONOCER NUESTROS SERVICIOS
